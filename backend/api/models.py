@@ -22,6 +22,7 @@ class Doctor(models.Model):
         return self.user.username
 
 class Patient(models.Model):
+    pid = models.AutoField
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField()
     gender = models.CharField(max_length=10)
@@ -54,3 +55,7 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"Patient-{self.patient.user.username} Doctor-{self.doctor.user.username} on {self.date}"
+
+
+class Report(models.Model):
+    patient = models.ForeignKey
