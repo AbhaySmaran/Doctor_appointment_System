@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class DoctorRegisterSerializer(serializers.ModelSerializer):
-    user = UserSerializer
+    user = UserSerializer()
     class Meta:
         model = Doctor
         fields = '__all__'
@@ -20,5 +20,5 @@ class DoctorRegisterSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         user_data = validated_data.pop('user')
         user = User.objects.create(**user_data)
-        Doctor = Doctor.objects.create(user=user, **validated_data)
-        return Doctor
+        doctor = Doctor.objects.create(user=user, **validated_data)
+        return doctor
