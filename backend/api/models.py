@@ -21,7 +21,7 @@ class Patient(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.uuid:
-            unique_id = f"{self.dob.strftime('%Y%m%d')}{self.id}"
+            unique_id = f"P{self.dob.strftime('%Y%m%d')}{self.id}"
             Patient.objects.filter(id=self.id).update(uuid=unique_id)
 
 
@@ -98,8 +98,8 @@ class CustomUser(AbstractBaseUser):
 
 class Doctor(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'doctor'})
-    dept_id = models.ForeignKey(Department , on_delete = models.CASCADE)
-    doc_uid = models.CharField(max_length=20, blank=True, unique=True)
+    department = models.ForeignKey(Department , on_delete = models.CASCADE)
+    doc_uid = models.CharField(max_length=20, blank=True)
     full_name =models.CharField(max_length=100)
     contact = models.CharField(max_length = 15, blank = True)
     specialization = models.CharField(max_length=50)
@@ -110,20 +110,27 @@ class Doctor(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.doc_uid:
-            dept_code = self.dept_id.dept_code
-            unique_id = f"{dept_code}{self.id}"
+            dept_code = self.department.dept_code
+            unique_id = f"D{dept_code}{self.id}"
             Doctor.objects.filter(id=self.id).update(doc_uid=unique_id)
 
-    
     def __str__(self):
         return self.user.email
 
 
 class Receptionist(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'receptionist'})
+    uuid = models.CharField(max_length=100,blank=True)
     full_name = models.CharField(max_length=100)
     contact_no = models.CharField(max_length=15)
 
+    def save(self, *args, **kwargs):
+        super().save(*args,**kwargs)
+        if not self.uuid:
+            unique_id = f"ADM00{self.id}"
+            Receptionist.objects.filter(id=self.id).update(uuid=unique_id)
 
     def __str__(self):
         return self.user.username
+
+
