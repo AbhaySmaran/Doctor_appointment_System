@@ -63,10 +63,16 @@ class PatientView(APIView):
             return Response({"msg": "success"})
         return Response(serializer.errors)
 
-    def get(self, request, format=None):
+    def get(self, request,id=None, format=None):
         Patients = Patient.objects.all()
         serializer = PatientSerializer(Patients, many=True)
+        if id is not None:
+            patient = Patient.objects.get(pk=id)
+            serializer = PatientSerializer(patient)
         return Response(serializer.data)
+
+    def delete(self, request, id=None, format=None):
+        
 
 class DepartmentView(APIView):
     permission_classes = [AllowAny]
