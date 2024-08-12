@@ -133,4 +133,11 @@ class Receptionist(models.Model):
     def __str__(self):
         return self.user.username
 
+class Appointment(models.Model):
+    patient = models.ForeignKey(Patient, on_delete= models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    date = models.DateField()
+    status = models.CharField(max_length=50)
 
+    def __str__(self):
+        return f"{self.patient.full_name} with {self.doctor.full_name}"

@@ -70,9 +70,19 @@ class PatientView(APIView):
             patient = Patient.objects.get(pk=id)
             serializer = PatientSerializer(patient)
         return Response(serializer.data)
+    
+    def put(self, request, format=None):
+        id = request.data.get('id')
+        patient = Patient.objects.get(pk=id)
+        serializer = PatientSerializer(patient, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"msg": "Data updated successfully"})
 
-    def delete(self, request, id=None, format=None):
-        
+    def delete(self, request, format=None):
+        id = request.data.get('id')
+        patient = Patient.objects.get(pk=id)
+        patient.delete()
 
 class DepartmentView(APIView):
     permission_classes = [AllowAny]
@@ -136,6 +146,19 @@ class DoctorsView(APIView):
             doctor = Doctor.objects.get(pk=id)
             serializer = DoctorSerializer(doctor)
         return Response(serializer.data)
+    
+    def put(self, request, format=None):
+        id = request.data.get('id')
+        doctor = Doctor.objects.get(pk=id)
+        serializer = DoctorSerializer(doctor, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg': 'Update successful'})
+        
+    def delete(self, request, format=None):
+        id= request.data.get("id")
+        doctor = Doctor.objects.get(pk=id)
+        doctor.delete()
 
 class DoctorProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -152,3 +175,13 @@ class ReceptionistProfileView(APIView):
         receptionist = Receptionist.objects.get(user=request.user)
         serializer = ReceptionistProfileSerializer(receptionist)
         return Response(serializer.data)
+    
+
+class AppointmentsView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, format=None):
+        serializer = AppointmentSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data) 

@@ -61,9 +61,12 @@ class ReceptionistProfileSerializer(serializers.ModelSerializer):
         model = Receptionist
         fields = '__all__'
 
-# class ReceptionistLoginSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = 
+class AppointmentSerializer(serializers.ModelSerializer):
+    patient = PatientSerializer()
+    doctor = DoctorSerializer()
+    class Meta:
+        models = Appointment
+        fields = '__all__'
 
 
 
