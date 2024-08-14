@@ -12,9 +12,9 @@ const Navbar = () => {
                         <Typography variant='h5' component='div' sx={{ flexGrow:1 }}>
                             Doctor Appointment Portal
                         </Typography>
-                        <Button component={NavLink} to='/' sx={{ color: 'white' }}>
+                        {/* <Button component={NavLink} to='/' sx={{ color: 'white' }}>
                             Home
-                        </Button>
+                        </Button> */}
                         <Button component={NavLink} to='/login' sx={{ color: 'white' }}>
                             Login
                         </Button>

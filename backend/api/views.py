@@ -30,7 +30,8 @@ class DoctorLoginView(APIView):
                 tokens = get_tokens_for_user(user)
                 return Response({
                     "message": "Login successful",
-                    "tokens": tokens
+                    "tokens": tokens,
+                    "role": "doctor"
                 }, status=status.HTTP_200_OK)
             return Response({"error": "Invalid credentials or not a doctor"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -49,7 +50,8 @@ class ReceptionistLoginView(APIView):
                 tokens = get_tokens_for_user(user)
                 return Response({
                     "message": "Login successful",
-                    "tokens": tokens
+                    "tokens": tokens,
+                    "role": "receptionist"
                 }, status=status.HTTP_200_OK)
             return Response({"error": "Invalid credentials or not a receptionist"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -83,6 +85,7 @@ class PatientView(APIView):
         id = request.data.get('id')
         patient = Patient.objects.get(pk=id)
         patient.delete()
+        return Response({"msg": "Patient Deleted"})
 
 class DepartmentView(APIView):
     permission_classes = [AllowAny]
@@ -137,6 +140,20 @@ class ReceptionistsView(APIView):
             serializer = ReceptionistSerializer(receptionist)
         return Response(serializer.data)
 
+    def put(self, request, formar=None):
+        id = request.data.get('id')
+        receptionist = Receptionist.objects.get(pk=id)
+        serializer = ReceptionistSerializer(receptionist, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"msg":"Details Updated"})
+        
+    def delete(self, request, format=None):
+        id = request.data.get('id')
+        receptionist = Receptionist.objects.get(pk=id)
+        receptionist.delete()
+        return Response({"msg": "Receptionist Deleted"})
+
 class DoctorsView(APIView):
     permission_classes = [AllowAny]
     def get(self, request, id=None, format=None):
@@ -159,6 +176,7 @@ class DoctorsView(APIView):
         id= request.data.get("id")
         doctor = Doctor.objects.get(pk=id)
         doctor.delete()
+        return Response({"msg": "Doctor deleted"})
 
 class DoctorProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -184,4 +202,7 @@ class AppointmentsView(APIView):
         serializer = AppointmentSerializer(data= request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data) 
+            return Response({"msg": "Appointment booked"}) 
+        return Response(serializer.errors)
+    
+

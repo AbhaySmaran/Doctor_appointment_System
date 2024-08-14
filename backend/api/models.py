@@ -6,9 +6,9 @@ from django.db import models
 
 class Patient(models.Model):
     uuid = models.CharField(max_length=255, unique=True, blank=True)
-    username = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, blank=True)
     full_name = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)
+    # password = models.CharField(max_length=255)
     age = models.IntegerField()
     email = models.CharField(max_length=255)
     gender = models.CharField(max_length=10)
@@ -16,7 +16,7 @@ class Patient(models.Model):
     address = models.CharField(max_length=255, blank=True, null=True)
     nationality = models.CharField(max_length=255, blank=True, null=True)
     contact_no = models.CharField(max_length=20, blank=True, null=True)
-    joined_on = models.DateTimeField()
+    joined_on = models.DateField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
