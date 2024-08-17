@@ -1,8 +1,11 @@
 import React from 'react'
+import Sidebar from '../components/Sidebar';
 
 const ReceptionistDashboard = () => {
   return (
-    <div>ReceptionistDashboard</div>
+    <div>
+      {/* <Sidebar /> */}
+    </div>
   )
 }
 

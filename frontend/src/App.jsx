@@ -1,28 +1,40 @@
 import { useState } from 'react'
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import Layouts from './pages/Layouts';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import DoctorLogin from './pages/DoctorLogin';
-import ReceptionistLogin from './pages/ReceptionistLogin';
 import ReceptionistDashboard from './pages/ReceptionistDashboard';
 import DoctorDashboard from './pages/DoctorDashboard';
-
+import PatientReg from './pages/PatientReg';
+import DoctorReg from './pages/DoctorReg';
+import ReceptionistReg from './pages/ReceptionistReg';
 
 function App() {
   const [count, setCount] = useState(0)
+  const access_token = localStorage.getItem('access');
+  const role = localStorage.getItem('role')
 
+  const getRedirectPath = () => {
+    if (access_token) {
+      if (role === 'doc') {
+        return '/dashboard/doctor';
+      } else if (role === 'receptionist') {
+        return '/dashboard/receptionist';
+      }
+    }
+    return '/';
+  };
   return (
     <>
       <Router>
         <Routes>
-          <Route exact path ='/' element={<Layouts />}>
-            <Route index element= {<Home />} />
-            <Route path='login' element={<Login />} />
-            <Route path='doctor/login' element= {<DoctorLogin />} />
-            <Route path='receptionist/login' element= {<ReceptionistLogin />} />
-            <Route path='receptionist/dashboard' element={<ReceptionistDashboard />} />
-            <Route path='doctor/dashboard' element={<DoctorDashboard />} />
+          <Route path="/" element={!access_token ? <Login /> : <Navigate to={getRedirectPath()} /> } />
+          <Route exact path ='dashboard/' element={<Layouts />}>
+            <Route path='receptionist' element={<ReceptionistDashboard />} />
+            <Route path='doctor' element={<DoctorDashboard />} />
+            <Route path='patient/registration' element={<PatientReg />} />
+            <Route path='doctor/register' element={<DoctorReg />} />
+            <Route path='receptionist/register' element={<ReceptionistReg />} />
           </Route>
         </Routes>
       </Router>

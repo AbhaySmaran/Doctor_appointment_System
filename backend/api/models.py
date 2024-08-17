@@ -6,7 +6,6 @@ from django.db import models
 
 class Patient(models.Model):
     uuid = models.CharField(max_length=255, unique=True, blank=True)
-    username = models.CharField(max_length=255, blank=True)
     full_name = models.CharField(max_length=255)
     # password = models.CharField(max_length=255)
     age = models.IntegerField()

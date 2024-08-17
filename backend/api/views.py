@@ -9,14 +9,14 @@ from .serializers import *
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
-def get_tokens_for_user(user):
+def get_tokens_for_user(user): 
     refresh = RefreshToken.for_user(user)
     return {
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
 
-class DoctorLoginView(APIView):
+class UserLoginView(APIView):
     permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         serializer = UserLoginSerializer(data=request.data)
@@ -24,16 +24,16 @@ class DoctorLoginView(APIView):
             email = serializer.data.get('email')
             password = serializer.data.get('password')
             if not email or not password:
-                return Response({"error": "Email and password required"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"errors": {"error": ["Email and password required"]}}, status=status.HTTP_400_BAD_REQUEST)
             user = authenticate(email=email, password=password)
-            if user is not None and user.role == 'doctor':
+            if user is not None :
                 tokens = get_tokens_for_user(user)
                 return Response({
                     "message": "Login successful",
                     "tokens": tokens,
-                    "role": "doctor"
+                    "role": user.role
                 }, status=status.HTTP_200_OK)
-            return Response({"error": "Invalid credentials or not a doctor"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"errors": {"error": ["Invalid credentials"]}}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class ReceptionistLoginView(APIView):
@@ -53,7 +53,7 @@ class ReceptionistLoginView(APIView):
                     "tokens": tokens,
                     "role": "receptionist"
                 }, status=status.HTTP_200_OK)
-            return Response({"error": "Invalid credentials or not a receptionist"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"errors":{"error": ["Invalid credentials or not a receptionist"]}}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class PatientView(APIView):
@@ -113,6 +113,7 @@ class UserRegistrationView(APIView):
 
             if role == 'doctor':
                 doctor_data = user_data.get('doctor', {})
+                doctor_data['user'] = user.id
                 doctor_serializer = DoctorSerializer(data=doctor_data)
                 if doctor_serializer.is_valid():
                     doctor_serializer.save(user=user)
@@ -120,6 +121,7 @@ class UserRegistrationView(APIView):
                     return Response(doctor_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             elif role == 'receptionist':
                 receptionist_data = user_data.get('receptionist', {})
+                receptionist_data['user'] = user.id
                 receptionist_serializer = ReceptionistSerializer(data=receptionist_data)
                 if receptionist_serializer.is_valid():
                     receptionist_serializer.save(user=user)

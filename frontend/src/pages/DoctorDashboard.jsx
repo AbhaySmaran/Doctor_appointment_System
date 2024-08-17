@@ -1,8 +1,13 @@
 import React from 'react'
+import Sidebar from '../components/Sidebar'
 
 const DoctorDashboard = () => {
   return (
-    <div>DoctorDashboard</div>
+    <div>DoctorDashboard
+      <div>
+        {/* <Sidebar /> */}
+      </div>
+    </div>
   )
 }
 

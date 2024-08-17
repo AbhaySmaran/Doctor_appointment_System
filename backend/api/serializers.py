@@ -36,18 +36,18 @@ class UserSerializer(serializers.ModelSerializer):
     
 class DoctorSerializer(serializers.ModelSerializer):
     department= serializers.PrimaryKeyRelatedField(queryset=Department.objects.all())
-    user = UserSerializer()
     class Meta:
         model = Doctor
         fields = ["user","id", "department", "doc_uid", "full_name","contact","specialization","fee","degree","joined_on"]
         read_only_fields = ['user']
 
 class ReceptionistSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
     class Meta:
         model = Receptionist
         fields = ["user","id","uuid","full_name","contact_no"]
         read_only_fields = ['user']
+
+# class DoctorViewSerializer(serilizer)
 
 class DoctorProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
