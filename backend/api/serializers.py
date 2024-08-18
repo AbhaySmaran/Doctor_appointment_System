@@ -19,8 +19,6 @@ class DepartmentsSerializer(serializers.ModelSerializer):
         model = Department
         fields = '__all__'
 
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -47,7 +45,17 @@ class ReceptionistSerializer(serializers.ModelSerializer):
         fields = ["user","id","uuid","full_name","contact_no"]
         read_only_fields = ['user']
 
-# class DoctorViewSerializer(serilizer)
+class DoctorViewSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Doctor
+        fields = '__all__'
+
+class ReceptionistViewSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Receptionist
+        fields = '__all__'
 
 class DoctorProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()

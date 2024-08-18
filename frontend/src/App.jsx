@@ -8,6 +8,9 @@ import DoctorDashboard from './pages/DoctorDashboard';
 import PatientReg from './pages/PatientReg';
 import DoctorReg from './pages/DoctorReg';
 import ReceptionistReg from './pages/ReceptionistReg';
+import PatientList from './pages/PatientList';
+import DoctorList from './pages/DoctorList';
+import ReceptionistList from './pages/ReceptionistList';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -33,8 +36,11 @@ function App() {
             <Route path='receptionist' element={<ReceptionistDashboard />} />
             <Route path='doctor' element={<DoctorDashboard />} />
             <Route path='patient/registration' element={<PatientReg />} />
+            <Route path='patient/list' element={<PatientList />} />
             <Route path='doctor/register' element={<DoctorReg />} />
             <Route path='receptionist/register' element={<ReceptionistReg />} />
+            <Route path='doctor/list' element={<DoctorList />} />
+            <Route path='receptionist/list' element={<ReceptionistList />} />
           </Route>
         </Routes>
       </Router>

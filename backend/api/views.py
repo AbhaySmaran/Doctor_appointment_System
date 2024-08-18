@@ -59,10 +59,16 @@ class ReceptionistLoginView(APIView):
 class PatientView(APIView):
     permission_classes = [AllowAny]
     def post(self, request, format=None):
+        email = request.data.get('email')
+        contact_no = request.data.get('contact_no')
+        
+        if Patient.objects.filter(email=email).exists() or Patient.objects.filter(contact_no=contact_no).exists():
+            return Response({"msg": "Patient already registered"}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = PatientSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "success"})
+            return Response({"msg": "Patient Registered Successfully."})
         return Response(serializer.errors)
 
     def get(self, request,id=None, format=None):
@@ -136,16 +142,16 @@ class ReceptionistsView(APIView):
     permission_classes = [AllowAny]
     def get(self, request, id=None ,format=None):
         Receptionists = Receptionist.objects.all()
-        serializer = ReceptionistSerializer(Receptionists, many=True)
+        serializer = ReceptionistViewSerializer(Receptionists, many=True)
         if id is not None:
             receptionist = Receptionist.objects.get(pk=id)
-            serializer = ReceptionistSerializer(receptionist)
+            serializer = ReceptionistViewSerializer(receptionist)
         return Response(serializer.data)
 
     def put(self, request, formar=None):
         id = request.data.get('id')
         receptionist = Receptionist.objects.get(pk=id)
-        serializer = ReceptionistSerializer(receptionist, data=request.data, partial=True)
+        serializer = ReceptionistViewSerializer(receptionist, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"msg":"Details Updated"})
@@ -160,16 +166,16 @@ class DoctorsView(APIView):
     permission_classes = [AllowAny]
     def get(self, request, id=None, format=None):
         doctor = Doctor.objects.all()
-        serializer = DoctorSerializer(doctor, many = True)
+        serializer = DoctorViewSerializer(doctor, many = True)
         if id is not None:
             doctor = Doctor.objects.get(pk=id)
-            serializer = DoctorSerializer(doctor)
+            serializer = DoctorViewSerializer(doctor)
         return Response(serializer.data)
     
     def put(self, request, format=None):
         id = request.data.get('id')
         doctor = Doctor.objects.get(pk=id)
-        serializer = DoctorSerializer(doctor, data=request.data, partial=True)
+        serializer = DoctorViewSerializer(doctor, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({'msg': 'Update successful'})

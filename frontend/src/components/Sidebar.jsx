@@ -33,19 +33,19 @@ const Sidebar = () => {
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/dashboard/patients">
+                        <NavLink className="nav-link" to="/dashboard/patient/list">
                             <FaProcedures className="sidebar-icon" /> 
                             <span className="sidebar-text">Patient List</span>
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/dashboard/doctors">
+                        <NavLink className="nav-link" to="/dashboard/doctor/list">
                             <FaStethoscope className="sidebar-icon" /> 
                             <span className="sidebar-text">Doctor List</span>
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/dashboard/receptionists">
+                        <NavLink className="nav-link" to="/dashboard/receptionist/list">
                             <FaConciergeBell className="sidebar-icon" /> 
                             <span className="sidebar-text">Receptionist List</span>
                         </NavLink>

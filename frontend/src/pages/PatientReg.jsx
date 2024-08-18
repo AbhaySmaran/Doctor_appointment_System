@@ -25,7 +25,28 @@ const PatientReg = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const res = axios.post('')
+        const res = axios.post('http://127.0.0.1:8000/api/patients/',{
+            "full_name": formData.fullName,
+            "age": formData.age,
+            "email": formData.email,
+            "gender": formData.gender,
+            "dob": formData.dob,
+            "address": formData.address,
+            "nationality": formData.nationality,
+            "contact_no": formData.contactNo
+        })
+
+        alert(res.data.msg)
+        setFormData({
+            fullName: '',
+            age: '',
+            email: '',
+            gender: '',  
+            dob: '',
+            address: '',
+            nationality: '',
+            contactNo: '',
+        }); 
     };
 
     return (

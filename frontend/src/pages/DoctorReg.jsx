@@ -1,10 +1,13 @@
 // DoctorRegistrationForm.js
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const DoctorReg = () => {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
+        username: '',
+        password: '',
         department: '',
         specialization: '',
         degree: '',
@@ -22,7 +25,32 @@ const DoctorReg = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Doctor form data submitted:', formData);
+        const res = axios.post('http://127.0.0.1:8000/api/register/user/',{
+          "email": formData.email,
+          "username": formData.username ,
+          "password": formData.password,
+          "role": "doctor",
+          "doctor":{
+            "full_name": formData.fullName,
+            "department": formData.department,
+            "contact":formData.contactNo,
+            "specialization": formData.specialization,
+            "fee": formData.fee,
+            "degree": formData.degree
+          }
+        })
+        alert("Doctor registered")
+        setFormData({
+          fullName: '',
+          email: '',
+          username: '',
+          password: '',
+          department: '',
+          specialization: '',
+          degree: '',
+          contactNo: '',
+          fee: '',
+      })
     };
 
     return (
@@ -60,16 +88,43 @@ const DoctorReg = () => {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="department">Department</label>
+                                    <label htmlFor="email">Username</label>
                                     <input
                                         type="text"
+                                        className="form-control"
+                                        id="username"
+                                        name="username"
+                                        value={formData.username}
+                                        onChange={handleChange}
+                                        placeholder="Enter username"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="email">Password</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        placeholder="Enter password"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="gender">Department Name</label>
+                                    <select
                                         className="form-control"
                                         id="department"
                                         name="department"
                                         value={formData.department}
                                         onChange={handleChange}
-                                        placeholder="Enter department"
-                                    />
+                                    >
+                                        <option value="">Select Department</option>
+                                        <option value="1">Aurtho</option>
+                                        <option value="2">Cardio</option>
+                                        <option value="3">Cancer</option>
+                                    </select>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="specialization">Specialization</label>
