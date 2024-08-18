@@ -19,13 +19,14 @@ const PatientList = () => {
                 <table className='table'>
                     <thead className="thead-dark">
                         <tr>
-                            <th>Id</th>
+                            <th>UHID</th>
                             <th>Name</th>
                             <th>Age</th>
                             <th>Email</th>
                             <th>Gender</th>
                             <th>Address</th>
                             <th>Contact</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,6 +39,11 @@ const PatientList = () => {
                                 <td>{patient.gender}</td>
                                 <td>{patient.address}</td>
                                 <td>{patient.contact_no}</td>
+                                <td>
+                                    <button className=''>
+
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

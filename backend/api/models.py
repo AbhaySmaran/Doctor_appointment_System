@@ -14,7 +14,7 @@ class Patient(models.Model):
     dob = models.DateField()
     address = models.CharField(max_length=255, blank=True, null=True)
     nationality = models.CharField(max_length=255, blank=True, null=True)
-    contact_no = models.CharField(max_length=20, blank=True, null=True)
+    contact_no = models.CharField(max_length=20, blank=True, null=True, unique=True)
     joined_on = models.DateField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -25,7 +25,7 @@ class Patient(models.Model):
 
 
     def __str__(self):
-        return self.username
+        return self.full_name
     
 class Department(models.Model):
     dept_name = models.CharField(max_length=255)
@@ -132,11 +132,3 @@ class Receptionist(models.Model):
     def __str__(self):
         return self.user.username
 
-class Appointment(models.Model):
-    patient = models.ForeignKey(Patient, on_delete= models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    date = models.DateField()
-    status = models.CharField(max_length=50)
-
-    def __str__(self):
-        return f"{self.patient.full_name} with {self.doctor.full_name}"

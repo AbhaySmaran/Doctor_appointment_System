@@ -203,14 +203,6 @@ class ReceptionistProfileView(APIView):
         return Response(serializer.data)
     
 
-class AppointmentsView(APIView):
-    permission_classes = [AllowAny]
 
-    def post(self, request, format=None):
-        serializer = AppointmentSerializer(data= request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"msg": "Appointment booked"}) 
-        return Response(serializer.errors)
     
 
