@@ -10,7 +10,7 @@ const Layouts = () => {
       <Navbar />
       <div className="d-flex">
         <Sidebar />
-        <div id="content" className="p-4">
+        <div id="content" className="p-4 sm:p-2">
           <Outlet />
         </div>
       </div>

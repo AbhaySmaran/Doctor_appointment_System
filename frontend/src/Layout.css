@@ -18,14 +18,14 @@
 /* Sidebar collapse styles for smaller screens */
 @media (max-width: 768px) {
     #sidebar {
-        width: 80px;
-        min-width: 80px;
+        width: 20px;
+        min-width: 20px;
     }
     .sidebar-text {
         display: none;
     }
     .sidebar-icon {
-        font-size: 1.5rem;
+        font-size: 1rem;
         text-align: center;
         width: 100%;
     }

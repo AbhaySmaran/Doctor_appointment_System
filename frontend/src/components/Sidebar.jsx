@@ -51,13 +51,13 @@ const Sidebar = () => {
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/dashboard/appointment">
+                        <NavLink className="nav-link" to="/dashboard/appointment/book">
                             <FaCalendarAlt className="sidebar-icon" />
                             <span className="sidebar-text">Book Appointment</span>
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/dashboard/reports">
+                        <NavLink className="nav-link" to="/dashboard/reports/upload">
                             <FaFileAlt className="sidebar-icon" />
                             <span className="sidebar-text">Reports</span>
                         </NavLink>

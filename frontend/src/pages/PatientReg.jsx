@@ -14,6 +14,7 @@ const PatientReg = () => {
         nationality: '',
         contactNo: '',
     });
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;

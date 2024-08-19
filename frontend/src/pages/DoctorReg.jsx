@@ -1,5 +1,5 @@
 // DoctorRegistrationForm.js
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 
 const DoctorReg = () => {
@@ -14,6 +14,14 @@ const DoctorReg = () => {
         contactNo: '',
         fee: '',
     });
+    const [departments,setDepartments] = useState([]);
+    useEffect(()=>{
+        const fetchDepartments = async()=>{
+            const res = await axios.get('http://127.0.0.1:8000/api/departments/')
+            setDepartments(res.data)
+        };
+        fetchDepartments();
+    },[])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -121,9 +129,9 @@ const DoctorReg = () => {
                                         onChange={handleChange}
                                     >
                                         <option value="">Select Department</option>
-                                        <option value="1">Aurtho</option>
-                                        <option value="2">Cardio</option>
-                                        <option value="3">Cancer</option>
+                                        {departments.map((department)=>(
+                                            <option value={department.id}>{department.dept_name}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="form-group">

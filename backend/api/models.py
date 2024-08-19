@@ -14,10 +14,11 @@ class Patient(models.Model):
     dob = models.DateField()
     address = models.CharField(max_length=255, blank=True, null=True)
     nationality = models.CharField(max_length=255, blank=True, null=True)
-    contact_no = models.CharField(max_length=20, blank=True, null=True, unique=True)
+    contact_no = models.CharField(max_length=20, blank=True, null=True,unique=True)
     joined_on = models.DateField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs): 
         super().save(*args, **kwargs)
         if not self.uuid:
             unique_id = f"P{self.dob.strftime('%Y%m%d')}{self.id}"
