@@ -48,3 +48,15 @@ class ReportUploadView(APIView):
             serializer.save()
             return Response({'msg': 'Report Uploaded Successfully'}, status = status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request, format=None):
+        report = Report.objects.all()
+        serializer = ReportUploadSerializer(report, many=True)
+        return Response(serializer.data)
+
+
+class DoctorAppointmentsView(APIView):
+    def get(self, request, format=None):
+        appointments = Appointment.objects.filter(doctor=request.user)
+        serializer = AppointmentViewSerializer(appointments, many=True)
+        return Response(serializer.data)

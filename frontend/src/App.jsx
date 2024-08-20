@@ -13,6 +13,8 @@ import DoctorList from './pages/DoctorList';
 import ReceptionistList from './pages/ReceptionistList';
 import BookAppointment from './pages/BookAppointment';
 import ReportUpload from './pages/ReportUpload';
+import AppointmentHistory from './pages/AppointmentHistory';
+import ReportList from './pages/ReportList';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -45,7 +47,10 @@ function App() {
             <Route path='receptionist/list' element={<ReceptionistList />} />
             <Route path='appointment/book' element={<BookAppointment />} />
             <Route path='reports/upload' element={<ReportUpload />} />
+            <Route path='appointment/history' element={<AppointmentHistory />} />
+            <Route path='report/list' element={<ReportList />} />
           </Route>
+          <Route path="*" element={<h1>Page Not Found</h1>} />
         </Routes>
       </Router>
     </>

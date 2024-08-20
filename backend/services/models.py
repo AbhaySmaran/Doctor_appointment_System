@@ -13,14 +13,13 @@ class Appointment(models.Model):
     booked_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     booked_by = models.CharField(max_length=50, blank=True)
-    status = models.CharField(max_length=20, blank=True)
+    status = models.CharField(max_length=20, default='active')
 
     # def save(self, *args, **kwargs):
 
 
     def __str__(self):
         return f"{self.patient.full_name} with {self.doctor.full_name}"
- 
     
 
 class Test(models.Model):
@@ -52,6 +51,17 @@ class Report(models.Model):
             self.name = file_name
             self.save(update_fields=['name'])
 
+        # if self.report_file:
+        #     file_extension = self.report_file.name.split('.')[-1]
+        #     new_file_name = f"{self.name}_{formatted_date}.{file_extension}"
+        #     self.report_file.name = new_file_name
+        #     self.save(update_fields=['report_file'])
+
     def __str__(self):
         return self.name
+
+class HospitalVisitLog(models.Model):
+    patiend = models.ForeignKey(Patient, to_field='uuid', on_delete=models.CASCADE)
+
+
 
