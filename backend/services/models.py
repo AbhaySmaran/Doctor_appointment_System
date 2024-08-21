@@ -65,3 +65,27 @@ class HospitalVisitLog(models.Model):
 
 
 
+def prescription_upload_to(instance, filename):
+    return f'prescription_files/{instance.patient.uuid}/{filename}'
+
+class Prescription(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, to_field='uuid',on_delete=models.CASCADE)
+    name= models.CharField(max_length=100, blank=True)
+    prescription_files = models.FileField(upload_to=prescription_upload_to)
+    uploaded_on = models.DateTimeField(auto_now_add=True)
+    uploaded_by= models.CharField(max_length=100)
+
+    def save(self,*args,**kwargs):
+        super().save(*args,**kwargs)
+        if not self.name:
+            formatted_date = self.uploaded_on.strftime('%Y%M%D_%H%M%S')
+            d_id = self.doctor.doc_uid
+            file_name = f"{d_id}_{formatted_date}"
+            self.name = file_name
+            self.save(update_fields=['name'])
+            
+
+
+
+

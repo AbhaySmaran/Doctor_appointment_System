@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const PatientList = () => {
     const [patients, setPatients] = useState([]);
@@ -33,7 +34,7 @@ const PatientList = () => {
                         {patients.map((patient) => (
                             <tr key={patient.id}>
                                 <td>{patient.uuid}</td>
-                                <td>{patient.full_name}</td>
+                                <Link to={`${patient.id}/`}><td>{patient.full_name}</td></Link>
                                 <td>{patient.age}</td>
                                 <td>{patient.email}</td>
                                 <td>{patient.gender}</td>

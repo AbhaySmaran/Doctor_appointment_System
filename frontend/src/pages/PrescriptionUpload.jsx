@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const ReportUpload = () => {
+const PrescriptionUpload = () => {
     const [file, setFile] = useState(null);
     const [patient, setPatient] = useState('');
-    const [test, setTest] = useState('');
-    const [tests, setTests] = useState([]);
+    const [doctor, setDoctor] = useState('');
+    const [doctors,setDoctors] = useState([]);
 
     useEffect(() => {
         const fetchTests = async () => {
@@ -22,15 +22,15 @@ const ReportUpload = () => {
     const handleUpload = async (e) => {
         e.preventDefault();
 
-        if (!file || !patient || !test) {
+        if (!file || !patient || !doctor) {
             alert('Please fill out all fields and select a file.');
             return;
         }
 
         const formData = new FormData();
         formData.append('patient', patient);
-        formData.append('test', test);
-        formData.append('report_file', file);
+        formData.append('doctor', test);
+        formData.append('prescription_file', file);
 
         try {
             const response = await axios.post('http://127.0.0.1:8000/services/upload/report/', formData, {
@@ -109,4 +109,4 @@ const ReportUpload = () => {
     );
 };
 
-export default ReportUpload;
+export default PrescriptionUpload;

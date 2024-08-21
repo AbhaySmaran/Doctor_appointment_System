@@ -76,19 +76,19 @@ const ReceptionistReg = () => {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="fullName">username</label>
+                                    <label htmlFor="username">username</label>
                                     <input
                                         type="text"
                                         className="form-control"
                                         id="username"
-                                        name="fullName"
+                                        name="username"
                                         value={formData.username}
                                         onChange={handleChange}
                                         placeholder="Enter username"
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="fullName">Password</label>
+                                    <label htmlFor="password">Password</label>
                                     <input
                                         type="text"
                                         className="form-control"

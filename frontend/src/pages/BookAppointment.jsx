@@ -9,7 +9,7 @@ const BookAppointment = () => {
         date: "",
     })
     const [doctors,setDoctors] = useState([])
-
+    const receptionistId= localStorage.getItem("uuid")
     useEffect(()=>{
         const fetchDoctors = async()=>{
             const res=await axios.get('http://127.0.0.1:8000/api/doctors/')
@@ -31,13 +31,14 @@ const BookAppointment = () => {
         const res = axios.post('http://127.0.0.1:8000/services/appointment/book/',{
             patient: formData.patient_UHID,
             doctor: formData.doctor,
-            date: formData.date
+            date: formData.date,
+            booked_by: receptionistId
         })
         alert("Appointmrnt Booked")
         setFormData({
             patient_UHID: "",
             doctor: "",
-            date: "",
+            date: " ",
         })
     }
 
@@ -73,18 +74,18 @@ const BookAppointment = () => {
                                     >
                                         <option value=''>Select Doctors Name</option>
                                         {doctors.map((doctor=>(
-                                            <option value={doctor.id}>{doctor.full_name}</option>
+                                            <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
                                         )))}
                                     </select>
                                 </div>
                                 <div className='form-group'>
-                                    <label>Appointment Date</label>
+                                    <label htmlFor='date'>Appointment Date</label>
                                     <input 
                                         type='date'
                                         name='date'
                                         id='date'
                                         value={formData.value}
-                                        placeholder='Enter Appointment Date'
+                                        onChange={handleChange}
                                     />
                                 </div>
                                 <button type="submit" className="btn btn-primary">Book</button>

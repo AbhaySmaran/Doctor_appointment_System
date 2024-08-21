@@ -7,9 +7,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('access');
-    localStorage.removeItem('refresh');
-    localStorage.removeItem('role');
+    localStorage.clear()
     navigate('/');
   };
 

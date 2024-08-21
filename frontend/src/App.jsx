@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useState } from 'react'
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import Layouts from './pages/Layouts';
@@ -15,15 +16,28 @@ import BookAppointment from './pages/BookAppointment';
 import ReportUpload from './pages/ReportUpload';
 import AppointmentHistory from './pages/AppointmentHistory';
 import ReportList from './pages/ReportList';
+import Appointments from './pages/Appointments';
+import PatientDetails from './pages/PatientDetails';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const access_token = localStorage.getItem('access');
-  const role = localStorage.getItem('role')
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('access'));
+  const role = localStorage.getItem('role');
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setAccessToken(localStorage.getItem('access'));
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const getRedirectPath = () => {
-    if (access_token) {
-      if (role === 'doc') {
+    if (accessToken) {
+      if (role === 'doctor') {
         return '/dashboard/doctor';
       } else if (role === 'receptionist') {
         return '/dashboard/receptionist';
@@ -31,30 +45,32 @@ function App() {
     }
     return '/';
   };
+
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route path="/" element={!access_token ? <Login /> : <Navigate to={getRedirectPath()} /> } />
-          <Route exact path ='dashboard/' element={<Layouts />}>
-            <Route path='receptionist' element={<ReceptionistDashboard />} />
-            <Route path='doctor' element={<DoctorDashboard />} />
-            <Route path='patient/registration' element={<PatientReg />} />
-            <Route path='patient/list' element={<PatientList />} />
-            <Route path='doctor/register' element={<DoctorReg />} />
-            <Route path='receptionist/register' element={<ReceptionistReg />} />
-            <Route path='doctor/list' element={<DoctorList />} />
-            <Route path='receptionist/list' element={<ReceptionistList />} />
-            <Route path='appointment/book' element={<BookAppointment />} />
-            <Route path='reports/upload' element={<ReportUpload />} />
-            <Route path='appointment/history' element={<AppointmentHistory />} />
-            <Route path='report/list' element={<ReportList />} />
-          </Route>
-          <Route path="*" element={<h1>Page Not Found</h1>} />
-        </Routes>
-      </Router>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={!accessToken ? <Login /> : <Navigate to={getRedirectPath()} />} />
+        <Route exact path='dashboard/' element={<Layouts />}>
+          <Route path='receptionist' element={<ReceptionistDashboard />} />
+          <Route path='doctor' element={<DoctorDashboard />} />
+          <Route path='patient/registration' element={<PatientReg />} />
+          <Route path='patient/list' element={<PatientList />} />
+          <Route path='patient/list/:id' element={<PatientDetails />} />
+          <Route path='doctor/register' element={<DoctorReg />} />
+          <Route path='receptionist/register' element={<ReceptionistReg />} />
+          <Route path='doctor/list' element={<DoctorList />} />
+          <Route path='receptionist/list' element={<ReceptionistList />} />
+          <Route path='appointment/book' element={<BookAppointment />} />
+          <Route path='reports/upload' element={<ReportUpload />} />
+          <Route path='appointment/history' element={<AppointmentHistory />} />
+          <Route path='report/list' element={<ReportList />} />
+          <Route path='doctor/appointment' element={<Appointments />} />
+          <Route path='doctor/reports' element={<ReportList />} />
+        </Route>
+        <Route path="*" element={<h1>Page Not Found</h1>} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

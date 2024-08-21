@@ -53,10 +53,32 @@ class ReportUploadView(APIView):
         report = Report.objects.all()
         serializer = ReportUploadSerializer(report, many=True)
         return Response(serializer.data)
+    
+class Patientreports(APIView):
+    def get(self,request, uuid=None, format=None):
+        patient = Patient.objects.get(uuid=uuid)
+        reports = Report.objects.filter(patient=patient)
+        serializer = ReportUploadSerializer(reports,many=True)
+        return Response(serializer.data)
+
+class PrescriptionView(APIView):
+    def post(self,request,format=None):
+        serializer = PrescriptionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"msg": "Prescription uploded succesfully"}, status= status.HTTP_201_CREATED)
+        return Response(serializer.errors)
+
+    def get(self, request, format=None):
+        prescriptions = Prescription.objects.all()
+        serializer = PrescriptionSerializer(prescriptions, many=True)
+        return Response(serializer.data, status= status.HTTP_200_OK)
 
 
 class DoctorAppointmentsView(APIView):
     def get(self, request, format=None):
-        appointments = Appointment.objects.filter(doctor=request.user)
+        doctor = Doctor.objects.get(user=request.user)
+        appointments = Appointment.objects.filter(doctor=doctor).order_by('date')
         serializer = AppointmentViewSerializer(appointments, many=True)
         return Response(serializer.data)
+

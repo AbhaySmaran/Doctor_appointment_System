@@ -7,4 +7,6 @@ urlpatterns =[
     path('test/', TestViews.as_view()),
     path('upload/report/',ReportUploadView.as_view()),
     path('doctor/appointments/', DoctorAppointmentsView.as_view()),
+    path('prescription/',PrescriptionView.as_view()),
+    path('reports/<str:uuid>/',Patientreports.as_view())
 ]

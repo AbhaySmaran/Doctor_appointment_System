@@ -37,7 +37,7 @@ const PatientReg = () => {
             "contact_no": formData.contactNo
         })
 
-        alert(res.data.msg)
+        alert('Patient Registered')
         setFormData({
             fullName: '',
             age: '',
