@@ -7,8 +7,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.clear()
-    navigate('/');
+    localStorage.clear();
+    navigate('/', { replace: true });  
   };
 
   // const handleToggleSidebar = () => {

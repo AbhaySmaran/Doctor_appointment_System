@@ -9,11 +9,11 @@ const DoctorDashboard = () => {
     const fetchUser = async()=>{
       const res = await axios.get('http://127.0.0.1:8000/api/receptionist/profile/')
       setDoctor(res.data)
-    }
-    if(res.data){
-      localStorage.setItem('doc_uid',res.data.doc_uid)
-      localStorage.setItem('name',res.data.full_name)
-    }
+      if(res.data){
+        localStorage.setItem('doc_uid',res.data.doc_uid)
+        localStorage.setItem('name',res.data.full_name)
+      }
+    };
     fetchUser();
   },[])
   const doc_name = localStorage.getItem('name')
