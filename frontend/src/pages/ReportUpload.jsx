@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import PatientList from './PatientList';
 
 const ReportUpload = () => {
     const [file, setFile] = useState(null);
     const [patient, setPatient] = useState('');
     const [test, setTest] = useState('');
     const [tests, setTests] = useState([]);
+    const [patients, setPatients] = useState([])
 
     useEffect(() => {
         const fetchTests = async () => {
@@ -14,6 +16,12 @@ const ReportUpload = () => {
         };
         fetchTests();
     }, []);
+
+    // useEffect(()=>{
+    //     const fetchPatients = ()=>{
+    //         const res = 
+    //     }
+    // })
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
