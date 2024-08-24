@@ -9,6 +9,7 @@ const PatientList = () => {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [formData, setFormData] = useState({
+        id: '',
         full_name: '',
         age: '',
         email: '',
@@ -30,13 +31,13 @@ const PatientList = () => {
     const handlePatientSelect = (patient) => {
         setSelectedPatient(patient);
         setFormData({
+            id: patient.id,
             full_name: patient.full_name,
             age: patient.age,
             email: patient.email,
             gender: patient.gender,
             address: patient.address,
             contact_no: patient.contact_no,
-            // Map other patient fields here
         });
     };
 
@@ -90,7 +91,7 @@ const PatientList = () => {
         reportData.append('report', reportFile);
 
         try {
-            await axios.post(`http://127.0.0.1:8000/api/patients/${selectedPatient.id}/upload-report/`, reportData, {
+            await axios.post(`http://127.0.0.1:8000/api/`, reportData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -187,30 +188,32 @@ const PatientList = () => {
                                 <p><strong>Gender:</strong> {selectedPatient.gender}</p>
                                 <p><strong>Address:</strong> {selectedPatient.address}</p>
                                 <p><strong>Contact:</strong> {selectedPatient.contact_no}</p>
-                                <button 
-                                    className="btn btn-primary mr-2" 
-                                    onClick={() => handleUpdate(selectedPatient)}
-                                >
-                                    Update
-                                </button>
-                                <button 
-                                    className="btn btn-danger mr-2" 
-                                    onClick={() => handleDelete(selectedPatient.id)}
-                                >
-                                    Delete
-                                </button>
-                                <button 
-                                    className="btn btn-info mr-2" 
-                                    onClick={() => handleViewReport(selectedPatient)}
-                                >
-                                    View Report
-                                </button>
-                                <button 
-                                    className="btn btn-secondary" 
-                                    onClick={() => handleUploadReport(selectedPatient)}
-                                >
-                                    Upload Report
-                                </button>
+                                <div className='btn-grp'>
+                                    <button 
+                                        className="btn btn-primary btn-sm" 
+                                        onClick={() => handleUpdate(selectedPatient)}
+                                    >
+                                        Update
+                                    </button>
+                                    <button 
+                                        className="btn btn-primary btn-sm" 
+                                        onClick={() => handleDelete(selectedPatient.id)}
+                                    > 
+                                        Delete
+                                    </button>
+                                    <button 
+                                        className="btn btn-primary btn-sm" 
+                                        onClick={() => handleViewReport(selectedPatient)}
+                                    >
+                                        View Report
+                                    </button>
+                                    <button 
+                                        className="btn btn-primary btn-sm" 
+                                        onClick={() => handleUploadReport(selectedPatient)}
+                                    >
+                                        Upload Report
+                                    </button>
+                                </div>
                             </div>
                         ) : (
                             <p>Select a patient to view details here.</p>

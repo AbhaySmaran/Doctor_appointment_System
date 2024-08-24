@@ -71,3 +71,26 @@
         margin-top: 20px; /* Add margin-top when the layout becomes column */
     }
 }
+
+.sidebar-icon{
+    margin-right: 0.5rem;
+}
+
+.btn-grp {
+    display: flex;
+    gap: 10px; /* Adds space between buttons */
+    margin-top: 15px;
+    flex-direction: column; /* Aligns buttons vertically */
+    gap: 10px;
+}
+
+.btn-grp .btn {
+    font-size: 14px; /* Adjusts font size */
+    border-radius: 4px; /* Rounds the corners */
+    padding: 8px 12px; /* Adds padding for a better feel */
+    width: 120px; /* Set a fixed width */
+    text-align: center;
+}
+
+    
+

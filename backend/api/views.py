@@ -79,13 +79,15 @@ class PatientView(APIView):
             serializer = PatientSerializer(patient)
         return Response(serializer.data)
     
-    def put(self, request, format=None):
-        id = request.data.get('id')
-        patient = Patient.objects.get(pk=id)
-        serializer = PatientSerializer(patient, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"msg": "Data updated successfully"})
+    def put(self, request,id=None, format=None):
+        # id = request.data.get('id')
+        if id is not None:
+            patient = Patient.objects.get(id=id)
+            serializer = PatientSerializer(patient, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"msg": "Data updated successfully"})
+            return Response(serializer.errors)
 
     def delete(self, request, format=None):
         id = request.data.get('id')
