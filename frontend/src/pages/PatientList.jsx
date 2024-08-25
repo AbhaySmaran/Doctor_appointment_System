@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const PatientList = () => {
+    const user = localStorage.getItem('uuid');
     const [patients, setPatients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -10,6 +12,7 @@ const PatientList = () => {
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [formData, setFormData] = useState({
         id: '',
+        uuid: '',
         full_name: '',
         age: '',
         email: '',
@@ -18,20 +21,37 @@ const PatientList = () => {
         contact_no: '',
     });
     const [reportFile, setReportFile] = useState(null);
-    const recordsPerPage = 2;
+    const [test,setTest] = useState('');
+    const [allTests,setAllTests] = useState([]);
+    const recordsPerPage = 4;
+
+    const fetchTests = async()=>{
+        const res = await axios.get('http://127.0.0.1:8000/services/test/')
+        setAllTests(res.data);
+    }
+
+    useEffect(()=>{
+        fetchTests();
+    },[])
 
     useEffect(() => {
-        const fetchPatients = async () => {
-            const res = await axios.get('http://127.0.0.1:8000/api/patients/');
-            setPatients(res.data);
-        };
         fetchPatients();
     }, []);
+
+    const fetchPatients = async () => {
+        try {
+            const res = await axios.get('http://127.0.0.1:8000/api/patients/');
+            setPatients(res.data);
+        } catch (error) {
+            console.error('Error fetching patients:', error);
+        }
+    };
 
     const handlePatientSelect = (patient) => {
         setSelectedPatient(patient);
         setFormData({
             id: patient.id,
+            uuid: patient.uuid,
             full_name: patient.full_name,
             age: patient.age,
             email: patient.email,
@@ -41,11 +61,6 @@ const PatientList = () => {
         });
     };
 
-    const setToLocalStorage = (patient) => {
-        localStorage.setItem('selectedPatient', JSON.stringify(patient));
-    };
-
-    // Action handlers
     const handleUpdate = (patient) => {
         handlePatientSelect(patient);
         setShowUpdateModal(true);
@@ -54,16 +69,20 @@ const PatientList = () => {
     const handleDelete = async (patientId) => {
         try {
             await axios.delete(`http://127.0.0.1:8000/api/patients/${patientId}/`);
+            // Remove the deleted patient from the state
             setPatients(patients.filter(patient => patient.id !== patientId));
-            setSelectedPatient(null); // Clear selection after deletion
+            setSelectedPatient(null);
         } catch (error) {
             console.error('Error deleting patient:', error);
         }
     };
 
+    const navigate= useNavigate();
+
     const handleViewReport = (patient) => {
-        const reportUrl = `http://127.0.0.1:8000/reports/${patient.id}/view/`;
-        window.open(reportUrl, '_blank');
+        const reportUrl = `http://127.0.0.1:8000/services/reports/${formData.uuid}/`;
+        navigate(`/dashboard/patient/reports/${formData.uuid}`)
+        // window.open(reportUrl, '_blank');
     };
 
     const handleUploadReport = (patient) => {
@@ -71,16 +90,12 @@ const PatientList = () => {
         setShowUploadModal(true);
     };
 
-    // Handle form submissions
     const handleSubmitUpdate = async () => {
         try {
-            const res = await axios.put(`http://127.0.0.1:8000/api/patients/${selectedPatient.id}/`, formData);
-            const updatedPatients = patients.map(patient => 
-                patient.id === selectedPatient.id ? res.data : patient
-            );
-            setPatients(updatedPatients);
+            await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
+            // Refetch the updated list of patients
+            await fetchPatients();
             setShowUpdateModal(false);
-            setSelectedPatient(res.data);
         } catch (error) {
             console.error('Error updating patient:', error);
         }
@@ -88,26 +103,31 @@ const PatientList = () => {
 
     const handleReportUpload = async () => {
         const reportData = new FormData();
-        reportData.append('report', reportFile);
+        reportData.append('patient', formData.uuid);
+        reportData.append('test', test);
+        reportData.append('report_file', reportFile);
+        reportData.append('uploaded_by',user)
 
         try {
-            await axios.post(`http://127.0.0.1:8000/api/`, reportData, {
+            await axios.post(`http://127.0.0.1:8000/services/upload/report/`, reportData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
             setShowUploadModal(false);
+            setTest('');
         } catch (error) {
             console.error('Error uploading report:', error);
         }
     };
 
-    // Filter patients based on search term
-    const filteredPatients = patients.filter((patient) =>
-        patient.full_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredPatients = patients.filter((patient) => {
+        if (patient && patient.full_name) {
+            return patient.full_name.toLowerCase().includes(searchTerm.toLowerCase());
+        }
+        return false;
+    });
 
-    // Pagination Logic after filtering
     const indexOfLastRecord = currentPage * recordsPerPage;
     const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
     const currentRecords = filteredPatients.slice(indexOfFirstRecord, indexOfLastRecord);
@@ -129,11 +149,11 @@ const PatientList = () => {
                         value={searchTerm}
                         onChange={(e) => {
                             setSearchTerm(e.target.value);
-                            setCurrentPage(1); // Reset to the first page when a new search is performed
+                            setCurrentPage(1);  // Reset to the first page when search term changes
                         }}
                     />
                     <div className="table-responsive">
-                        <table className='table'>
+                        <table className='table table-striped table-light'>
                             <thead className="thead-dark">
                                 <tr>
                                     <th>Select</th>
@@ -161,7 +181,6 @@ const PatientList = () => {
                             </tbody>
                         </table>
                     </div>
-                    {/* Pagination Controls */}
                     <nav>
                         <ul className="pagination justify-content-center">
                             {[...Array(totalPages)].map((_, index) => (
@@ -175,7 +194,6 @@ const PatientList = () => {
                     </nav>
                 </div>
 
-                {/* Side Panel Section */}
                 <div className="col-md-4">
                     <div className="side-panel">
                         <h4>Patient Details</h4>
@@ -198,7 +216,7 @@ const PatientList = () => {
                                     <button 
                                         className="btn btn-primary btn-sm" 
                                         onClick={() => handleDelete(selectedPatient.id)}
-                                    > 
+                                    >
                                         Delete
                                     </button>
                                     <button 
@@ -223,118 +241,129 @@ const PatientList = () => {
             </div>
 
             {/* Update Patient Modal */}
-            <div className={`modal ${showUpdateModal ? 'show' : ''}`} style={{ display: showUpdateModal ? 'block' : 'none' }}>
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Update Patient</h5>
-                            <button type="button" className="close" onClick={() => setShowUpdateModal(false)}>
-                                <span>&times;</span>
-                            </button>
-                        </div>
-                        <div className="modal-body">
-                            <form>
-                                <div className="form-group">
-                                    <label>Name</label>
-                                    <input 
-                                        type="text" 
-                                        className="form-control" 
-                                        value={formData.full_name} 
-                                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Age</label>
-                                    <input 
-                                        type="number" 
-                                        className="form-control" 
-                                        value={formData.age} 
-                                        onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Email</label>
-                                    <input 
-                                        type="email" 
-                                        className="form-control" 
-                                        value={formData.email} 
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Gender</label>
-                                    <input 
-                                        type="text" 
-                                        className="form-control" 
-                                        value={formData.gender} 
-                                        onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Address</label>
-                                    <input 
-                                        type="text" 
-                                        className="form-control" 
-                                        value={formData.address} 
-                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Contact No</label>
-                                    <input 
-                                        type="text" 
-                                        className="form-control" 
-                                        value={formData.contact_no} 
-                                        onChange={(e) => setFormData({ ...formData, contact_no: e.target.value })}
-                                    />
-                                </div>
-                                {/* Add other fields here */}
-                            </form>
-                        </div>
-                        <div className="modal-footer">
-                            <button 
-                                type="button" 
-                                className="btn btn-primary" 
-                                onClick={handleSubmitUpdate}
-                            >
-                                Save changes
-                            </button>
-                            <button type="button" className="btn btn-secondary" onClick={() => setShowUpdateModal(false)}>Close</button>
+            {showUpdateModal && (
+                <div className="modal show" style={{ display: 'block' }}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Update Patient</h5>
+                                <button type="button" className="close" onClick={() => setShowUpdateModal(false)}>
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                    <div className="form-group">
+                                        <label>Name</label>
+                                        <input 
+                                            type="text" 
+                                            className="form-control" 
+                                            value={formData.full_name} 
+                                            onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Age</label>
+                                        <input 
+                                            type="number" 
+                                            className="form-control" 
+                                            value={formData.age} 
+                                            onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Email</label>
+                                        <input 
+                                            type="email" 
+                                            className="form-control" 
+                                            value={formData.email} 
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Gender</label>
+                                        <select 
+                                            className="form-control" 
+                                            value={formData.gender} 
+                                            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                                        >
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Address</label>
+                                        <input 
+                                            type="text" 
+                                            className="form-control" 
+                                            value={formData.address} 
+                                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Contact No</label>
+                                        <input 
+                                            type="text" 
+                                            className="form-control" 
+                                            value={formData.contact_no} 
+                                            onChange={(e) => setFormData({ ...formData, contact_no: e.target.value })}
+                                        />
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowUpdateModal(false)}>Cancel</button>
+                                <button type="button" className="btn btn-primary" onClick={handleSubmitUpdate}>Save changes</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             {/* Upload Report Modal */}
-            <div className={`modal ${showUploadModal ? 'show' : ''}`} style={{ display: showUploadModal ? 'block' : 'none' }}>
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Upload Report</h5>
-                            <button type="button" className="close" onClick={() => setShowUploadModal(false)}>
-                                <span>&times;</span>
-                            </button>
-                        </div>
-                        <div className="modal-body">
-                            <input 
-                                type="file" 
-                                onChange={(e) => setReportFile(e.target.files[0])}
-                            />
-                        </div>
-                        <div className="modal-footer">
-                            <button 
-                                type="button" 
-                                className="btn btn-primary" 
-                                onClick={handleReportUpload}
-                                disabled={!reportFile}
-                            >
-                                Upload
-                            </button>
-                            <button type="button" className="btn btn-secondary" onClick={() => setShowUploadModal(false)}>Close</button>
+            {showUploadModal && (
+                <div className="modal show" style={{ display: 'block' }}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Upload Report</h5>
+                                <button type="button" className="close" onClick={() => setShowUploadModal(false)}>
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                    <div className="form-group">
+                                        <laabel>Test</laabel>
+                                        <select
+                                            type='text'
+                                            className='form-control'
+                                            name='test'
+                                            value={test}
+                                            onChange={(e)=>setTest(e.target.value)}
+                                        >
+                                            <option value="">Select Test</option>
+                                            {allTests.map((test)=>(
+                                                <option key={test.id} value={test.id}>{test.test_name}</option>
+                                            ))}
+                                        </select>
+                                        <label>Choose Report File</label>
+                                        <input 
+                                            type="file" 
+                                            className="form-control" 
+                                            onChange={(e) => setReportFile(e.target.files[0])}
+                                        />
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowUploadModal(false)}>Cancel</button>
+                                <button type="button" className="btn btn-primary" onClick={handleReportUpload}>Upload</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

@@ -73,7 +73,7 @@ const Sidebar = () => {
                                 <span className="sidebar-text">Upload Reports</span>
                             </NavLink>
                         </li>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <NavLink className="nav-link" to="/dashboard/report/list">
                                 <FaFileAlt className="sidebar-icon" />
                                 <span className="sidebar-text">Reports List</span>
@@ -84,7 +84,7 @@ const Sidebar = () => {
                                 <MdMedicalServices className="sidebar-icon" />
                                 <span className="sidebar-text">OPD</span>
                             </NavLink>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
                 :

@@ -62,6 +62,12 @@
     overflow-x: auto; /* Enable horizontal scrolling */
 }
 
+.table.table-striped{
+    background-color:#a9b7c5;
+}
+
+
+
 /* Ensure content area doesn't shrink below sidebar width */
 @media (max-width: 768px) {
     .wrapper {
@@ -85,12 +91,15 @@
 }
 
 .btn-grp .btn {
-    font-size: 14px; /* Adjusts font size */
-    border-radius: 4px; /* Rounds the corners */
-    padding: 8px 12px; /* Adds padding for a better feel */
-    width: 120px; /* Set a fixed width */
+    font-size: 14px;         /* Adjusts font size */
+    border-radius: 4px;      /* Rounds the corners */
+    padding: 4px 8px;        /* Reduces padding to decrease button height */
+    width: 120px;            /* Set a fixed width */
     text-align: center;
+    line-height: 1.2;        /* Adjusts line height for further control */
+    height: auto;
 }
 
-    
+
+
 

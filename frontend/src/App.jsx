@@ -63,7 +63,7 @@ function App() {
           <Route path='appointment/book' element={<BookAppointment />} />
           <Route path='reports/upload' element={<ReportUpload />} />
           <Route path='appointment/history' element={<AppointmentHistory />} />
-          <Route path='report/list' element={<ReportList />} />
+          <Route path='patient/reports/:uuid' element={<ReportList />} />
           <Route path='doctor/appointment' element={<Appointments />} />
           <Route path='doctor/reports' element={<ReportList />} />
           {/* <Route path='patients/reports/:uuid' element */}

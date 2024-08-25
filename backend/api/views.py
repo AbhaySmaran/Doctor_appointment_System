@@ -150,13 +150,13 @@ class ReceptionistsView(APIView):
             serializer = ReceptionistViewSerializer(receptionist)
         return Response(serializer.data)
 
-    def put(self, request, formar=None):
-        id = request.data.get('id')
-        receptionist = Receptionist.objects.get(pk=id)
-        serializer = ReceptionistViewSerializer(receptionist, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"msg":"Details Updated"})
+    def put(self, request,id=None, formar=None):
+        if id is not None:
+            receptionist = Receptionist.objects.get(pk=id)
+            serializer = ReceptionistViewSerializer(receptionist, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"msg":"Details Updated"})
         
     def delete(self, request, format=None):
         id = request.data.get('id')
@@ -174,13 +174,13 @@ class DoctorsView(APIView):
             serializer = DoctorViewSerializer(doctor)
         return Response(serializer.data)
     
-    def put(self, request, format=None):
-        id = request.data.get('id')
-        doctor = Doctor.objects.get(pk=id)
-        serializer = DoctorViewSerializer(doctor, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'msg': 'Update successful'})
+    def put(self, request,id=None, format=None):
+        if id is not None:
+            doctor = Doctor.objects.get(pk=id)
+            serializer = DoctorViewSerializer(doctor, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'msg': 'Update successful'})
         
     def delete(self, request, format=None):
         id= request.data.get("id")

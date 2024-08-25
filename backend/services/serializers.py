@@ -26,6 +26,8 @@ class ReportUploadSerializer(serializers.ModelSerializer):
         model = Report
         fields= '__all__'
 
+# class ReportViewSerializer(serializers.Mdel)
+
 class PrescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prescription

@@ -1,13 +1,15 @@
+import { useParams,useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const ReportList = () => {
+    const {uuid} = useParams();
     const [reports, setReports] = useState([]);
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/services/upload/report/');
+                const response = await axios.get(`http://127.0.0.1:8000/services/reports/${uuid}/`);
                 setReports(response.data);
             } catch (error) {
                 console.error('Error fetching reports:', error);
