@@ -22,12 +22,12 @@ const ReportList = () => {
     return (
         <div className="container mt-5">
             <h2>Reports List</h2>
-            <table className="table table-striped">
+            <table className="table table-striped table-light">
                 <thead>
                     <tr>
                         <th>Report Name</th>
                         <th>Patient</th>
-                        <th>Test</th>
+                        {/* <th>Test</th> */}
                         <th>Uploaded On</th>
                         <th>Uploaded By</th>
                         <th>Report File</th>
@@ -38,7 +38,7 @@ const ReportList = () => {
                         <tr key={report.id}>
                             <td>{report.name}</td>
                             <td>{report.patient}</td>
-                            <td>{report.test}</td>
+                            {/* <td>{report.test}</td> */}
                             <td>{new Date(report.uploaded_on).toLocaleString()}</td>
                             <td>{report.uploaded_by}</td>
                             <td>

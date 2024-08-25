@@ -48,11 +48,27 @@ const ReceptionistDashboard = () => {
                         </div>
                     </div>
                 </div>
+                <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/patient/registration')}>
+                    <div className="card text-center">
+                        <div className="card-body">
+                            <FaUserInjured size={50} />
+                            <h5 className="card-title mt-3">Add Patients</h5>
+                        </div>
+                    </div>
+                </div>
                 <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/doctor/list')}>
                     <div className="card text-center">
                         <div className="card-body">
-                            <FaUserMd size={50} />
+                            <MdListAlt size={50} />
                             <h5 className="card-title mt-3">Doctor List</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/doctor/register')}>
+                    <div className="card text-center">
+                        <div className="card-body">
+                            <FaUserMd size={50} />
+                            <h5 className="card-title mt-3">Add Doctor</h5>
                         </div>
                     </div>
                 </div>
@@ -88,22 +104,6 @@ const ReceptionistDashboard = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/report/list')}>
-                    <div className="card text-center">
-                        <div className="card-body">
-                            <FaFileAlt size={50} />
-                            <h5 className="card-title mt-3">Reports List</h5>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/opd')}>
-                    <div className="card text-center">
-                        <div className="card-body">
-                            <MdMedicalServices size={50} />
-                            <h5 className="card-title mt-3">OPD</h5>
-                        </div>
-                    </div>
-                </div>
                 <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/appointment/history')}>
                     <div className="card text-center">
                         <div className="card-body">
@@ -116,23 +116,7 @@ const ReceptionistDashboard = () => {
                     <div className="card text-center">
                         <div className="card-body">
                             <FaPills size={50} />
-                            <h5 className="card-title mt-3">Prescriptions</h5>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/doctor/reports')}>
-                    <div className="card text-center">
-                        <div className="card-body">
-                            <FaClipboard size={50} />
-                            <h5 className="card-title mt-3">Doctor Reports</h5>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/patient/registration')}>
-                    <div className="card text-center">
-                        <div className="card-body">
-                            <FaUserInjured size={50} />
-                            <h5 className="card-title mt-3">Add Patients</h5>
+                            <h5 className="card-title mt-3">Upload Prescription</h5>
                         </div>
                     </div>
                 </div>
