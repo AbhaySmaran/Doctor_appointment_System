@@ -5,11 +5,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework import status
 from api.models import Patient
-
+from datetime import datetime , timedelta
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.mail import EmailMessage
 
+from django.db.models import Count, Func, F
+from django.db.models.functions import TruncMonth,TruncDate
 # # views.py
 # from django.http import FileResponse, HttpResponseForbidden
 # from django.contrib.auth.decorators import login_required
@@ -169,3 +171,51 @@ class FollowUpEmailView(APIView):
 
             return Response({"message": "Follow-up email sent successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MonthlyAppointmentsView(APIView):
+    def get(self, request):
+        # Annotate each appointment with its month
+        appointments = (Appointment.objects
+                        .annotate(month=TruncMonth('date'))
+                        .values('month')
+                        .annotate(total_appointments=Count('id'))
+                        .order_by('month'))
+
+        # Format the response data as a list of dictionaries
+        data = [{'month': item['month'].strftime('%Y-%m'), 'total_appointments': item['total_appointments']} 
+                for item in appointments]
+
+        return Response(data)
+    
+class DailyAppointmentsView(APIView):
+    def get(self, request, year, month):
+        # Validate year and month
+        try:
+            year = int(year)
+            month = int(month)
+        except ValueError:
+            return Response({"error": "Invalid year or month"}, status=400)
+        
+        # Start and end dates for the month
+        start_date = datetime(year, month, 1)
+        end_date = (start_date + timedelta(days=31)).replace(day=1) - timedelta(days=1)
+        
+        # Generate all dates in the month
+        all_dates = [start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1)]
+        
+        # Get appointment data
+        appointments = (Appointment.objects
+                        .filter(date__year=year, date__month=month)
+                        .annotate(appointment_date=TruncDate('date'))
+                        .values('appointment_date')
+                        .annotate(total_appointments=Count('id'))
+                        .order_by('appointment_date'))
+        
+        # Convert appointment data to dictionary for quick lookup
+        appointments_dict = {item['appointment_date']: item['total_appointments'] for item in appointments}
+        
+        # Prepare response data
+        data = [{'date': date.strftime('%Y-%m-%d'), 'total_appointments': appointments_dict.get(date, 0)}
+                for date in all_dates]
+        
+        return Response(data)

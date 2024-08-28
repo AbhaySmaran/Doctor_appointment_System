@@ -73,3 +73,6 @@ class FollowUpSerializer(serializers.Serializer):
     follow_up_date = serializers.DateField()
 
 
+class DailyAppointmentsSerializer(serializers.Serializer):
+    appointment_date = serializers.DateField()
+    total_appointments = serializers.IntegerField()
