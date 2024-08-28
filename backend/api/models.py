@@ -16,7 +16,7 @@ class Patient(models.Model):
     contact_no = models.CharField(max_length=20, blank=True, null=True,unique=True)
     joined_on = models.DateField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-    ststus = models.CharField(max_length=20 ,default='active')
+    status = models.CharField(max_length=20 ,default='active')
 
     def save(self, *args, **kwargs): 
         super().save(*args, **kwargs)

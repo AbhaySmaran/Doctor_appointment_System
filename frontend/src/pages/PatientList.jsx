@@ -7,6 +7,8 @@ import { FaEdit, FaFileUpload } from "react-icons/fa";
 import { MdEmail, MdAirplanemodeInactive } from "react-icons/md";
 import { CiFileOn } from "react-icons/ci";
 import { IoReturnUpBackSharp } from "react-icons/io5";
+// import { set } from 'react-datepicker/dist/date_utils';
+import { SlCalender } from "react-icons/sl"
 
 const PatientList = () => {
     const user = localStorage.getItem('uuid');
@@ -16,6 +18,9 @@ const PatientList = () => {
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showUploadModal, setShowUploadModal] = useState(false);
+    const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+    const [appointmentDate, setAppointmentDate] = useState('')
+    const [showStatusModal, setShowStatusModal] = useState(false);
     const [formData, setFormData] = useState({
         id: '',
         uuid: '',
@@ -25,12 +30,22 @@ const PatientList = () => {
         gender: '',
         address: '',
         contact_no: '',
+        status: ''
     });
     const [reportFile, setReportFile] = useState(null);
     const [test, setTest] = useState('');
     const [allTests, setAllTests] = useState([]);
-    const [uploadError, setUploadError] = useState(''); // State for handling errors
+    const [uploadError, setUploadError] = useState(null);
     const recordsPerPage = 4;
+    const [doctor, setDoctor] = useState('');
+    const [doctors, setDoctors] = useState([])
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            const res = await axios.get('http://127.0.0.1:8000/api/doctors/')
+            setDoctors(res.data)
+        };
+        fetchDoctors();
+    }, [])
 
     const fetchTests = async () => {
         const res = await axios.get('http://127.0.0.1:8000/services/test/');
@@ -65,6 +80,7 @@ const PatientList = () => {
             gender: patient.gender,
             address: patient.address,
             contact_no: patient.contact_no,
+            status: patient.status,
         });
     };
 
@@ -73,14 +89,25 @@ const PatientList = () => {
         setShowUpdateModal(true);
     };
 
-    const handleDelete = async (patientId) => {
+    const handleAppointment = (patient) => {
+        handlePatientSelect(patient);
+        setShowAppointmentModal(true);
+    }
+
+    const handleStatus = (patient) => {
+        handlePatientSelect(patient);
+        setShowStatusModal(true);
+    }
+
+    const handleStatusChange = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/patients/${patientId}/`);
-            // Remove the deleted patient from the state
-            setPatients(patients.filter((patient) => patient.id !== patientId));
-            setSelectedPatient(null);
+            await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
+            if (window.confirm("Are you sure you want to change status?")) {
+                await fetchPatients();
+                setShowStatusModal(false);
+            }
         } catch (error) {
-            console.error('Error deleting patient:', error);
+            console.error('Error updating patient Status:', error);
         }
     };
 
@@ -105,13 +132,16 @@ const PatientList = () => {
         }
     };
 
-    const handleAppointment = () =>{
+    const handleAppointmentSubmit = async () => {
         const reportData = new FormData();
-        reportData.append('patient_id',formData.uuid);
-        reportData.append('doctor_id',);
-        reportData.append('date')
+        reportData.append('patient', formData.uuid);
+        reportData.append('doctor', doctor);
+        reportData.append('date', appointmentDate);
+        reportData.append('uploaded_by', user)
 
-        
+        const res = await axios.post('http://127.0.0.1:8000/services/appointment/book/', reportData)
+        alert('Appointment Booked')
+        setShowAppointmentModal(false);
     }
 
     const handleReportUpload = async () => {
@@ -219,6 +249,7 @@ const PatientList = () => {
                                         <th>UHID</th>
                                         <th>Name</th>
                                         <th>Gender</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -235,6 +266,7 @@ const PatientList = () => {
                                             <td>{patient.uuid}</td>
                                             <td>{patient.full_name}</td>
                                             <td>{patient.gender}</td>
+                                            <td>{patient.status}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -274,9 +306,9 @@ const PatientList = () => {
                                         </button>
                                         <button
                                             className="btn btn-primary btn-sm"
-                                            // onClick={}
+                                            onClick={() => handleAppointment(selectedPatient)}
                                         >
-                                            Book Appointment
+                                            <SlCalender /> Appointment
                                         </button>
                                         <button
                                             className="btn btn-primary btn-sm"
@@ -298,9 +330,9 @@ const PatientList = () => {
                                         </button>
                                         <button
                                             className="btn btn-primary btn-sm"
-                                            onClick={() => handleDelete(selectedPatient.id)}
+                                            onClick={() => handleStatus(selectedPatient)}
                                         >
-                                            <MdAirplanemodeInactive /> Inactive
+                                            <MdAirplanemodeInactive /> Status
                                         </button>
                                     </div>
                                 </div>
@@ -482,8 +514,112 @@ const PatientList = () => {
                         </div>
                     </div>
                 )}
+                {/* Appointment modal */}
+                {showAppointmentModal && (
+                    <div className="modal show" style={{ display: 'block' }}>
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Schedule Appointment</h5>
+                                    <button type="button" className="close" onClick={() => setShowAppointmentModal(false)}>
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <form>
+                                        <div className='form-group'>
+                                            <label>Doctor Name</label>
+                                            <select
+                                                className='form-control'
+                                                name='doctor'
+                                                id='doctor'
+                                                value={doctor}
+                                                onChange={(e) => setDoctor(e.target.value)}
+                                            >
+                                                <option value=''>Select Doctors Name</option>
+                                                {doctors.map((doctor => (
+                                                    <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
+                                                )))}
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor='date'>Appointment Date</label>
+                                            <input
+                                                type='date'
+                                                name='date'
+                                                id='date'
+                                                value={appointmentDate}
+                                                onChange={(e) => setAppointmentDate(e.target.value)}
+                                            />
+                                        </div>
+                                    </form>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowAppointmentModal(false)}>Cancel</button>
+                                    <button type="button" className="btn btn-primary" onClick={handleAppointmentSubmit}>Schedule</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {showStatusModal && (
+                    <div className="modal show" style={{ display: 'block' }}>
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Status</h5>
+                                    <button type="button" className="close" onClick={() => setShowStatusModal(false)}>
+                                        &times;
+                                    </button>
+                                </div>
+                                <div className='modal-body'>
+                                    <p><strong>UHID:</strong> {formData.uuid}</p>
+                                    <p><strong>Name:</strong> {formData.full_name}</p>
+                                    <p><strong>Age:</strong> {formData.age}</p>
+                                    <p><strong>Email:</strong> {formData.email}</p>
+                                    <p><strong>Status:</strong>{formData.status}</p>
+                                    <div>
+                                        <p><strong>Change Status:-</strong></p>
+                                        <div>
+                                            <input
+                                                type="radio"
+                                                id="statusActive"
+                                                name="status"
+                                                value="Active"
+                                                checked={formData.status === 'Active'}
+                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                            />
+                                            <label htmlFor="statusActive">Active</label>
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="radio"
+                                                id="statusInactive"
+                                                name="status"
+                                                value="Inactive"
+                                                checked={formData.status === 'Inactive'}
+                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                            />
+                                            <label htmlFor="statusInactive">Inactive</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-primary" onClick={() => handleStatusChange()}>
+                                        Chnage Staus
+                                    </button>
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowStatusModal(false)}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
             </div>
-        </div>
+        </div >
     );
 };
 

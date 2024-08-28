@@ -66,13 +66,13 @@ class PatientView(APIView):
             return Response({"msg": "Patient already registered"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = PatientSerializer(data = request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response({"msg": "Patient Registered Successfully."})
-        return Response(serializer.errors)
+            return Response({"msg": "Patient Registered Successfully."},status = status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request,id=None, format=None):
-        Patients = Patient.objects.all()
+        Patients = Patient.objects.all().order_by('status', 'joined_on')
         serializer = PatientSerializer(Patients, many=True)
         if id is not None:
             patient = Patient.objects.get(pk=id)

@@ -64,7 +64,7 @@ const Sidebar = () => {
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/dashboard/appointment/history">
                                 <MdHistory className="sidebar-icon" />
-                                <span className="sidebar-text">Appointment History</span>
+                                <span className="sidebar-text">Appointments</span>
                             </NavLink>
                         </li>
                         <li className="nav-item">

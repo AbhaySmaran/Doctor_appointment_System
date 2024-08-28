@@ -1,9 +1,12 @@
 // PatientRegistrationForm.js
 import axios from 'axios';
 import React, { useState } from 'react';
+import { IoReturnUpBackSharp } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PatientReg = () => {
+    const [error,setError] = useState(null)
     const [formData, setFormData] = useState({
         uuid: '',
         fullName: '',
@@ -16,7 +19,7 @@ const PatientReg = () => {
         contactNo: '',
     });
     
-
+    const navigate = useNavigate();
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -27,33 +30,62 @@ const PatientReg = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const res = axios.post('http://127.0.0.1:8000/api/patients/',{
-            "uuid": formData.uuid,
-            "full_name": formData.fullName,
-            "age": formData.age,
-            "email": formData.email,
-            "gender": formData.gender,
-            "dob": formData.dob,
-            "address": formData.address,
-            "nationality": formData.nationality,
-            "contact_no": formData.contactNo
-        })
+        try{
+            const res = axios.post('http://127.0.0.1:8000/api/patients/',{
+                "uuid": formData.uuid,
+                "full_name": formData.fullName,
+                "age": formData.age,
+                "email": formData.email,
+                "gender": formData.gender,
+                "dob": formData.dob,
+                "address": formData.address,
+                "nationality": formData.nationality,
+                "contact_no": formData.contactNo
+            })
 
-        alert('Patient Registered')
-        setFormData({
-            uuid: '',
-            fullName: '',
-            age: '',
-            email: '',
-            gender: '',  
-            dob: '',
-            address: '',
-            nationality: '',
-            contactNo: '',
-        }); 
+            if(res.status === 201) {
+                alert('Patient Registered')
+                setFormData({
+                    uuid: '',
+                    fullName: '',
+                    age: '',
+                    email: '',
+                    gender: '',  
+                    dob: '',
+                    address: '',
+                    nationality: '',
+                    contactNo: '',
+                });
+            }else{
+                alert('Patient with this UHID already exists')
+                setFormData({
+                    uuid: ''
+                });
+            }
+        }catch(error){
+            if (error.response) {
+                console.log(error.response.data.uuid)
+                setError(error.response.data || 'Failed to upload report');
+                // console.log(error.uuid[0]);
+                // alert("Patient with this UHID already exists.")
+            } else {
+                setError('An error occurred while uploading the report');
+            }
+        }
     };
 
     return (
+        <div>
+            <div className='container-fluid position-relative'>
+                <div className='position-absolute top-0 end-0'>
+                    <button className='btn btn-primary' id='btn-back' type='button'
+                        onClick={() => navigate('/dashboard/receptionist')}
+                    >
+                        <IoReturnUpBackSharp /> Back
+                    </button>
+                </div>
+            </div>
+            <br />
         <div className="container mt-5">
             <div className="row justify-content-center">
                 <div className="col-md-8">
@@ -179,6 +211,7 @@ const PatientReg = () => {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 };

@@ -85,8 +85,6 @@ const ReceptionistDashboard = () => {
             2nd box: month wise patient follow up graph
             3rd box: repoty type and storage graph
         */}
-            <h3>Welcome {name}</h3>
-
             <div className="container mt-5">
                 <div className="row" style={{ cursor: 'pointer' }}>
                     <div className="col-md-4 mb-4">
@@ -110,7 +108,7 @@ const ReceptionistDashboard = () => {
                         <div className="card text-center">
                             <div className="card-body">
 
-                                {/* <h5 className="card-title mt-3"></h5> */}
+                                <h5 className="card-title mt-3">Line chart</h5>
                             </div>
                         </div>
                     </div>
@@ -118,7 +116,7 @@ const ReceptionistDashboard = () => {
                         <div className="card text-center">
                             <div className="card-body">
 
-                                <h5 className="card-title mt-3">Patient List</h5>
+                                <h5 className="card-title mt-3">Bar chart</h5>
                             </div>
                         </div>
                     </div>
@@ -190,7 +188,7 @@ const ReceptionistDashboard = () => {
                         <div className="card text-center">
                             <div className="card-body">
                                 <MdHistory size={50} />
-                                <h5 className="card-title mt-3">Appointment History</h5>
+                                <h5 className="card-title mt-3">Appointments</h5>
                             </div>
                         </div>
                     </div>
