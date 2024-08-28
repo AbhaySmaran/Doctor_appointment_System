@@ -1,6 +1,8 @@
 import React from 'react'
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { IoReturnUpBackSharp } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
 
 const BookAppointment = () => {
     const [formData, setFormData] = useState({
@@ -8,27 +10,28 @@ const BookAppointment = () => {
         doctor: "",
         date: "",
     })
-    const [doctors,setDoctors] = useState([])
-    const receptionistId= localStorage.getItem("uuid")
-    useEffect(()=>{
-        const fetchDoctors = async()=>{
-            const res=await axios.get('http://127.0.0.1:8000/api/doctors/')
+    const [doctors, setDoctors] = useState([])
+    const navigate = useNavigate();
+    const receptionistId = localStorage.getItem("uuid")
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            const res = await axios.get('http://127.0.0.1:8000/api/doctors/')
             setDoctors(res.data)
         };
         fetchDoctors();
-    },[])
+    }, [])
 
-    const handleChange = (e)=>{
-        const {name,value} = e.target
+    const handleChange = (e) => {
+        const { name, value } = e.target
         setFormData({
             ...formData,
             [name]: value
         });
     }
 
-    const handleSubmit = (e)=>{
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const res = axios.post('http://127.0.0.1:8000/services/appointment/book/',{
+        const res = axios.post('http://127.0.0.1:8000/services/appointment/book/', {
             patient: formData.patient_UHID,
             doctor: formData.doctor,
             date: formData.date,
@@ -43,53 +46,65 @@ const BookAppointment = () => {
     }
 
     return (
-        <div className='container mt-5'>
-            <div className='row justify-content-center'>
-                <div className='col-md-8'>
-                    <div className='card'>
-                        <div className='card-header'>
-                            <h4 className='card-title'>Book Appointment</h4>
-                        </div>
-                        <div className='card-body'>
-                            <form onSubmit={handleSubmit}>
-                                <div className='form-group'>
-                                    <label>Patient UHID</label>
-                                    <input 
-                                        type='text'
-                                        className='form-control'
-                                        name='patient_UHID'
-                                        value={formData.patient_UHID}
-                                        placeholder='Enter Patient UHID'
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className='form-group'>
-                                    <label>Doctor Name</label>
-                                    <select
-                                        className='form-control'
-                                        name='doctor'
-                                        id='doctor'
-                                        value={formData.doctor}
-                                        onChange={handleChange}
-                                    >
-                                        <option value=''>Select Doctors Name</option>
-                                        {doctors.map((doctor=>(
-                                            <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
-                                        )))}
-                                    </select>
-                                </div>
-                                <div className='form-group'>
-                                    <label htmlFor='date'>Appointment Date</label>
-                                    <input 
-                                        type='date'
-                                        name='date'
-                                        id='date'
-                                        value={formData.value}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <button type="submit" className="btn btn-primary">Book</button>
-                            </form>
+        <div>
+            <div className='container-fluid position-relative'>
+                <div className='position-absolute top-0 end-0'>
+                    <button className='btn btn-primary' id='btn-back' type='button'
+                        onClick={() => navigate('/dashboard/receptionist')}
+                    >
+                        <IoReturnUpBackSharp /> Back
+                    </button>
+                </div>
+            </div>
+            <br />
+            <div className='container mt-5'>
+                <div className='row justify-content-center'>
+                    <div className='col-md-8'>
+                        <div className='card'>
+                            <div className='card-header'>
+                                <h4 className='card-title'>Book Appointment</h4>
+                            </div>
+                            <div className='card-body'>
+                                <form onSubmit={handleSubmit}>
+                                    <div className='form-group'>
+                                        <label>Patient UHID</label>
+                                        <input
+                                            type='text'
+                                            className='form-control'
+                                            name='patient_UHID'
+                                            value={formData.patient_UHID}
+                                            placeholder='Enter Patient UHID'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className='form-group'>
+                                        <label>Doctor Name</label>
+                                        <select
+                                            className='form-control'
+                                            name='doctor'
+                                            id='doctor'
+                                            value={formData.doctor}
+                                            onChange={handleChange}
+                                        >
+                                            <option value=''>Select Doctors Name</option>
+                                            {doctors.map((doctor => (
+                                                <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
+                                            )))}
+                                        </select>
+                                    </div>
+                                    <div className='form-group'>
+                                        <label htmlFor='date'>Appointment Date</label>
+                                        <input
+                                            type='date'
+                                            name='date'
+                                            id='date'
+                                            value={formData.value}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">Book</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

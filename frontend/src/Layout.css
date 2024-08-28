@@ -62,7 +62,7 @@
     overflow-x: auto; /* Enable horizontal scrolling */
 }
 
-.table.table-striped{
+.table.table-striped.table-light{
     background-color:#a9b7c5;
 }
 
@@ -94,11 +94,31 @@
     font-size: 14px;         /* Adjusts font size */
     border-radius: 4px;      /* Rounds the corners */
     padding: 4px 8px;        /* Reduces padding to decrease button height */
-    width: 120px;            /* Set a fixed width */
-    text-align: center;
+    width: 130px;            /* Set a fixed width */
+    text-align: left;
     line-height: 1.2;        /* Adjusts line height for further control */
     height: auto;
 }
+
+#btn-back{
+    font-size: 14px;         /* Adjusts font size */
+    border-radius: 4px;      /* Rounds the corners */
+    padding: 4px 8px;        /* Reduces padding to decrease button height */
+    width: auto;            /* Set a fixed width */
+    text-align: left;
+    line-height: 1.2;        /* Adjusts line height for further control */
+    height: auto;
+}
+
+
+.table thead#thead th {
+    background-color: #6e7379; 
+    
+    color: rgb(12, 11, 11); 
+}
+
+
+
 
 
 

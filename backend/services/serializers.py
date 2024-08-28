@@ -26,9 +26,50 @@ class ReportUploadSerializer(serializers.ModelSerializer):
         model = Report
         fields= '__all__'
 
-# class ReportViewSerializer(serializers.Mdel)
+    def validate_report_file(self, file):
+        allowed_extensions = ['.pdf', '.jpeg', '.jpg', '.png']
+        file_extension = os.path.splitext(file.name)[1].lower()
+
+        errors = []
+        if file_extension not in allowed_extensions:
+            errors.append("Only PDF, JPEG, JPG, and PNG files are allowed.")
+        
+        if file.size > 15 * 1024 * 1024:  # 15 MB
+            errors.append("File size must be less than 15 MB.")
+        
+        if errors:
+            raise serializers.ValidationError(" ".join(errors))
+        
+        return file
+
+class ReportViewSerializer(serializers.ModelSerializer):
+    patient = PatientSerializer()
+    class Meta:
+        model = Report
+        fields = '__all__'
 
 class PrescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prescription
         fields= '__all__'
+
+class EmailSerializer(serializers.Serializer):
+    subject = serializers.CharField(max_length=255)
+    message = serializers.CharField()
+    recipient = serializers.EmailField()
+    cc = serializers.ListField(
+        child=serializers.EmailField(),
+        required=False,
+        allow_empty=True 
+    )
+    bcc = serializers.ListField(
+        child=serializers.EmailField(),
+        required=False,
+        allow_empty=True
+    )
+
+class FollowUpSerializer(serializers.Serializer):
+    patient_uuid = serializers.CharField()
+    follow_up_date = serializers.DateField()
+
+

@@ -35,21 +35,21 @@ function App() {
     };
   }, []);
 
-  const getRedirectPath = () => {
-    if (accessToken) {
-      if (role === 'doctor') {
-        return '/dashboard/doctor';
-      } else if (role === 'receptionist') {
-        return '/dashboard/receptionist';
-      }
-    }
-    return '/';
-  };
+  // const getRedirectPath = () => {
+  //   if (accessToken) {
+  //     if (role === 'doctor') {
+  //       return '/dashboard/doctor';
+  //     } else if (role === 'receptionist') {
+  //       return '/dashboard/receptionist';
+  //     }
+  //   }
+  //   return '/';
+  // };
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={!accessToken ? <Login /> : <Navigate to={getRedirectPath()} />} />
+        <Route path="/" element={<Login />} />
         <Route exact path='dashboard/' element={<Layouts />}>
           <Route path='receptionist' element={<ReceptionistDashboard />} />
           <Route path='doctor' element={<DoctorDashboard />} />

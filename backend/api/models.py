@@ -7,7 +7,6 @@ from django.db import models
 class Patient(models.Model):
     uuid = models.CharField(max_length=255, unique=True, blank=True)
     full_name = models.CharField(max_length=255)
-    # password = models.CharField(max_length=255)
     age = models.IntegerField()
     email = models.CharField(max_length=255)
     gender = models.CharField(max_length=10)
@@ -17,6 +16,7 @@ class Patient(models.Model):
     contact_no = models.CharField(max_length=20, blank=True, null=True,unique=True)
     joined_on = models.DateField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+    ststus = models.CharField(max_length=20 ,default='active')
 
     def save(self, *args, **kwargs): 
         super().save(*args, **kwargs)
@@ -76,6 +76,7 @@ class CustomUser(AbstractBaseUser):
     email = models.EmailField(unique=True, null=True, blank=True)
     password = models.CharField(max_length=255)
     role = models.CharField(max_length=20, choices=ROLES, null=True, blank=True)
+    status = models.CharField(max_length=20, default='active')
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)  

@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 
 const PatientReg = () => {
     const [formData, setFormData] = useState({
+        uuid: '',
         fullName: '',
         age: '',
         email: '',
@@ -27,6 +28,7 @@ const PatientReg = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const res = axios.post('http://127.0.0.1:8000/api/patients/',{
+            "uuid": formData.uuid,
             "full_name": formData.fullName,
             "age": formData.age,
             "email": formData.email,
@@ -39,6 +41,7 @@ const PatientReg = () => {
 
         alert('Patient Registered')
         setFormData({
+            uuid: '',
             fullName: '',
             age: '',
             email: '',
@@ -60,6 +63,18 @@ const PatientReg = () => {
                         </div>
                         <div className="card-body">
                             <form onSubmit={handleSubmit}>
+                                <div className="form-group">
+                                    <label htmlFor="uuid">UHID</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="uuid"
+                                        name="uuid"
+                                        value={formData.uuid}
+                                        onChange={handleChange}
+                                        placeholder="Enter UHID"
+                                    />
+                                </div>
                                 <div className="form-group">
                                     <label htmlFor="fullName">Full Name</label>
                                     <input
