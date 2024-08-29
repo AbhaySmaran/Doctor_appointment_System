@@ -8,7 +8,7 @@ import {
     FaUserNurse, FaConciergeBell, FaFileAlt, FaClipboard, FaPills
 } from 'react-icons/fa';
 import { MdListAlt, MdMedicalServices, MdUploadFile, MdHistory } from "react-icons/md";
-import { Pie } from 'react-chartjs-2';
+import { Pie,Line,Bar } from 'react-chartjs-2';
 // import {
 //     Chart,
 //     Title,
@@ -19,28 +19,59 @@ import { Pie } from 'react-chartjs-2';
 import Chart from "chart.js/auto"
 
 const ReceptionistDashboard = () => {
-    const [receptionist, setReceptionist] = useState([]);
+    const [user,setUser] = useState([]);
+    const [error,setError] = useState(null);
     const [patientData, setPatientData] = useState({});
     const [totalPatients, setTotalPatients] = useState(0);
     const [genderCounts, setGenderCounts] = useState({ male: 0, female: 0 });
     const access = localStorage.getItem('access')
     const navigate = useNavigate();
-
+    const [lineChartData, setLineChartData] = useState([]);
+    const [fileTypeData, setFileTypeData] = useState({});
+    const [selectedMonth,setSelectedMonth] = useState(new Date().getMonth()+1);
+    const [selectedYear,setSelectedYear] = useState(new Date().getFullYear());
+    // const year = new Date().getFullYear();
+    // const month = new Date().getMonth() + 1;
     const handleNavigation = (path) => {
         navigate(path);
     };
-
+    const role = localStorage.getItem('role');
     useEffect(() => {
         const fetchUser = async () => {
-            const res = await axios.get('http://127.0.0.1:8000/api/receptionist/profile/', {
-                headers: {
-                    "Authorization": `Bearer ${access}`,
-                },
-            });
-            setReceptionist(res.data);
-            if (res.data) {
-                localStorage.setItem('uuid', res.data.uuid);
-                localStorage.setItem('name', res.data.full_name);
+            // const res = await axios.get('http://127.0.0.1:8000/api/receptionist/profile/', {
+            //     headers: {
+            //         "Authorization": `Bearer ${access}`,
+            //     },
+            // });
+            // setReceptionist(res.data);
+            // if (res.data) {
+            //     localStorage.setItem('uuid', res.data.uuid);
+            //     localStorage.setItem('name', res.data.full_name);
+            // }
+            try {
+                let response;
+                if (role === 'super_admin') {
+                    // Fetch data specific to super_admin
+                    response = await axios.get('http://127.0.0.1:8000/api/user/profile/',{
+                            headers: {
+                                "Authorization": `Bearer ${access}`,
+                            },
+                        });
+                } else if (role === 'receptionist') {
+                    // Fetch data specific to receptionist
+                    response = await axios.get(`http://127.0.0.1:8000/api/receptionist/profile/`,{
+                            headers: {
+                                "Authorization": `Bearer ${access}`,
+                            },
+                        });
+                }
+                setUser(res.data);
+                if (res.data) {
+                    localStorage.setItem('uuid', res.data.uuid);
+                    localStorage.setItem('name', res.data.full_name);
+                }
+            } catch (error) {
+                setError(error.message);
             }
         };
 
@@ -75,10 +106,94 @@ const ReceptionistDashboard = () => {
             }
         };
 
+        const fetchLineChartData = async () => {
+            try {
+                const res = await axios.get(`http://127.0.0.1:8000/services/appointments/daily/${selectedYear}/${selectedMonth}/`, {
+                    headers: {
+                        "Authorization": `Bearer ${access}`,
+                    },
+                });
+                console.log(res.data)
+                const dates = res.data.map(item => item.appointment_date);
+                const counts = res.data.map(item =>Math.floor(item.total_appointments));
+
+                setLineChartData({
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Daily Appointments',
+                            data: counts,
+                            borderColor: 'rgba(75,192,192,1)',
+                            fill: false,
+                        },
+                    ],
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true, // Ensure y-axis starts at 0
+                            },
+                            x: {
+                                
+                            }
+                        },
+                    },
+                });
+            } catch (error) {
+                console.error("Error fetching line chart data:", error);
+            }
+        };
+        const fetchFileTypeData = async () => {
+            try {
+                const res = await axios.get('http://127.0.0.1:8000/services/file-extension-stats/', {
+                    headers: {
+                        "Authorization": `Bearer ${access}`,
+                    },
+                });
+
+                const labels = res.data.map(item => item.extension);
+                const data = res.data.map(item => item.count);
+
+                setFileTypeData({
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'File Types',
+                            data: data,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                            ],
+                            borderWidth: 1,
+                        },
+                    ],
+                });
+            } catch (error) {
+                console.error("Error fetching file type data:", error);
+            }
+        };
+
         fetchUser();
         fetchPatientData();
-    }, [access]);
-    const name = localStorage.getItem('name')
+        fetchLineChartData();
+        fetchFileTypeData();
+    }, [access,selectedMonth, selectedYear]);
+
+    const handleYearChange = (e) => {
+        setSelectedYear(e.target.value);
+    };
+
+    const handleMonthChange = (e) => {
+        setSelectedMonth(e.target.value);
+    };
+    // const name = localStorage.getItem('name')
     return (
         <div>
             {/* 1st box: Card total number of patients 
@@ -88,11 +203,11 @@ const ReceptionistDashboard = () => {
             <div className="container mt-5">
                 <div className="row" style={{ cursor: 'pointer' }}>
                     <div className="col-md-4 mb-4">
-                        <div className="card text-center">
+                        <div className="card text-center" id='chart-card'>
                             <div className="card-body">
                                 <h5 className="card-title mt-3">Gender Ratio</h5>
                                 <p>Total Patients: {totalPatients}</p>
-                                <div>
+                                <div id='chart'>
                                     {patientData.datasets ? (
                                         <Pie data={patientData} />
                                     ) : (
@@ -105,18 +220,67 @@ const ReceptionistDashboard = () => {
                         </div>
                     </div>
                     <div className="col-md-4 mb-4">
-                        <div className="card text-center">
+                        <div className="card text-center" id='chart-card'>
                             <div className="card-body">
+                                <h5 className="card-title mt-3">Appointments</h5>
+                                
+                                {/* Dropdowns for Year and Month */}
+                                <div className="d-flex justify-content-center mb-3">
+                                    <select value={selectedYear} onChange={handleYearChange} className="form-select mx-2" style={{ width: '120px' }}>
+                                        {Array.from({ length: 5 }, (_, i) => (
+                                            <option key={i} value={new Date().getFullYear() - i}>
+                                                {new Date().getFullYear() - i}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <select value={selectedMonth} onChange={handleMonthChange} className="form-select mx-2" style={{ width: '120px' }}>
+                                        {Array.from({ length: 12 }, (_, i) => (
+                                            <option key={i + 1} value={i + 1}>
+                                                {new Date(0, i).toLocaleString('en-US', { month: 'long' })}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
 
-                                <h5 className="card-title mt-3">Line chart</h5>
+                                {/* Line Chart */}
+                                <div className='chart'>
+                                    {lineChartData.datasets ? (
+                                        <Line data={lineChartData} />
+                                    ) : (
+                                        <p>Loading chart...</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4 mb-4">
-                        <div className="card text-center">
+                        <div className="card text-center" id='chart-card'>
                             <div className="card-body">
-
-                                <h5 className="card-title mt-3">Bar chart</h5>
+                                <h5 className="card-title mt-3">Reports</h5>
+                                <div className='chart'>
+                                    {fileTypeData.datasets ? (
+                                        <Bar data={fileTypeData} 
+                                            options={{
+                                                scales: {
+                                                    y: {
+                                                        beginAtZero: true,
+                                                        ticks: {
+                                                            callback: (value) => Math.floor(value), // Remove decimal values
+                                                        },
+                                                    },
+                                                },
+                                                layout: {
+                                                    padding: {
+                                                        top: 10, // Adjust the padding to move the chart slightly lower
+                                                        bottom: 20,
+                                                    },
+                                                },
+                                            }}
+                                        />
+                                    ) : (
+                                        <p>Loading chart...</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -176,14 +340,6 @@ const ReceptionistDashboard = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/reports/upload')}>
-                        <div className="card text-center">
-                            <div className="card-body">
-                                <MdUploadFile size={50} />
-                                <h5 className="card-title mt-3">Upload Reports</h5>
-                            </div>
-                        </div>
-                    </div>
                     <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/appointment/history')}>
                         <div className="card text-center">
                             <div className="card-body">
@@ -192,11 +348,11 @@ const ReceptionistDashboard = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/doctor/prescription')}>
+                    <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/configuration')}>
                         <div className="card text-center">
                             <div className="card-body">
-                                <FaPills size={50} />
-                                <h5 className="card-title mt-3">Upload Prescription</h5>
+                                <FaProcedures size={50} />
+                                <h5 className="card-title mt-3">Configuration</h5>
                             </div>
                         </div>
                     </div>

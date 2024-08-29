@@ -49,6 +49,7 @@ const DoctorList = () => {
     const handleUpdate = (doctor) => {
         handleDoctorSelect(doctor);
         setShowUpdateModal(true);
+        fetchDoctors();
     };
 
     const handleDelete = async (doctorId) => {
@@ -179,7 +180,6 @@ const DoctorList = () => {
                                         </button>
                                         <button
                                             className="btn btn-primary btn-sm"
-                                            onClick={() => handleDelete(selectedDoctor.id)}
                                         >
                                             <MdAirplanemodeInactive /> Inactive
                                         </button>

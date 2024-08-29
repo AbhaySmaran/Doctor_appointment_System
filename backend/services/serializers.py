@@ -76,3 +76,7 @@ class FollowUpSerializer(serializers.Serializer):
 class DailyAppointmentsSerializer(serializers.Serializer):
     appointment_date = serializers.DateField()
     total_appointments = serializers.IntegerField()
+
+class FileExtensionCountSerializer(serializers.Serializer):
+    extension = serializers.CharField(max_length=10)
+    count = serializers.IntegerField()

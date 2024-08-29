@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 
 from django.db.models import Count, Func, F
-from django.db.models.functions import TruncMonth,TruncDate
+from django.db.models.functions import TruncMonth,TruncDate,ExtractYear,ExtractMonth,Substr,Right
 # # views.py
 # from django.http import FileResponse, HttpResponseForbidden
 # from django.contrib.auth.decorators import login_required
@@ -51,7 +51,7 @@ class AppointmentHistoryView(APIView):
 class TestViews(APIView):
     def post(self, request, format=None):
         serializer = TestSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({'msg': "New test added"})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -172,24 +172,23 @@ class FollowUpEmailView(APIView):
             return Response({"message": "Follow-up email sent successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class MonthlyAppointmentsView(APIView):
-    def get(self, request):
-        # Annotate each appointment with its month
-        appointments = (Appointment.objects
-                        .annotate(month=TruncMonth('date'))
-                        .values('month')
-                        .annotate(total_appointments=Count('id'))
-                        .order_by('month'))
+# class MonthlyAppointmentsView(APIView):
+#     def get(self, request):
+#         # Annotate each appointment with its month
+#         appointments = (Appointment.objects
+#                         .annotate(month=TruncMonth('date'))
+#                         .values('month')
+#                         .annotate(total_appointments=Count('id'))
+#                         .order_by('month'))
 
-        # Format the response data as a list of dictionaries
-        data = [{'month': item['month'].strftime('%Y-%m'), 'total_appointments': item['total_appointments']} 
-                for item in appointments]
+#         # Format the response data as a list of dictionaries
+#         data = [{'month': item['month'].strftime('%Y-%m'), 'total_appointments': item['total_appointments']} 
+#                 for item in appointments]
 
-        return Response(data)
+#         return Response(data)
     
 class DailyAppointmentsView(APIView):
     def get(self, request, year, month):
-        # Validate year and month
         try:
             year = int(year)
             month = int(month)
@@ -203,7 +202,7 @@ class DailyAppointmentsView(APIView):
         # Generate all dates in the month
         all_dates = [start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1)]
         
-        # Get appointment data
+        # Get appointment data filtering by year and month
         appointments = (Appointment.objects
                         .filter(date__year=year, date__month=month)
                         .annotate(appointment_date=TruncDate('date'))
@@ -211,11 +210,41 @@ class DailyAppointmentsView(APIView):
                         .annotate(total_appointments=Count('id'))
                         .order_by('appointment_date'))
         
-        # Convert appointment data to dictionary for quick lookup
+        # Debugging line to print query results
+        # print("Appointments Query Output:", list(appointments))
+        
         appointments_dict = {item['appointment_date']: item['total_appointments'] for item in appointments}
         
-        # Prepare response data
-        data = [{'date': date.strftime('%Y-%m-%d'), 'total_appointments': appointments_dict.get(date, 0)}
+        data = [{'appointment_date': date.strftime('%Y-%m-%d'), 'total_appointments': appointments_dict.get(date.date(), 0)}
                 for date in all_dates]
         
-        return Response(data)
+        serializer = DailyAppointmentsSerializer(data, many=True)
+        return Response(serializer.data)
+
+
+class FileExtensionStatsView(APIView):
+    def get(self, request, *args, **kwargs):
+        # Extract the last 4 characters of the report_file field to get the extension
+        queryset = Report.objects.annotate(
+            extension=Right('report_file', 4)  # Get the last 4 characters for the file extension
+        ).filter(
+            extension__in=['.pdf', 'jpeg', '.jpg', '.png']  # Filter for allowed extensions
+        ).values('extension').annotate(
+            count=Count('id')
+        )
+
+        # Convert queryset to a list of dictionaries
+        extension_counts = [
+            {'extension': item['extension'], 'count': item['count']}
+            for item in queryset
+        ]
+
+        # Ensure all extensions are represented, even with a count of 0
+        for ext in ['.pdf', 'jpeg', '.jpg', '.png']:
+            if not any(d['extension'] == ext for d in extension_counts):
+                extension_counts.append({'extension': ext, 'count': 0})
+
+        # Use the serializer to serialize the data
+        serializer = FileExtensionCountSerializer(extension_counts, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

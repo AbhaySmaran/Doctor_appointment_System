@@ -89,15 +89,88 @@
     flex-direction: column; /* Aligns buttons vertically */
     gap: 10px;
 }
+.row {
+    --bs-gutter-x: 2.5rem !important;
+    --bs-gutter-y: 0 !important;
+}
 
 .btn-grp .btn {
-    font-size: 14px;         /* Adjusts font size */
-    border-radius: 4px;      /* Rounds the corners */
-    padding: 4px 8px;        /* Reduces padding to decrease button height */
-    width: 130px;            /* Set a fixed width */
+    font-size: 12px;
+    border-radius: 4px;
+    padding: 4px 4px;
+    width: 112px;
     text-align: left;
-    line-height: 1.2;        /* Adjusts line height for further control */
+    line-height: 1.2;
     height: auto;
+}
+
+
+.table thead#thead th {
+    background-color: #d1dae3; 
+    
+    color: rgb(12, 11, 11); 
+}
+
+
+#chart-card {
+    height: 100%; /*Ensure cards take up the full height of their container*/
+    min-height: 250px; /*Set a minimum height to make sure the cards have the same size*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+#chart{
+    height: 200px;
+
+}
+
+
+.table > :not(caption) > * > * {
+    padding: .1rem .1rem !important;
+    color: var(--bs-table-color-state, var(--bs-table-color-type, var(--bs-table-color))) !important;
+    background-color: var(--bs-table-bg) !important;
+    border-bottom-width: var(--bs-border-width) !important;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state, var(--bs-table-bg-type, var(--bs-table-accent-bg))) !important;
+}
+
+p {
+    margin-top: 0 !important;
+    margin-bottom: auto !important;
+}
+
+
+.side-panel .btn-grp {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px; /* Adjust the spacing between buttons as needed */
+}
+
+
+
+@media (max-width: 768px) {
+    .side-panel .btn-grp {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+.btn {
+    display: flex;
+    align-items: center; /* Centers content vertically */
+    justify-content: center; /* Centers content horizontally */
+    padding: 6px 12px; /* Adjusted padding for better alignment */
+    font-size: 12px; /* Adjusted font size */
+    line-height: 1.5; /* Set line-height for vertical alignment */
+    height: auto; /* Remove fixed height to allow content-based height */
+    width: auto; /* Allow width to adjust based on content */
+    text-align: center; /* Center text inside button */
+}
+.btn .icon {
+    font-size: 16px; /* Smaller icon size */
+    margin-right: 4px; /* Space between icon and text */
 }
 
 #btn-back{
@@ -108,13 +181,6 @@
     text-align: left;
     line-height: 1.2;        /* Adjusts line height for further control */
     height: auto;
-}
-
-
-.table thead#thead th {
-    background-color: #6e7379; 
-    
-    color: rgb(12, 11, 11); 
 }
 
 

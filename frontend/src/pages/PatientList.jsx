@@ -9,6 +9,8 @@ import { CiFileOn } from "react-icons/ci";
 import { IoReturnUpBackSharp } from "react-icons/io5";
 // import { set } from 'react-datepicker/dist/date_utils';
 import { SlCalender } from "react-icons/sl"
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const PatientList = () => {
     const user = localStorage.getItem('uuid');
@@ -36,7 +38,7 @@ const PatientList = () => {
     const [test, setTest] = useState('');
     const [allTests, setAllTests] = useState([]);
     const [uploadError, setUploadError] = useState(null);
-    const recordsPerPage = 4;
+    const recordsPerPage = 10;
     const [doctor, setDoctor] = useState('');
     const [doctors, setDoctors] = useState([])
     useEffect(() => {
@@ -125,8 +127,10 @@ const PatientList = () => {
     const handleSubmitUpdate = async () => {
         try {
             await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
-            await fetchPatients();
-            setShowUpdateModal(false);
+            if (window.confirm("Are you sure you want to change status?")){
+                await fetchPatients();
+                setShowUpdateModal(false);
+            }
         } catch (error) {
             console.error('Error updating patient:', error);
         }
@@ -215,6 +219,23 @@ const PatientList = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
+    const handleExport = () => {
+        // Convert the table data to a worksheet
+        const worksheet = XLSX.utils.json_to_sheet(patients);
+    
+        // Create a new workbook and append the worksheet
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    
+        // Write the workbook to a binary array
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    
+        // Save the file
+        const file = new Blob([excelBuffer], { type: 'application/octet-stream' });
+        saveAs(file, 'PatientData.xlsx');
+        alert('Excel file saved');
+      };
+
     return (
         <div>
             <div className='container-fluid position-relative'>
@@ -225,11 +246,18 @@ const PatientList = () => {
                         <IoReturnUpBackSharp /> Back
                     </button>
                 </div>
+                <div className='position-absolute top-0'>
+                    <button className='btn btn-primary' id='btn-back' type='button'
+                        onClick={handleExport}
+                    >
+                        Export CSV
+                    </button>
+                </div>
             </div>
             <br />
             <div className="container-fluid">
                 <div className="row mt-4">
-                    <div className="col-md-8">
+                    <div className="col-md-9">
                         <input
                             type="text"
                             id="search-input"
@@ -285,16 +313,13 @@ const PatientList = () => {
                         </nav>
                     </div>
 
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <div className="side-panel">
                             <h4>Patient Details</h4>
                             {selectedPatient ? (
                                 <div>
-                                    <p><strong>UHID:</strong> {selectedPatient.uuid}</p>
-                                    <p><strong>Name:</strong> {selectedPatient.full_name}</p>
                                     <p><strong>Age:</strong> {selectedPatient.age}</p>
                                     <p><strong>Email:</strong> {selectedPatient.email}</p>
-                                    <p><strong>Gender:</strong> {selectedPatient.gender}</p>
                                     <p><strong>Address:</strong> {selectedPatient.address}</p>
                                     <p><strong>Contact:</strong> {selectedPatient.contact_no}</p>
                                     <div className="btn-grp">

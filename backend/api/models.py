@@ -11,7 +11,7 @@ class Patient(models.Model):
     email = models.CharField(max_length=255)
     gender = models.CharField(max_length=10)
     dob = models.DateField()
-    address = models.CharField(max_length=255, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
     nationality = models.CharField(max_length=255, blank=True, null=True)
     contact_no = models.CharField(max_length=20, blank=True, null=True,unique=True)
     joined_on = models.DateField(auto_now_add=True)
@@ -57,7 +57,8 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_admin', True)  
-        
+        extra_fields.setdefault('role', 'super_admin') 
+         
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
@@ -70,6 +71,7 @@ class CustomUser(AbstractBaseUser):
     ROLES = [
         ('doctor', 'Doctor'),
         ('receptionist', 'Receptionist'),
+        ('super_admin', 'Super Admin'),
     ]
     
     username = models.CharField(max_length=150, unique=True, null=True, blank=True)

@@ -23,11 +23,14 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.patient.full_name} with {self.doctor.full_name}"
-    
+
+
+
 
 class Test(models.Model):
-    test_name = models.CharField(max_length=200)
-    test_code = models.CharField(max_length=10)
+    test_name = models.CharField(max_length=200, unique=True)
+    test_type = models.CharField(max_length = 100)
+    test_code = models.CharField(max_length=10, unique=True)
  
     def __str__(self):
         return self.test_name

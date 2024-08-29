@@ -204,6 +204,12 @@ class ReceptionistProfileView(APIView):
         serializer = ReceptionistProfileSerializer(receptionist)
         return Response(serializer.data)
     
+class UserProfileView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self,request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
 
 
     

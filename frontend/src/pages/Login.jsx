@@ -24,7 +24,7 @@ function Login() {
                 console.log(response.data)
                 if (response.data.role == 'doctor') {
                     navigate('/dashboard/doctor')
-                } else if (response.data.role == 'receptionist') {
+                } else if (response.data.role == 'receptionist' || response.data.role == 'super_admin') {
                     navigate('/dashboard/receptionist')
                 } else {
                     navigate('')

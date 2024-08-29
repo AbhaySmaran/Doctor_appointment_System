@@ -10,7 +10,7 @@ const Sidebar = () => {
     const role = localStorage.getItem('role')
     return (
         <nav id="sidebar" className="col-md-2 d-md-block bg-light sidebar">
-            {role === 'receptionist' ?
+            {role === 'receptionist' || role === 'super_admin' ?
                 <div className="sidebar-sticky">
                     <ul className="nav flex-column">
                         <li className="nav-item">
@@ -68,9 +68,9 @@ const Sidebar = () => {
                             </NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/dashboard/reports/upload">
+                            <NavLink className="nav-link" to="/dashboard/configuration">
                                 <MdUploadFile className="sidebar-icon" />
-                                <span className="sidebar-text">Upload Reports</span>
+                                <span className="sidebar-text">Configurations</span>
                             </NavLink>
                         </li>
                         {/* <li className="nav-item">

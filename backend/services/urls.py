@@ -11,7 +11,7 @@ urlpatterns =[
     path('reports/<str:uuid>/',Patientreports.as_view()),
     path('email/',SendEmailView.as_view()),
     path('follow-up/', FollowUpEmailView.as_view(), name='follow_up_email'),
-    path('appointments/monthly/', MonthlyAppointmentsView.as_view(), name='monthly-appointments'),
     path('appointments/daily/<int:year>/<int:month>/', DailyAppointmentsView.as_view(), name='monthly-appointments'),
+    path('file-extension-stats/', FileExtensionStatsView.as_view(), name='file-extension-stats'),
     # path('protected_static/<str:filename>/', protected_static, name='protected_static'),
 ]
