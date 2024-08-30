@@ -78,31 +78,67 @@ class Report(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+
+def prescription_upload_to(instance, filename):
+    timestamp = int(time.time())    
+    extension = os.path.splitext(filename)[1]    
+    new_filename = f"{instance.doctor.user.username}_{timestamp}{extension}"
+    year = time.strftime('%Y')  # Get the current year
+    return f'prescription_files/{year}/{instance.patient.uuid}/{new_filename}'
+    # return f'prescription_files/{instance.patient.uuid}/{filename}'
+
+
+class Prescription(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, to_field='uuid',on_delete=models.CASCADE)
+    name= models.CharField(max_length=100, blank=True)
+    prescription_file = models.FileField(upload_to=prescription_upload_to)
+    uploaded_on = models.DateTimeField(auto_now_add=True)
+    uploaded_by= models.CharField(max_length=100)
+
+    def clean(self):
+        # Validate file extension
+        allowed_extensions = ['.pdf', '.jpeg', '.jpg', '.png']
+        file_extension = os.path.splitext(self.prescription_file.name)[1].lower()
+        if file_extension not in allowed_extensions:
+            raise ValidationError("Only PDF, JPEG, JPG, and PNG files are allowed.")
+
+        # Validate file size
+        if self.report_file.size > 10 * 1024 * 1024:  # 15 MB
+            raise ValidationError("File size must be less than 10 MB.")
+        
+        # Combined error message if both conditions fail
+        if file_extension not in allowed_extensions and self.report_file.size > 10 * 1024 * 1024:
+            raise ValidationError("Only PDF, JPEG, JPG, and PNG files are allowed and file size must be less than 10 MB.")
+
+    def save(self,*args,**kwargs):
+        super().save(*args,**kwargs)
+        if not self.name:
+            formatted_date = self.uploaded_on.strftime('%Y%M%D_%H%M%S')
+            d_id = self.doctor.full_name
+            file_name = f"{d_id}_{formatted_date}"
+            self.name = file_name
+            self.save(update_fields=['name'])
+
+
+class FollowUpAppointments(models.Model):
+    patient =  models.ForeignKey(Patient, on_delete= models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    followUpDate = models.DateTimeField()
+    booked_on = models.DateField(auto_now_add=True)
+    updated_on = models.DateField(auto_now=True)
+    updated_by = models.CharField(max_length = 100)
+
+
 
 class HospitalVisitLog(models.Model):
     patiend = models.ForeignKey(Patient, to_field='uuid', on_delete=models.CASCADE)
 
 
 
-def prescription_upload_to(instance, filename):
-    return f'prescription_files/{instance.patient.uuid}/{filename}'
 
-class Prescription(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    patient = models.ForeignKey(Patient, to_field='uuid',on_delete=models.CASCADE)
-    name= models.CharField(max_length=100, blank=True)
-    prescription_files = models.FileField(upload_to=prescription_upload_to)
-    uploaded_on = models.DateTimeField(auto_now_add=True)
-    uploaded_by= models.CharField(max_length=100)
-
-    def save(self,*args,**kwargs):
-        super().save(*args,**kwargs)
-        if not self.name:
-            formatted_date = self.uploaded_on.strftime('%Y%M%D_%H%M%S')
-            d_id = self.doctor.doc_uid
-            file_name = f"{d_id}_{formatted_date}"
-            self.name = file_name
-            self.save(update_fields=['name'])
             
 
 

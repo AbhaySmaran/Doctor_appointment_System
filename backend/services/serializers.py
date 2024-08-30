@@ -48,6 +48,27 @@ class ReportViewSerializer(serializers.ModelSerializer):
         model = Report
         fields = '__all__'
 
+class PrescriptionUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Prescription
+        fields = '__all__'
+    
+    def validate_prescription_file(self, file):
+        allowed_extensions = ['.pdf', '.jpeg', '.jpg', '.png']
+        file_extension = os.path.splitext(file.name)[1].lower()
+
+        errors = []
+        if file_extension not in allowed_extensions:
+            errors.append("Only PDF, JPEG, JPG, and PNG files are allowed.")
+        
+        if file.size > 10 * 1024 * 1024:  # 15 MB
+            errors.append("File size must be less than 10 MB.")
+        
+        if errors:
+            raise serializers.ValidationError(" ".join(errors))
+        
+        return file
+
 class PrescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prescription
@@ -77,6 +98,7 @@ class DailyAppointmentsSerializer(serializers.Serializer):
     appointment_date = serializers.DateField()
     total_appointments = serializers.IntegerField()
 
-class FileExtensionCountSerializer(serializers.Serializer):
-    extension = serializers.CharField(max_length=10)
-    count = serializers.IntegerField()
+
+class TestReportSerializer(serializers.Serializer):
+    test_code = serializers.CharField()
+    report_count = serializers.IntegerField()

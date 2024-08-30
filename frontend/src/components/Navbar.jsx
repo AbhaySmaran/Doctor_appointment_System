@@ -23,7 +23,7 @@ const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className='collapse navbar-collapse' id='navbarTogglerDemo01'>
-          <span className="navbar-brand">Clinic Management Portal</span>
+          <span className="navbar-brand">Patient Information System - 1.0</span> 
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item text-nowrap">
               {access_token ? 

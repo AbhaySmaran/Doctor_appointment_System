@@ -1,6 +1,7 @@
 from django.db import models
 import hashlib
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
+import os
 
 from django.db import models
 
@@ -16,7 +17,7 @@ class Patient(models.Model):
     contact_no = models.CharField(max_length=20, blank=True, null=True,unique=True)
     joined_on = models.DateField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=20 ,default='active')
+    status = models.CharField(max_length=20 ,default='Active')
 
     def save(self, *args, **kwargs): 
         super().save(*args, **kwargs)
@@ -109,6 +110,7 @@ class Doctor(models.Model):
     fee = models.IntegerField()
     degree  = models.CharField(max_length = 100, blank=True)
     joined_on = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=15, default='Active')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -126,6 +128,7 @@ class Receptionist(models.Model):
     uuid = models.CharField(max_length=100,blank=True)
     full_name = models.CharField(max_length=100)
     contact_no = models.CharField(max_length=15)
+    status = models.CharField(max_length=15, default='Active')
 
     def save(self, *args, **kwargs):
         super().save(*args,**kwargs)
@@ -136,3 +139,25 @@ class Receptionist(models.Model):
     def __str__(self):
         return self.user.username
 
+def issue_upload_to(instance, filename):
+    timestamp = instance.created_date.strftime('%Y%M%D_%H%M%S')
+    extension = os.path.splitext(filename)[1] 
+    type = instance.Issue_Caption   
+    new_filename = f"{type}_{timestamp}{extension}"
+    return f'support_files/{type}/{new_filename}'
+    # return f'prescription_files/{instance.patient.uuid}/{filename}'
+
+class Support(models.Model):
+    Ticket_id = models.AutoField( primary_key=True)
+    Customer_Name = models.CharField(max_length=100)
+    Customer_ID = models.CharField(max_length=20)
+    Issue_Caption= models.CharField(max_length=50,default='Screen Issue')
+    Issue_Description = models.TextField()
+    Priority = models.CharField(max_length=20, default='low')
+    Status = models.CharField(max_length=20, default='Open')
+    Assigned_to = models.CharField(max_length=50)
+    Comments = models.TextField()
+    Created_Date = models.DateField(auto_now_add=True)
+    Last_Updated_Date = models.DateField(auto_now=True)
+    Resolution_date = models.DateField()
+    Issue_ScreenShot = models.FileField(upload_to=issue_upload_to)

@@ -9,14 +9,8 @@ import {
 } from 'react-icons/fa';
 import { MdListAlt, MdMedicalServices, MdUploadFile, MdHistory } from "react-icons/md";
 import { Pie,Line,Bar } from 'react-chartjs-2';
-// import {
-//     Chart,
-//     Title,
-//     Tooltip,
-//     Legend,
-//     ArcElement // Make sure to import ArcElement
-// } from 'chart.js';
 import Chart from "chart.js/auto"
+import { GiTestTubes } from "react-icons/gi";
 
 const ReceptionistDashboard = () => {
     const [user,setUser] = useState([]);
@@ -27,7 +21,8 @@ const ReceptionistDashboard = () => {
     const access = localStorage.getItem('access')
     const navigate = useNavigate();
     const [lineChartData, setLineChartData] = useState([]);
-    const [fileTypeData, setFileTypeData] = useState({});
+    const [testCatagory,setTestCatagory] = useState('Test');
+    const [reportData,setReportData] = useState({});
     const [selectedMonth,setSelectedMonth] = useState(new Date().getMonth()+1);
     const [selectedYear,setSelectedYear] = useState(new Date().getFullYear());
     // const year = new Date().getFullYear();
@@ -57,6 +52,9 @@ const ReceptionistDashboard = () => {
                                 "Authorization": `Bearer ${access}`,
                             },
                         });
+                        if (response.data) {
+                            localStorage.setItem('name', response.data.username);
+                        }
                 } else if (role === 'receptionist') {
                     // Fetch data specific to receptionist
                     response = await axios.get(`http://127.0.0.1:8000/api/receptionist/profile/`,{
@@ -64,12 +62,12 @@ const ReceptionistDashboard = () => {
                                 "Authorization": `Bearer ${access}`,
                             },
                         });
+                        if (response.data) {
+                            localStorage.setItem('uuid', response.data.uuid);
+                            localStorage.setItem('name', response.data.full_name);
+                        }
                 }
-                setUser(res.data);
-                if (res.data) {
-                    localStorage.setItem('uuid', res.data.uuid);
-                    localStorage.setItem('name', res.data.full_name);
-                }
+                setUser(response.data);
             } catch (error) {
                 setError(error.message);
             }
@@ -142,22 +140,22 @@ const ReceptionistDashboard = () => {
                 console.error("Error fetching line chart data:", error);
             }
         };
-        const fetchFileTypeData = async () => {
+        const fetchReportData = async () => {
             try {
-                const res = await axios.get('http://127.0.0.1:8000/services/file-extension-stats/', {
+                const res = await axios.get(`http://127.0.0.1:8000/services/api/tests/${testCatagory}/`, {
                     headers: {
                         "Authorization": `Bearer ${access}`,
                     },
                 });
 
-                const labels = res.data.map(item => item.extension);
-                const data = res.data.map(item => item.count);
+                const labels = res.data.map(item => item.test_code);
+                const data = res.data.map(item => item.report_count);
 
-                setFileTypeData({
+                setReportData({
                     labels: labels,
                     datasets: [
                         {
-                            label: 'File Types',
+                            label: 'Total Reports',
                             data: data,
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
@@ -183,8 +181,12 @@ const ReceptionistDashboard = () => {
         fetchUser();
         fetchPatientData();
         fetchLineChartData();
-        fetchFileTypeData();
-    }, [access,selectedMonth, selectedYear]);
+        fetchReportData();
+    }, [access,selectedMonth, selectedYear,testCatagory]);
+
+    const handleTestCatagory = (e)=>{
+        setTestCatagory(e.target.value);
+    }
 
     const handleYearChange = (e) => {
         setSelectedYear(e.target.value);
@@ -257,9 +259,15 @@ const ReceptionistDashboard = () => {
                         <div className="card text-center" id='chart-card'>
                             <div className="card-body">
                                 <h5 className="card-title mt-3">Reports</h5>
+                                <div className='d-flex justify-content-center mb-3'>
+                                    <select value={testCatagory} onChange={handleTestCatagory} className="form-select mx-2" style={{ width: '130px' }}>
+                                        <option value='Test'>Test</option>
+                                        <option value='Diagnostic'>Diagnostic</option>
+                                    </select>
+                                </div>
                                 <div className='chart'>
-                                    {fileTypeData.datasets ? (
-                                        <Bar data={fileTypeData} 
+                                    {reportData.datasets ? (
+                                        <Bar data={reportData} 
                                             options={{
                                                 scales: {
                                                     y: {
@@ -272,7 +280,7 @@ const ReceptionistDashboard = () => {
                                                 layout: {
                                                     padding: {
                                                         top: 10, // Adjust the padding to move the chart slightly lower
-                                                        bottom: 20,
+                                                        bottom: 10,
                                                     },
                                                 },
                                             }}
@@ -351,7 +359,7 @@ const ReceptionistDashboard = () => {
                     <div className="col-md-4 mb-4" onClick={() => handleNavigation('/dashboard/configuration')}>
                         <div className="card text-center">
                             <div className="card-body">
-                                <FaProcedures size={50} />
+                                <GiTestTubes size={50} />
                                 <h5 className="card-title mt-3">Configuration</h5>
                             </div>
                         </div>

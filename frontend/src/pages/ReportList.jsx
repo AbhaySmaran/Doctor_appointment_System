@@ -96,10 +96,9 @@ const ReportList = () => {
                         <th>Patient Name</th>
                         <th>Patient UHID</th>
                         <th>Report Name</th>
+                        <th>Download</th>
                         <th>Uploaded On</th>
                         <th>Uploaded By</th>
-                        <th>Download</th>
-                        <th>Report File</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,19 +108,17 @@ const ReportList = () => {
                                 <td>{report.patient.full_name}</td>
                                 <td>{report.patient.uuid}</td>
                                 <td>{report.name}</td>
-                                <td>{new Date(report.uploaded_on).toLocaleString()}</td>
-                                <td>{report.uploaded_by}</td>
                                 <td>
                                     <FaCloudDownloadAlt
-                                        style={{ cursor: 'pointer' }}
+                                        style={{ cursor: 'pointer', marginRight: '10px' }}
                                         onClick={() => handleDownload(report.report_file)}
-                                    />
-                                </td>
-                                <td>
+                                    /> 
                                     <a href={`http://127.0.0.1:8000${report.report_file}`} target="_blank" rel="noopener noreferrer">
                                         View Report
                                     </a>
                                 </td>
+                                <td>{new Date(report.uploaded_on).toLocaleString()}</td>
+                                <td>{report.uploaded_by}</td>
                             </tr>
                         ))
                     ) : (

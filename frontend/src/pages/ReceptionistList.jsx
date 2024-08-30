@@ -62,6 +62,7 @@ const ReceptionistList = () => {
             await axios.put(`http://127.0.0.1:8000/api/receptionists/${formData.id}/`, formData);
             await fetchReceptionists(); // Fetch updated list after update
             setShowUpdateModal(false);
+            fetchReceptionists();
         } catch (error) {
             console.error('Error updating receptionist:', error);
         }

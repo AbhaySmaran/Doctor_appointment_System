@@ -2,7 +2,8 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios';
 import { IoReturnUpBackSharp } from "react-icons/io5";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
+import { TbTestPipe } from "react-icons/tb";
 
 const Tests = () => {
     const [testName, setTestName] = useState('');
@@ -58,7 +59,7 @@ const Tests = () => {
                         <button className='btn btn-primary' id='btn-back'  type='button'
                             onClick={() => setShowAddTestModal(true)}
                         >
-                             Add Configuration
+                            <TbTestPipe /> Test Configuration
                         </button>
                     </div>
                 </div>
@@ -111,7 +112,7 @@ const Tests = () => {
                                         </div>
                                         {error ? <div className="alert alert-danger mt-3">{error.test_name[0]}</div> : " "}
                                         <div className='form-group'>
-                                            <label>Test Type</label>
+                                            <label>Test Categoty</label>
                                             <select
                                                 className='form-control'
                                                 name='test_type'
@@ -119,8 +120,8 @@ const Tests = () => {
                                                 onChange={(e) => setTestType(e.target.value)}
                                             >
                                                 <option value=''>Select test type</option>
-                                                <option value='Laboratory Test'>Laboraty Test</option>
-                                                <option value='Imaging Test'>Imaging Test</option>
+                                                <option value='Test'>Test</option>
+                                                <option value='Diagnostic'>Diagnostic</option>
                                             </select>
                                         </div>
                                         <div className="form-group">

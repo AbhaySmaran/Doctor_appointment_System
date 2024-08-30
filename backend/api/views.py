@@ -211,6 +211,19 @@ class UserProfileView(APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
+class SupportView(APIView):
+    def post(self, request, format=None):
+        serializer = SupportSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg':'An issue occured'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors)
+
+    def get(self, request, format=None):
+        support = Support.objects.all()
+        serializer = SupportSerializer(support, many=True)
+        return Response(serializer.data)
+
 
     
 

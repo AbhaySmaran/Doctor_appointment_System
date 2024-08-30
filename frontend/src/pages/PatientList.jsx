@@ -9,18 +9,22 @@ import { CiFileOn } from "react-icons/ci";
 import { IoReturnUpBackSharp } from "react-icons/io5";
 // import { set } from 'react-datepicker/dist/date_utils';
 import { SlCalender } from "react-icons/sl"
+import { FaFileExport } from "react-icons/fa";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { GrStatusCritical } from "react-icons/gr";
+import { GrStatusGood } from "react-icons/gr";
 
 const PatientList = () => {
-    const user = localStorage.getItem('uuid');
+    const user = localStorage.getItem('name');
     const [patients, setPatients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
-    const [showUploadModal, setShowUploadModal] = useState(false);
+    const [showReportUploadModal, setShowReportUploadModal] = useState(false);
     const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+    const [showPrescriptionUploadModal, setShowPrescriptionUploadModal] = useState(false);
     const [appointmentDate, setAppointmentDate] = useState('')
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [formData, setFormData] = useState({
@@ -121,13 +125,18 @@ const PatientList = () => {
 
     const handleUploadReport = (patient) => {
         handlePatientSelect(patient);
-        setShowUploadModal(true);
+        setShowReportUploadModal(true);
     };
+
+    const handleUploadPrescription = (patient) => {
+        handlePatientSelect(patient);
+        setShowPrescriptionUploadModal(true);
+    }
 
     const handleSubmitUpdate = async () => {
         try {
             await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
-            if (window.confirm("Are you sure you want to change status?")){
+            if (window.confirm("Are you sure you want to change status?")) {
                 await fetchPatients();
                 setShowUpdateModal(false);
             }
@@ -164,7 +173,7 @@ const PatientList = () => {
 
             if (response.status === 201) {
                 alert('Report uploaded')
-                setShowUploadModal(false);
+                setShowReportUploadModal(false);
             }
         } catch (error) {
             if (error.response) {
@@ -175,6 +184,36 @@ const PatientList = () => {
             }
         }
     };
+
+    const handleUploadPrescriptionSubmit = async () => {
+        const reportData = new FormData();
+        reportData.append('patient', formData.uuid);
+        reportData.append('doctor', doctor);
+        reportData.append('prescription_file', reportFile);
+        reportData.append('uploaded_by', user);
+
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/services/upload/prescription/', reportData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 201) {
+                alert('Prescription uploaded')
+                setShowPrescriptionUploadModal(false);
+                setUploadError(null)
+                setDoctor('');
+            }
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data)
+                setUploadError(error.response.data || 'Failed to upload report');
+            } else {
+                setUploadError('An error occurred while uploading the report');
+            }
+        }
+    }
 
     const filteredPatients = patients.filter((patient) => {
         if (patient && patient.full_name) {
@@ -221,20 +260,22 @@ const PatientList = () => {
 
     const handleExport = () => {
         // Convert the table data to a worksheet
+        const date = new Date();
         const worksheet = XLSX.utils.json_to_sheet(patients);
-    
+        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const fileName = `PatientData_${formattedDate}.xlsx`;
         // Create a new workbook and append the worksheet
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    
+
         // Write the workbook to a binary array
         const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    
+
         // Save the file
         const file = new Blob([excelBuffer], { type: 'application/octet-stream' });
-        saveAs(file, 'PatientData.xlsx');
+        saveAs(file, fileName);
         alert('Excel file saved');
-      };
+    };
 
     return (
         <div>
@@ -250,7 +291,7 @@ const PatientList = () => {
                     <button className='btn btn-primary' id='btn-back' type='button'
                         onClick={handleExport}
                     >
-                        Export CSV
+                        <FaFileExport /> Export
                     </button>
                 </div>
             </div>
@@ -277,7 +318,7 @@ const PatientList = () => {
                                         <th>UHID</th>
                                         <th>Name</th>
                                         <th>Gender</th>
-                                        <th>Status</th>
+                                        <th className='text-center'>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -294,7 +335,10 @@ const PatientList = () => {
                                             <td>{patient.uuid}</td>
                                             <td>{patient.full_name}</td>
                                             <td>{patient.gender}</td>
-                                            <td>{patient.status}</td>
+                                            <td className='text-center'>{
+                                                patient.status.toLowerCase() === 'active' ? <GrStatusGood /> : <GrStatusCritical />
+                                            }
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -327,7 +371,7 @@ const PatientList = () => {
                                             className="btn btn-primary btn-sm"
                                             onClick={() => handleUpdate(selectedPatient)}
                                         >
-                                            <FaEdit /> Update
+                                            <FaEdit /> Edit
                                         </button>
                                         <button
                                             className="btn btn-primary btn-sm"
@@ -346,6 +390,18 @@ const PatientList = () => {
                                             onClick={() => handleUploadReport(selectedPatient)}
                                         >
                                             <FaFileUpload /> Upload Report
+                                        </button>
+                                        <button
+                                            className="btn btn-primary btn-sm"
+                                            onClick={() => handleUploadPrescription(selectedPatient)}
+                                        >
+                                            <CiFileOn /> Upload Prescription
+                                        </button>
+                                        <button
+                                            className="btn btn-primary btn-sm"
+                                            onClick={() => handleViewReport(selectedPatient)}
+                                        >
+                                            <CiFileOn /> View Prescription
                                         </button>
                                         <button
                                             className="btn btn-primary btn-sm"
@@ -379,68 +435,84 @@ const PatientList = () => {
                                         <span>&times;</span>
                                     </button>
                                 </div>
-                                <div className="modal-body">
+                                <div className="modal-body" >
                                     <form>
-                                        <div className="form-group">
-                                            <label>Name</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={formData.full_name}
-                                                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                                            />
+                                        <div className='row'>
+                                            <div className='col-md-4'>
+                                                <div className="form-group">
+                                                    <label>Name</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        value={formData.full_name}
+                                                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className='col-md-4'>
+                                                <div className="form-group">
+                                                    <label>Age</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        value={formData.age}
+                                                        onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className='col-md-4'>
+                                                <div className="form-group">
+                                                    <label>Gender</label>
+                                                    <select
+                                                        className="form-control"
+                                                        value={formData.gender}
+                                                        onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                                                    >
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="form-group">
-                                            <label>Age</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={formData.age}
-                                                onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                                            />
+                                        <div className="row aligns-item-center">
+                                            <div className='col-md-2'><label>Email</label></div>
+                                            <div className='col-md-10'>
+                                                <input
+                                                    type="email"
+                                                    className="form-control"
+                                                    value={formData.email}
+                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="form-group">
-                                            <label>Email</label>
-                                            <input
-                                                type="email"
-                                                className="form-control"
-                                                value={formData.email}
-                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            />
+                                        <br />
+                                        <div className="row aligns-item-center">
+                                            <div className='col-md-2'><label >Contact</label></div>
+                                            <div className='col-md-10'>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={formData.contact_no}
+                                                    onChange={(e) => setFormData({ ...formData, contact_no: e.target.value })}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="form-group">
-                                            <label>Gender</label>
-                                            <select
-                                                className="form-control"
-                                                value={formData.gender}
-                                                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                                            >
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Address</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={formData.address}
-                                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Contact No.</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={formData.contact_no}
-                                                onChange={(e) => setFormData({ ...formData, contact_no: e.target.value })}
-                                            />
+                                        <br/>
+                                        <div className="row aligns-item-center">
+                                            <div className='col-md-2'><label>Address</label></div>
+                                            <div className='col-md-10'>
+                                                <textarea
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={formData.address}
+                                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                                />
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowUpdateModal(false)}>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>
                                         Cancel
                                     </button>
                                     <button type="button" className="btn btn-primary" onClick={handleSubmitUpdate}>
@@ -453,13 +525,13 @@ const PatientList = () => {
                 )}
 
                 {/* Upload Report Modal */}
-                {showUploadModal && (
+                {showReportUploadModal && (
                     <div className="modal show" style={{ display: 'block' }}>
                         <div className="modal-dialog">
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h5 className="modal-title">Upload Report</h5>
-                                    <button type="button" className="close" onClick={() => setShowUploadModal(false)}>
+                                    <button type="button" className="close" onClick={() => setShowReportUploadModal(false)}>
                                         <span>&times;</span>
                                     </button>
                                 </div>
@@ -492,7 +564,7 @@ const PatientList = () => {
                                     {uploadError ? <div className="alert alert-danger mt-3">{uploadError.report_file}</div> : " "}
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowUploadModal(false)}>
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowReportUploadModal(false)}>
                                         Cancel
                                     </button>
                                     <button type="button" className="btn btn-primary" onClick={handleReportUpload}>
@@ -553,7 +625,7 @@ const PatientList = () => {
                                 <div className="modal-body">
                                     <form>
                                         <div className='form-group'>
-                                            <label>Doctor Name</label>
+                                            <label>Doctor's Name</label>
                                             <select
                                                 className='form-control'
                                                 name='doctor'
@@ -561,7 +633,7 @@ const PatientList = () => {
                                                 value={doctor}
                                                 onChange={(e) => setDoctor(e.target.value)}
                                             >
-                                                <option value=''>Select Doctors Name</option>
+                                                <option value=''>Select Doctor's Name</option>
                                                 {doctors.map((doctor => (
                                                     <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
                                                 )))}
@@ -637,6 +709,52 @@ const PatientList = () => {
                                     <button type="button" className="btn btn-secondary" onClick={() => setShowStatusModal(false)}>
                                         Close
                                     </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {showPrescriptionUploadModal && (
+                    <div className='modal show' style={{ display: 'block' }}>
+                        <div className='modal-dialog'>
+                            <div className='modal-content'>
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Upload Prescription</h5>
+                                    <button type="button" className="close" onClick={() => setShowPrescriptionUploadModal(false)}>
+                                        &times;
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <form>
+                                        <div className='form-group'>
+                                            <label>Doctor's Name</label>
+                                            <select
+                                                className='form-control'
+                                                name='doctor'
+                                                id='doctor'
+                                                value={doctor}
+                                                onChange={(e) => setDoctor(e.target.value)}
+                                            >
+                                                <option value=''>Select Doctor's Name</option>
+                                                {doctors.map((doctor => (
+                                                    <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
+                                                )))}
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Prescription File</label>
+                                            <input
+                                                type="file"
+                                                className="form-control-file"
+                                                onChange={(e) => setReportFile(e.target.files[0])}
+                                            />
+                                        </div>
+                                    </form>
+                                    {uploadError ? <div className="alert alert-danger mt-3">{uploadError.report_file}</div> : " "}
+                                </div>
+                                <div className='modal-footer'>
+                                    <button className='btn btn-primary' onClick={handleUploadPrescriptionSubmit}>Upload</button>
+                                    <button className='btn btn-primary' onClick={(e) => setShowPrescriptionUploadModal(false)}>Cancel</button>
                                 </div>
                             </div>
                         </div>

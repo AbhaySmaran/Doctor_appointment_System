@@ -69,6 +69,10 @@ class ReceptionistProfileSerializer(serializers.ModelSerializer):
         model = Receptionist
         fields = '__all__'
 
+class SupportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Support
+        fields = '__all__'
 
 
 
