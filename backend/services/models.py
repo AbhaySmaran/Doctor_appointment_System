@@ -135,8 +135,7 @@ class FollowUpAppointments(models.Model):
 
 
 
-class HospitalVisitLog(models.Model):
-    patiend = models.ForeignKey(Patient, to_field='uuid', on_delete=models.CASCADE)
+
 
 
 

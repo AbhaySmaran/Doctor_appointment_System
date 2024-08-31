@@ -18,11 +18,13 @@ const AppointmentHistory = () => {
     const [showRescheduleModal, setShowRescheduleModal] = useState(false);
     // const today = useState(new Date()); // Initialize with today's date
     const [showStatusModal, setShowStatusModal] = useState(false);
+    const [showFollowUpDateModal,setFollowUpDateModal] = useState(false);
     const [uploadError, setUploadError] = useState(null);
     const [reportFile, setReportFile] = useState(null);
     const [followUpDate,setFollowUpDate] = useState(null)
     const [formData, setFormData] = useState({
         id: '',
+        patient_id: '',
         patient_uuid: '',
         doctor_id: '',
         doctor_name: '',
@@ -39,6 +41,7 @@ const AppointmentHistory = () => {
         setSelectedAppointment(appointment);
         setFormData({
             id: appointment.id,
+            patient_id: appointment.patient.id,
             patient_uuid: appointment.patient.uuid,
             doctor_id: appointment.doctor.id,
             doctor_name: appointment.doctor.full_name,
@@ -105,7 +108,7 @@ const AppointmentHistory = () => {
                 alert('Prescription uploaded');
                 setShowPrescriptionUploadModal(false);
                 setUploadError(null);
-                setMessege('');
+                setMessage('');
             }
         } catch (error) {
             setUploadError(error.response?.data || 'An error occurred while uploading the report');
@@ -387,6 +390,35 @@ const AppointmentHistory = () => {
             )}
 
             {showRescheduleModal && (
+                <div className="modal show" style={{ display: 'block' }}>
+                    <div className='modal-dialog'>
+                        <div className='modal-content'>
+                            <div className='modal-header'>
+                                <h5 className="modal-title">Reschedule Appointment</h5>
+                                <button type="button" className="close" onClick={() => setShowRescheduleModal(false)}>
+                                    &times;
+                                </button>
+                            </div>
+                            <div className='modal-body'>
+                                <h3>Reschedule Appointment</h3>
+                                <DatePicker
+                                    selected={followUpDate}
+                                    onChange={(date) => setFollowUpDate(date)}
+                                    minDate={new Date()} // Disable past dates and today
+                                    dateFormat="yyyy-MM-dd"
+                                    className="form-control"
+                                />
+                            </div>
+                            <div className='modal-footer'>
+                                <button className='btn btn-primary' onClick={handleRescheduleSubmit}>Submit</button>
+                                <button className='btn btn-primary' onClick={() => setShowRescheduleModal(false)}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+    {showFollowupModal && (
                 <div className="modal show" style={{ display: 'block' }}>
                     <div className='modal-dialog'>
                         <div className='modal-content'>

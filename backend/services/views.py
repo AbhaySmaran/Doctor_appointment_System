@@ -36,7 +36,7 @@ class AppointmentBookView(APIView):
         # contact = request.data.get('contact')
         # patient = Patient.objects.filter(contact_no = contact)
         serializer = AppointmentSerializer( data= request.data) 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({"msg": "Appointment booked"}) 
         return Response(serializer.errors)
@@ -339,3 +339,18 @@ class TestReportCountAPIView(APIView):
         
         # If no tests are found, return a 404 Not Found response
         return Response({"detail": "No tests found for the specified test_type."}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+class FollowUpAppointmentView(APIView):
+    def post(self, request, format=None):
+        serializer = FollowUpAppointmentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'msg':'Follow up date generated'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors)
+    
+    def get(self, request, format=None):
+        followUpAppointments = FollowUpAppointments.objects.all()
+        serializer = FollowUpAppointmentSerializer(followUpAppointments)
+        return Response(serializer.data)

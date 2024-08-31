@@ -84,7 +84,7 @@ class PatientView(APIView):
         if id is not None:
             patient = Patient.objects.get(id=id)
             serializer = PatientSerializer(patient, data=request.data, partial=True)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response({"msg": "Data updated successfully"})
             return Response(serializer.errors)
@@ -116,14 +116,14 @@ class UserRegistrationView(APIView):
         role = user_data.get('role')
 
         user_serializer = UserSerializer(data=user_data)
-        if user_serializer.is_valid():
+        if user_serializer.is_valid(raise_exception=True):
             user = user_serializer.save()
 
             if role == 'doctor':
                 doctor_data = user_data.get('doctor', {})
                 doctor_data['user'] = user.id
                 doctor_serializer = DoctorSerializer(data=doctor_data)
-                if doctor_serializer.is_valid():
+                if doctor_serializer.is_valid(raise_exception=True):
                     doctor_serializer.save(user=user)
                 else:
                     return Response(doctor_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -131,7 +131,7 @@ class UserRegistrationView(APIView):
                 receptionist_data = user_data.get('receptionist', {})
                 receptionist_data['user'] = user.id
                 receptionist_serializer = ReceptionistSerializer(data=receptionist_data)
-                if receptionist_serializer.is_valid():
+                if receptionist_serializer.is_valid(raise_exception=True):
                     receptionist_serializer.save(user=user)
                 else:
                     return Response(receptionist_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

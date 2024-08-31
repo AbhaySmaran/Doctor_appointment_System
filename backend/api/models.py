@@ -22,7 +22,7 @@ class Patient(models.Model):
 
     def save(self, *args, **kwargs): 
         super().save(*args, **kwargs)
-        if not self.uuid:
+        if (self.uuid == '' or not self.uuid):
             unique_id = f"P{self.dob.strftime('%Y%m%d')}{self.id}"
             Patient.objects.filter(id=self.id).update(uuid=unique_id)
 

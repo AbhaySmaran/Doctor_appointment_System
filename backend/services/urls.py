@@ -17,5 +17,6 @@ urlpatterns =[
     path('appointments/history/<int:year>/', AppointmentListView.as_view(), name='appointment-history-year'),  # Filter by year
     path('appointments/history/<int:year>/<int:month>/', AppointmentListView.as_view(), name='appointment-history-month'),  # Filter by year and month
     path('appointments/history/<int:year>/<int:month>/<int:day>/', AppointmentListView.as_view(), name='appointment-history-day'),
+    path('appointments/followup/', FollowUpAppointmentView.as_view()),
     # path('protected_static/<str:filename>/', protected_static, name='protected_static'),
 ]

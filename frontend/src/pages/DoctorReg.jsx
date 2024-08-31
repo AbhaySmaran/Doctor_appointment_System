@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const DoctorReg = () => {
     const navigate = useNavigate();
+    const [error,setError] = useState(null)
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -36,32 +37,36 @@ const DoctorReg = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const res = axios.post('http://127.0.0.1:8000/api/register/user/', {
-            "email": formData.email,
-            "username": formData.username,
-            "password": formData.password,
-            "role": "doctor",
-            "doctor": {
-                "full_name": formData.fullName,
-                "department": formData.department,
-                "contact": formData.contactNo,
-                "specialization": formData.specialization,
-                "fee": formData.fee,
-                "degree": formData.degree
-            }
-        })
-        alert("Doctor registered")
-        setFormData({
-            fullName: '',
-            email: '',
-            username: '',
-            password: '',
-            department: '',
-            specialization: '',
-            degree: '',
-            contactNo: '',
-            fee: '',
-        })
+        try{
+            const res = axios.post('http://127.0.0.1:8000/api/register/user/', {
+                "email": formData.email,
+                "username": formData.username,
+                "password": formData.password,
+                "role": "doctor",
+                "doctor": {
+                    "full_name": formData.fullName,
+                    "department": formData.department,
+                    "contact": formData.contactNo,
+                    "specialization": formData.specialization,
+                    "fee": formData.fee,
+                    "degree": formData.degree
+                }
+            })
+            alert("Doctor registered")
+            setFormData({
+                fullName: '',
+                email: '',
+                username: '',
+                password: '',
+                department: '',
+                specialization: '',
+                degree: '',
+                contactNo: '',
+                fee: '',
+            })
+        }catch(error){
+            setError(error.response.data)
+        }
     };
 
     return (
@@ -84,59 +89,65 @@ const DoctorReg = () => {
                                 <h4 className="card-title">Doctor Registration</h4>
                             </div>
                             <div className="card-body">
-                                <form onSubmit={handleSubmit}>
+                                <form onSubmit={handleSubmit} className='needs-validation'>
                                     <div className="form-group">
                                         <label htmlFor="fullName">Full Name</label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className={`form-control ${error.full_name ? "is-invalid" : ""}`}
                                             id="fullName"
                                             name="fullName"
                                             value={formData.fullName}
                                             onChange={handleChange}
                                             placeholder="Enter full name"
                                         />
+                                        <div className='invalid-feedback'>{error.full_name && <p>{error.full_name}</p>}</div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="email">Email</label>
                                         <input
                                             type="email"
-                                            className="form-control"
+                                            className={`form-control ${error.email ? "is-invalid" : ""}`}
                                             id="email"
                                             name="email"
                                             value={formData.email}
                                             onChange={handleChange}
                                             placeholder="Enter email"
                                         />
+                                        <div className='invalid-feedback'>{error.email && <p>{error.email}</p>}</div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="email">Username</label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className={`form-control ${erroe.username ? "is-invalid" : ""}`}
                                             id="username"
                                             name="username"
                                             value={formData.username}
                                             onChange={handleChange}
                                             placeholder="Enter username"
                                         />
+                                        <div className='invalid-feedback'>{error.username && <p>{error.username}</p>}</div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="email">Password</label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className={`form-control ${error.password ? 'is-invalid' : ""}`}
                                             id="password"
                                             name="password"
                                             value={formData.password}
                                             onChange={handleChange}
                                             placeholder="Enter password"
                                         />
+                                        <div className='invalid-feedback'>
+                                            {error.password && <p>{error.password}</p>}
+                                        </div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="gender">Department Name</label>
                                         <select
-                                            className="form-control"
+                                            className={`form-control ${error.department ? 'is-invalid' : ''}`}
                                             id="department"
                                             name="department"
                                             value={formData.department}
@@ -147,12 +158,15 @@ const DoctorReg = () => {
                                                 <option value={department.id}>{department.dept_name}</option>
                                             ))}
                                         </select>
+                                        <div className='invalid-feedback'>
+                                            {error.department && <p>{error.department}</p>}
+                                        </div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="specialization">Specialization</label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className={`"form-control"`}
                                             id="specialization"
                                             name="specialization"
                                             value={formData.specialization}

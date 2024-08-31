@@ -42,7 +42,7 @@ const PatientList = () => {
     const [reportFile, setReportFile] = useState(null);
     const [test, setTest] = useState('');
     const [allTests, setAllTests] = useState([]);
-    const [uploadError, setUploadError] = useState(null);
+    const [uploadError, setUploadError] = useState('');
     const recordsPerPage = 10;
     const [doctor, setDoctor] = useState('');
     const [doctors, setDoctors] = useState([])
@@ -115,6 +115,7 @@ const PatientList = () => {
             }
         } catch (error) {
             console.error('Error updating patient Status:', error);
+            setUploadError(error.response.data)
         }
     };
 
@@ -146,6 +147,7 @@ const PatientList = () => {
                 setShowUpdateModal(false);
             }
         } catch (error) {
+            setUploadError(error.response.data)
             console.error('Error updating patient:', error);
         }
     };
@@ -157,9 +159,13 @@ const PatientList = () => {
         reportData.append('date', appointmentDate);
         reportData.append('uploaded_by', user)
 
-        const res = await axios.post('http://127.0.0.1:8000/services/appointment/book/', reportData)
-        alert('Appointment Booked')
-        setShowAppointmentModal(false);
+        try{
+            const res = await axios.post('http://127.0.0.1:8000/services/appointment/book/', reportData)
+            setShowAppointmentModal(false);
+        }catch(error){
+            setUploadError(error.response.data);
+            console.log(error.response.data);
+        }
     }
 
     const handleReportUpload = async () => {
@@ -442,17 +448,20 @@ const PatientList = () => {
                                     </button>
                                 </div>
                                 <div className="modal-body" >
-                                    <form>
+                                    <form className='needs-validation'>
                                         <div className='row'>
                                             <div className='col-md-4'>
                                                 <div className="form-group">
                                                     <label>Name</label>
                                                     <input
                                                         type="text"
-                                                        className="form-control"
+                                                        className={`form-control ${uploadError.full_name ? 'is-invalid' : ''}`}
                                                         value={formData.full_name}
                                                         onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                                                     />
+                                                    <div className='invalid-feedback'>
+                                                        {uploadError.full_name && <p>{uploadError.full_name}</p>}
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className='col-md-4'>
@@ -460,10 +469,13 @@ const PatientList = () => {
                                                     <label>Age</label>
                                                     <input
                                                         type="text"
-                                                        className="form-control"
+                                                        className={`form-control ${uploadError.age ? 'is-invalid' : ''}`}
                                                         value={formData.age}
                                                         onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                                                     />
+                                                    <div className='invalid-feedback'>
+                                                        {uploadError.age && <p>{uploadError.age}</p>}
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className='col-md-4'>
@@ -485,22 +497,28 @@ const PatientList = () => {
                                             <div className='col-md-10'>
                                                 <input
                                                     type="email"
-                                                    className="form-control"
+                                                    className={`form-control ${uploadError.email ? 'is-invalid': ''}`}
                                                     value={formData.email}
                                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                                 />
                                             </div>
+                                            <div className="invalid-feedback">{uploadError && <p>{uploadError.email}</p>}</div>
                                         </div>
                                         <br />
                                         <div className="row aligns-item-center">
                                             <div className='col-md-2'><label >Contact</label></div>
                                             <div className='col-md-10'>
                                                 <input
-                                                    type="text"
-                                                    className="form-control"
+                                                    type="number"
+                                                    className={`form-control ${uploadError.contact_no ? 'is-invalid' : ""}`}
                                                     value={formData.contact_no}
                                                     onChange={(e) => setFormData({ ...formData, contact_no: e.target.value })}
+                                                    min='10'
+                                                    max="15"
                                                 />
+                                            </div>
+                                            <div className='invalid-feedback'>
+                                                {uploadError.contact_no && <p>{uploadError.contact_no}</p>}
                                             </div>
                                         </div>
                                         <br/>
@@ -546,7 +564,7 @@ const PatientList = () => {
                                         <div className="form-group">
                                             <label>Test</label>
                                             <select
-                                                className="form-control"
+                                                className={`form-control ${uploadError.test ? 'is-invalid' : ""}`}
                                                 value={test}
                                                 onChange={(e) => setTest(e.target.value)}
                                             >
@@ -557,6 +575,9 @@ const PatientList = () => {
                                                     </option>
                                                 ))}
                                             </select>
+                                            <div className='invalid-feedback'>
+                                                {uploadError.test && <p>{uploadError.test}</p>}
+                                            </div>
                                         </div>
                                         <div className='form-group'>
                                             <label>Message</label>
@@ -570,13 +591,15 @@ const PatientList = () => {
                                         <div className="form-group">
                                             <label>Report File</label>
                                             <input
+                                                className= {`form-control ${uploadError.report_file  ? "is-invalid" : ""}`}
                                                 type="file"
-                                                className="form-control-file"
                                                 onChange={(e) => setReportFile(e.target.files[0])}
                                             />
+                                            <div className='invalid-feedback'>
+                                                {uploadError.report_file ? <p>{uploadError.report_file}</p> : "" }
+                                            </div>
                                         </div>
                                     </form>
-                                    {uploadError ? <div className="alert alert-danger mt-3">{uploadError.report_file}</div> : " "}
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" onClick={() => setShowReportUploadModal(false)}>
@@ -638,11 +661,11 @@ const PatientList = () => {
                                     </button>
                                 </div>
                                 <div className="modal-body">
-                                    <form>
+                                    <form className='needs-validation'>
                                         <div className='form-group'>
                                             <label>Doctor's Name</label>
                                             <select
-                                                className='form-control'
+                                                className={`form-control ${uploadError.doctor ? 'is-invalid' : ''}`}
                                                 name='doctor'
                                                 id='doctor'
                                                 value={doctor}
@@ -653,16 +676,23 @@ const PatientList = () => {
                                                     <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
                                                 )))}
                                             </select>
+                                            <div className='invalid-feedback'>
+                                                {uploadError.doctor && <p>{uploadError.doctor}</p>}
+                                            </div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor='date'>Appointment Date</label>
                                             <input
                                                 type='date'
+                                                className={`form-control ${uploadError.date ? 'is-invalid' : ''}` }
                                                 name='date'
                                                 id='date'
                                                 value={appointmentDate}
                                                 onChange={(e) => setAppointmentDate(e.target.value)}
                                             />
+                                            <div className='invalid-feedback'>
+                                                <p>Choose a Date</p>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>

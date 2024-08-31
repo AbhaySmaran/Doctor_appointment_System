@@ -104,3 +104,8 @@ class DailyAppointmentsSerializer(serializers.Serializer):
 class TestReportSerializer(serializers.Serializer):
     test_code = serializers.CharField()
     report_count = serializers.IntegerField()
+
+class FollowUpAppointmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FollowUpAppointments
+        fields = '__all__'
