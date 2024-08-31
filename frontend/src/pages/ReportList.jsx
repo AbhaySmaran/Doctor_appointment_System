@@ -91,11 +91,12 @@ const ReportList = () => {
             />
             <h2>Reports List</h2>
             <table className="table table-striped table-light">
-                <thead className='thead-dark'>
+                <thead className='thead'>
                     <tr>
                         <th>Patient Name</th>
                         <th>Patient UHID</th>
                         <th>Report Name</th>
+                        {/* <th>Messege</th> */}
                         <th>Download</th>
                         <th>Uploaded On</th>
                         <th>Uploaded By</th>
@@ -105,21 +106,35 @@ const ReportList = () => {
                     {filteredReports.length > 0 ? (
                         filteredReports.map((report) => (
                             <tr key={report.id}>
-                                <td>{report.patient.full_name}</td>
-                                <td>{report.patient.uuid}</td>
-                                <td>{report.name}</td>
+                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
+                                    {report.patient.full_name}
+                                </td>
+                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
+                                    {report.patient.uuid}
+                                </td>
+                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
+                                    {report.name}
+                                </td>
+                                {/* <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
+                                    {report.message}
+                                </td> */}
                                 <td>
                                     <FaCloudDownloadAlt
                                         style={{ cursor: 'pointer', marginRight: '10px' }}
                                         onClick={() => handleDownload(report.report_file)}
-                                    /> 
+                                    />
                                     <a href={`http://127.0.0.1:8000${report.report_file}`} target="_blank" rel="noopener noreferrer">
                                         View Report
                                     </a>
                                 </td>
-                                <td>{new Date(report.uploaded_on).toLocaleString()}</td>
-                                <td>{report.uploaded_by}</td>
+                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
+                                    {new Date(report.uploaded_on).toLocaleString()}
+                                </td>
+                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
+                                    {report.uploaded_by}
+                                </td>
                             </tr>
+
                         ))
                     ) : (
                         <tr>

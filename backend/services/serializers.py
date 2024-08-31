@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import *
-from api.serializers import PatientSerializer,DoctorViewSerializer
+from api.serializers import *
 from api.models import *
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -70,6 +70,8 @@ class PrescriptionUploadSerializer(serializers.ModelSerializer):
         return file
 
 class PrescriptionSerializer(serializers.ModelSerializer):
+    patient=PatientSerializer()
+    doctor = DoctorViewSerializer()
     class Meta:
         model = Prescription
         fields= '__all__'

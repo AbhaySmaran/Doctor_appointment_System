@@ -44,7 +44,7 @@ class AppointmentBookView(APIView):
 
 class AppointmentHistoryView(APIView):
     def get(self, request,id=None, format=None):
-        appointments = Appointment.objects.all()
+        appointments = Appointment.objects.all().order_by('status','date')
         serializer = AppointmentViewSerializer(appointments, many=True)
         if id is not None:
             appointment = Appointment.objects.get(pk=id)
@@ -57,7 +57,7 @@ class AppointmentHistoryView(APIView):
             serializer = AppointmentViewSerializer(appointment, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                return Response({"msg": 'Appointment Rescheduled'}, status=status.HTTP_200_OK)
+                return Response({"msg": 'Appointment Updated'}, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 
     
@@ -124,7 +124,7 @@ class TestViews(APIView):
 class ReportUploadView(APIView):
     def post(self, request, format=None):
         serializer = ReportUploadSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({'msg': 'Report Uploaded Successfully'}, status = status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -144,7 +144,7 @@ class Patientreports(APIView):
 
 class PrescriptionUploadView(APIView):
     def post(self,request,format=None):
-        serializer = PrescriptionSerializer(data=request.data)
+        serializer = PrescriptionUploadSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({"msg": "Prescription uploded succesfully"}, status= status.HTTP_201_CREATED)

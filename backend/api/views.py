@@ -214,7 +214,7 @@ class UserProfileView(APIView):
 class SupportView(APIView):
     def post(self, request, format=None):
         serializer = SupportSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({'msg':'An issue occured'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors)
@@ -223,6 +223,14 @@ class SupportView(APIView):
         support = Support.objects.all()
         serializer = SupportSerializer(support, many=True)
         return Response(serializer.data)
+
+    def put(self,request,id, format=None):
+        issue = Support.objects.get(Ticket_id=id)
+        serializer = SupportSerializer(issue, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'msg':'Status updadted'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors)
 
 
     

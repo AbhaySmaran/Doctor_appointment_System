@@ -50,6 +50,7 @@ class Report(models.Model):
     uploaded_on = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.CharField(max_length=50, blank=True)
     year = models.IntegerField(blank=True, null=True)
+    message = models.TextField(blank=True)
 
     def clean(self):
         # Validate file extension
@@ -97,6 +98,7 @@ class Prescription(models.Model):
     prescription_file = models.FileField(upload_to=prescription_upload_to)
     uploaded_on = models.DateTimeField(auto_now_add=True)
     uploaded_by= models.CharField(max_length=100)
+    message = models.TextField(blank=True)
 
     def clean(self):
         # Validate file extension

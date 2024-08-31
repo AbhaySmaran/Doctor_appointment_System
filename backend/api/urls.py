@@ -15,4 +15,6 @@ urlpatterns=[
     # path('receptionist/login/',ReceptionistLoginView.as_view()),
     path('receptionist/profile/',ReceptionistProfileView.as_view()), 
     path('user/profile/',UserProfileView.as_view()),
+    path('issue/support/',SupportView.as_view()),
+    path('issue/support/<int:id>/',SupportView.as_view()),
 ]

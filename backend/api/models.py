@@ -2,7 +2,8 @@ from django.db import models
 import hashlib
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 import os
-
+import time
+from django.core.exceptions import ValidationError
 from django.db import models
 
 class Patient(models.Model):
@@ -140,11 +141,11 @@ class Receptionist(models.Model):
         return self.user.username
 
 def issue_upload_to(instance, filename):
-    timestamp = instance.created_date.strftime('%Y%M%D_%H%M%S')
-    extension = os.path.splitext(filename)[1] 
-    type = instance.Issue_Caption   
-    new_filename = f"{type}_{timestamp}{extension}"
-    return f'support_files/{type}/{new_filename}'
+    # timestamp = instance.Created_Date.strftime('%Y%M%D_%H%M%S')
+    timestamp = int(time.time())
+    extension = os.path.splitext(filename)[1]    
+    new_filename = f"{instance.Issue_Caption}_{timestamp}{extension}"
+    return f'support_files/{instance.Issue_Caption}/{new_filename}'
     # return f'prescription_files/{instance.patient.uuid}/{filename}'
 
 class Support(models.Model):
@@ -155,9 +156,25 @@ class Support(models.Model):
     Issue_Description = models.TextField()
     Priority = models.CharField(max_length=20, default='low')
     Status = models.CharField(max_length=20, default='Open')
-    Assigned_to = models.CharField(max_length=50)
-    Comments = models.TextField()
+    Assigned_to = models.CharField(max_length=50,blank=True)
+    Comments = models.TextField(blank=True)
+    created_by = models.CharField(max_length=50,blank=True)
     Created_Date = models.DateField(auto_now_add=True)
     Last_Updated_Date = models.DateField(auto_now=True)
-    Resolution_date = models.DateField()
-    Issue_ScreenShot = models.FileField(upload_to=issue_upload_to)
+    Resolution_date = models.DateField(blank=True, null=True)
+    Issue_ScreenShot = models.FileField(blank=True,upload_to=issue_upload_to)
+
+    def clean(self):
+        # Validate file extension
+        allowed_extensions = ['.jpeg', '.jpg', '.png']
+        file_extension = os.path.splitext(self.report_file.name)[1].lower()
+        if file_extension not in allowed_extensions:
+            raise ValidationError("Only JPEG, JPG, and PNG files are allowed.")
+
+        # Validate file size
+        if self.report_file.size > 10 * 1024 * 1024:  # 15 MB
+            raise ValidationError("File size must be less than 15 MB.")
+        
+        # Combined error message if both conditions fail
+        if file_extension not in allowed_extensions and self.report_file.size > 10 * 1024 * 1024:
+            raise ValidationError("Only JPEG, JPG, and PNG files are allowed and file size must be less than 10 MB.")

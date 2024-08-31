@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+import { IoReturnUpBackSharp } from "react-icons/io5";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const AppointmentHistory = () => {
+    const navigate = useNavigate();
+    const [message,setMessage] = useState('');
     const [appointments, setAppointments] = useState([]);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [day, setDay] = useState(new Date().getDate());
-    const navigate = useNavigate();
     const [showPrescriptionUploadModal, setShowPrescriptionUploadModal] = useState(false);
     const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+    const [newDate, setNewDate] = useState(new Date()); // Initialize with today's date
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [uploadError, setUploadError] = useState(null);
     const [reportFile, setReportFile] = useState(null);
@@ -25,7 +29,8 @@ const AppointmentHistory = () => {
         patient_address: '',
         patient_age: '',
         appointment_status: '',
-    })
+        appointment_date: ''
+    });
 
     const user = localStorage.getItem("name");
 
@@ -39,35 +44,46 @@ const AppointmentHistory = () => {
             patient_name: appointment.patient.full_name,
             patient_address: appointment.patient.address,
             patient_age: appointment.patient.age,
-            appointment_status: appointment.date
-        })
+            appointment_status: appointment.status,
+            appointment_date: appointment.date,
+        });
+    };
+
+    const fetchAppointments = async () => {
+        const res = await axios.get(`http://127.0.0.1:8000/services/appointments/history/${year}/${month}/${day}/`);
+        setAppointments(res.data);
     };
 
     useEffect(() => {
-        const fetchAppointments = async () => {
-            const res = await axios.get(`http://127.0.0.1:8000/services/appointments/history/${year}/${month}/${day}/`);
-            setAppointments(res.data);
-        };
         fetchAppointments();
     }, [year, month, day]);
 
     const handleStatusClick = (appointment) => {
         handleSelectAppointment(appointment);
-        setShowStatusModal(true)
-    }
+        setShowStatusModal(true);
+    };
 
     const handleStatusSubmit = async () => {
-        try{
-            const res = await axios.put(`http://127.0.0.1:8000/services/appointment/history/${formData.id}/`)
-        }catch(error){
-            
+        const reportData = new FormData();
+        reportData.append("status",formData.appointment_status);
+        try {
+            const res = await axios.put(`http://127.0.0.1:8000/services/appointment/history/${formData.id}/`, reportData);
+            if (window.confirm("Are you sure you want to change the status?")) {
+                await fetchAppointments();
+                setShowStatusModal(false); // Close the modal
+                setSelectedAppointment(null); // Clear selected appointment
+
+            }
+        } catch (error) {
+            alert("Error updating status: " + error.message);
         }
-    }
+    };
+
 
     const handleUploadPrescription = (appointment) => {
         handleSelectAppointment(appointment);
         setShowPrescriptionUploadModal(true);
-    }
+    };
 
     const handleUploadPrescriptionSubmit = async () => {
         const reportData = new FormData();
@@ -75,6 +91,7 @@ const AppointmentHistory = () => {
         reportData.append('doctor', formData.doctor_id);
         reportData.append('prescription_file', reportFile);
         reportData.append('uploaded_by', user);
+        reportData.append('message',message);
 
         try {
             const response = await axios.post('http://127.0.0.1:8000/services/upload/prescription/', reportData, {
@@ -84,25 +101,46 @@ const AppointmentHistory = () => {
             });
 
             if (response.status === 201) {
-                alert('Prescription uploaded')
+                alert('Prescription uploaded');
                 setShowPrescriptionUploadModal(false);
-                setUploadError(null)
-                setDoctor('');
+                setUploadError(null);
+                setMessege('');
             }
         } catch (error) {
-            if (error.response) {
-                console.log(error.response.data)
-                setUploadError(error.response.data || 'Failed to upload report');
-            } else {
-                setUploadError('An error occurred while uploading the report');
-            }
+            setUploadError(error.response?.data || 'An error occurred while uploading the report');
         }
-    }
+    };
 
     const handleRescheduleClick = (appointment) => {
         handleSelectAppointment(appointment);
         setShowRescheduleModal(true);
-    }
+    };
+
+    const handleRescheduleSubmit = async () => {
+        const reportData = new FormData();
+        reportData.append('date', formData.appointment_date)
+        try {
+            const res = await axios.put(`http://127.0.0.1:8000/services/appointment/history/${formData.id}/`, reportData)
+            //     {
+            //     ...selectedAppointment,
+            //     appointment_date: newDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD
+            // };
+
+            if (res.status === 200) {
+                // setAppointments(prevAppointments => prevAppointments.map(appointment =>
+                //     appointment.id === selectedAppointment.id
+                //         ? { ...appointment, appointment_date: newDate }
+                //         : appointment
+                // ));
+                setShowRescheduleModal(false); // Close the reschedule modal
+                setSelectedAppointment(null); // Clear selected appointment
+                alert('Appointment rescheduled')
+                fetchAppointments();
+            }
+        } catch (error) {
+            alert("Error updating appointment date: " + error.message);
+        }
+    };
 
 
     const handleSearch = (event) => {
@@ -254,7 +292,7 @@ const AppointmentHistory = () => {
                                         <button className='btn btn-primary' onClick={() => handleStatusClick(selectedAppointment)}>
                                             Status
                                         </button>
-                                        <button className='btn btn-primary'>
+                                        <button className='btn btn-primary' onClick={() => handleRescheduleClick(selectedAppointment)}>
                                             Reschedule
                                         </button>
                                     </div>
@@ -278,63 +316,106 @@ const AppointmentHistory = () => {
                             </div>
                             <div className="modal-body">
                                 <form>
+                                    <div className='form-group'>
+                                        <label>Message</label>
+                                        <textarea 
+                                            className='form-control'
+                                            value={message}
+                                            onChange={(e)=>setMessage(e.target.value)}
+                                        />
+                                    </div>
                                     <div className="form-group">
-                                        <label>Prescription File</label>
+                                        <label>Upload Prescription</label>
                                         <input
                                             type="file"
-                                            className="form-control-file"
+                                            className="form-control"
                                             onChange={(e) => setReportFile(e.target.files[0])}
                                         />
                                     </div>
                                 </form>
-                                {uploadError ? <div className="alert alert-danger mt-3">{uploadError.report_file}</div> : " "}
+                                {uploadError && <p className="text-danger">{uploadError}</p>}
                             </div>
-                            <div className='modal-footer'>
-                                <button className='btn btn-primary' onClick={handleUploadPrescriptionSubmit}>Upload</button>
-                                <button className='btn btn-primary' onClick={(e) => setShowPrescriptionUploadModal(false)}>Cancel</button>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowPrescriptionUploadModal(false)}>Cancel</button>
+                                <button type="button" className="btn btn-primary" onClick={handleUploadPrescriptionSubmit}>Upload</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showStatusModal && (
+                <div className='modal show' style={{ display: 'block' }}>
+                    <div className='modal-dialog'>
+                        <div className='modal-content'>
+                            <div className="modal-header">
+                                <h5 className="modal-title">Change Status</h5>
+                                <button type="button" className="close" onClick={() => setShowStatusModal(false)}>
+                                    &times;
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <div>
+                                    <p><strong>Patient's UHID:</strong> {formData.patient_uuid}</p>
+                                    <p><strong>Patient Name:</strong> {formData.patient_name}</p>
+                                    <p><strong>Doctors's Name:</strong> {formData.doctor_name}</p>
+                                    <p><strong>Appointment Date:</strong> {formData.appointment_date}</p>
+                                    <p><strong>Status:</strong>{formData.appointment_status}</p>
+                                </div>
+                                <form>
+                                    <div className="form-group">
+                                        <label>Change Status</label>
+                                        <select
+                                            className="form-control"
+                                            value={formData.appointment_status}
+                                            onChange={(e) => setFormData({ ...formData, appointment_status: e.target.value })}
+                                        >
+                                            <option value="Active">Active</option>
+                                            <option value="Cheaked">Cheaked</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                            <option value='Not Available'>Not Available</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowStatusModal(false)}>Cancel</button>
+                                <button type="button" className="btn btn-primary" onClick={handleStatusSubmit}>Save changes</button>
                             </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            {showStatusModal && (
-                <div className='modal show'>
+            {showRescheduleModal && (
+                <div className="modal show" style={{ display: 'block' }}>
                     <div className='modal-dialog'>
                         <div className='modal-content'>
                             <div className='modal-header'>
-                                <h5 className="modal-title">Change Appointment Status</h5>
-                                <button type="button" className="close" onClick={() => setShowPrescriptionUploadModal(false)}>
+                                <h5 className="modal-title">Reschedule Appointment</h5>
+                                <button type="button" className="close" onClick={() => setShowRescheduleModal(false)}>
                                     &times;
                                 </button>
                             </div>
-                        </div>
-                        <div className='modal-body'>
-                            <p><strong>Patient UHID:</strong> {formData.patient_uuid}</p>
-                            <p><strong>Patient Name:</strong> {formData.patient_name}</p>
-                            <p><strong>Doctor's Name</strong> {formData.doctor_name}</p>
-                            <p><strong>Patient Address</strong> {formData.patient_address}</p>
-                            <p><strong>Status:</strong>{formData.appointment_status}</p>
-                            <div>
-                                <select 
-                                    className='form-control'
-                                    value={formData.appointment_status}
-                                    onChange={(e) => setFormData({ ...formData, appointment_status: e.target.value })}
-                                >
-                                    <option value='Active'>Active</option>
-                                    <option value='Cheaked'>Cheaked</option>
-                                    <option value='Cancelled'>Cancelled</option>
-                                    <option value='Not Available'>Not Available</option>
-                                </select>
+                            <div className='modal-body'>
+                                <h3>Reschedule Appointment</h3>
+                                <DatePicker
+                                    name='appointment_date'
+                                    selected={newDate}
+                                    value={formData.appointment_date}
+                                    onChange={(e) => setFormData({ ...formData, appointment_date: e.target.value })}
+                                    minDate={new Date()} // Only allow dates from today onward
+                                    dateFormat="yyyy-MM-dd"
+                                />
                             </div>
-                        </div>
-                        <div className='modal-footer'>
-                            <button className='btn btn-primary' onClick={handleStatusSubmit}>Change Status</button>
-                            <button className='btn btn-primary' onClick={()=>setShowStatusModal(false)}>Cancel</button>
+                            <div className='modal-footer'>
+                                <button onClick={handleRescheduleSubmit}>Submit</button>
+                                <button onClick={() => setShowRescheduleModal(false)}>Cancel</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
+
         </div>
     );
 };

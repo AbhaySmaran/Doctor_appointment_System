@@ -17,6 +17,7 @@ import { GrStatusGood } from "react-icons/gr";
 
 const PatientList = () => {
     const user = localStorage.getItem('name');
+    const [message,setMessage] = useState('');
     const [patients, setPatients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -123,6 +124,10 @@ const PatientList = () => {
         navigate(`/dashboard/patient/reports/${formData.uuid}`);
     };
 
+    const handleViewPrescription = (patient)=>{
+        navigate(`/dashboard/patient/prescriptions/${formData.uuid}`)
+    }
+
     const handleUploadReport = (patient) => {
         handlePatientSelect(patient);
         setShowReportUploadModal(true);
@@ -163,6 +168,7 @@ const PatientList = () => {
         reportData.append('test', test);
         reportData.append('report_file', reportFile);
         reportData.append('uploaded_by', user);
+        reportData.append('message', message);
 
         try {
             const response = await axios.post('http://127.0.0.1:8000/services/upload/report/', reportData, {
@@ -391,15 +397,15 @@ const PatientList = () => {
                                         >
                                             <FaFileUpload /> Upload Report
                                         </button>
-                                        <button
+                                        {/* <button
                                             className="btn btn-primary btn-sm"
                                             onClick={() => handleUploadPrescription(selectedPatient)}
                                         >
                                             <CiFileOn /> Upload Prescription
-                                        </button>
+                                        </button> */}
                                         <button
                                             className="btn btn-primary btn-sm"
-                                            onClick={() => handleViewReport(selectedPatient)}
+                                            onClick={() => handleViewPrescription(selectedPatient)}
                                         >
                                             <CiFileOn /> View Prescription
                                         </button>
@@ -551,6 +557,15 @@ const PatientList = () => {
                                                     </option>
                                                 ))}
                                             </select>
+                                        </div>
+                                        <div className='form-group'>
+                                            <label>Message</label>
+                                            <textarea 
+                                                className='form-control'
+                                                type='text'
+                                                value={message}
+                                                onChange={(e)=>setMessage(e.target.value)}
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Report File</label>

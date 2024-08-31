@@ -113,18 +113,53 @@
 
 
 #chart-card {
-    height: 100%; /*Ensure cards take up the full height of their container*/
-    min-height: 250px; /*Set a minimum height to make sure the cards have the same size*/
+    height: 100%;
+    min-height: 250px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    padding: 10px; /* Add padding to ensure content doesn't touch the edges */
+    box-sizing: border-box; /* Ensure padding is included in the element's total width/height */
 }
 
-
-#chart{
+#chart {
     height: 200px;
-
+    width: 100%; /* Make sure the chart container takes up full width */
+    max-width: 100%; /* Ensure it doesn't exceed the card's width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Prevent content from overflowing */
 }
+
+.form-select {
+    width: 100%;
+    max-width: 120px; /* Control the maximum width of the dropdown */
+}
+
+@media (max-width: 1024px) {
+    #chart-card {
+        padding: 5px; /* Reduce padding on smaller screens */
+    }
+
+    #chart {
+        height: auto; /* Allow chart height to adjust based on content */
+        width: 100%; /* Ensure chart fits within the card */
+    }
+
+    .form-select {
+        width: 100%;
+        max-width: 100%; /* Allow dropdowns to take full width if needed */
+    }
+
+    .card-body {
+        overflow-x: hidden; /* Prevent horizontal overflow */
+        overflow-y: auto; /* Allow vertical scrolling if content overflows */
+    }
+}
+
+
 
 
 .table > :not(caption) > * > * {
