@@ -106,18 +106,9 @@ const ReportList = () => {
                     {filteredReports.length > 0 ? (
                         filteredReports.map((report) => (
                             <tr key={report.id}>
-                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
-                                    {report.patient.full_name}
-                                </td>
-                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
-                                    {report.patient.uuid}
-                                </td>
-                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
-                                    {report.name}
-                                </td>
-                                {/* <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
-                                    {report.message}
-                                </td> */}
+                                <td>{report.patient.full_name}</td>
+                                <td>{report.patient.uuid}</td>
+                                <td>{report.name}</td>
                                 <td>
                                     <FaCloudDownloadAlt
                                         style={{ cursor: 'pointer', marginRight: '10px' }}
@@ -127,14 +118,9 @@ const ReportList = () => {
                                         View Report
                                     </a>
                                 </td>
-                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
-                                    {new Date(report.uploaded_on).toLocaleString()}
-                                </td>
-                                <td style={{ maxWidth: '200px', wordWrap: 'break-word', wordBreak: 'break-all' }}>
-                                    {report.uploaded_by}
-                                </td>
+                                <td>{new Date(report.uploaded_on).toLocaleString()}</td>
+                                <td>{report.uploaded_by}</td>
                             </tr>
-
                         ))
                     ) : (
                         <tr>

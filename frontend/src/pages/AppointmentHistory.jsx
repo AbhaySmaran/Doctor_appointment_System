@@ -7,7 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 const AppointmentHistory = () => {
     const navigate = useNavigate();
-    const [message,setMessage] = useState('');
+    const [message, setMessage] = useState('');
     const [appointments, setAppointments] = useState([]);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -16,10 +16,11 @@ const AppointmentHistory = () => {
     const [day, setDay] = useState(new Date().getDate());
     const [showPrescriptionUploadModal, setShowPrescriptionUploadModal] = useState(false);
     const [showRescheduleModal, setShowRescheduleModal] = useState(false);
-    const [newDate, setNewDate] = useState(new Date()); // Initialize with today's date
+    // const today = useState(new Date()); // Initialize with today's date
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [uploadError, setUploadError] = useState(null);
     const [reportFile, setReportFile] = useState(null);
+    const [followUpDate,setFollowUpDate] = useState(null)
     const [formData, setFormData] = useState({
         id: '',
         patient_uuid: '',
@@ -65,13 +66,13 @@ const AppointmentHistory = () => {
 
     const handleStatusSubmit = async () => {
         const reportData = new FormData();
-        reportData.append("status",formData.appointment_status);
+        reportData.append("status", formData.appointment_status);
         try {
             const res = await axios.put(`http://127.0.0.1:8000/services/appointment/history/${formData.id}/`, reportData);
             if (window.confirm("Are you sure you want to change the status?")) {
                 await fetchAppointments();
                 setShowStatusModal(false); // Close the modal
-                setSelectedAppointment(null); // Clear selected appointment
+                // setSelectedAppointment(null); // Clear selected appointment
 
             }
         } catch (error) {
@@ -91,7 +92,7 @@ const AppointmentHistory = () => {
         reportData.append('doctor', formData.doctor_id);
         reportData.append('prescription_file', reportFile);
         reportData.append('uploaded_by', user);
-        reportData.append('message',message);
+        reportData.append('message', message);
 
         try {
             const response = await axios.post('http://127.0.0.1:8000/services/upload/prescription/', reportData, {
@@ -117,25 +118,24 @@ const AppointmentHistory = () => {
     };
 
     const handleRescheduleSubmit = async () => {
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+        const formattedDate = formatDate(followUpDate);
         const reportData = new FormData();
-        reportData.append('date', formData.appointment_date)
+        reportData.append('date', formattedDate)
         try {
             const res = await axios.put(`http://127.0.0.1:8000/services/appointment/history/${formData.id}/`, reportData)
-            //     {
-            //     ...selectedAppointment,
-            //     appointment_date: newDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD
-            // };
 
             if (res.status === 200) {
-                // setAppointments(prevAppointments => prevAppointments.map(appointment =>
-                //     appointment.id === selectedAppointment.id
-                //         ? { ...appointment, appointment_date: newDate }
-                //         : appointment
-                // ));
                 setShowRescheduleModal(false); // Close the reschedule modal
                 setSelectedAppointment(null); // Clear selected appointment
                 alert('Appointment rescheduled')
                 fetchAppointments();
+                setFollowUpDate('')
             }
         } catch (error) {
             alert("Error updating appointment date: " + error.message);
@@ -318,10 +318,10 @@ const AppointmentHistory = () => {
                                 <form>
                                     <div className='form-group'>
                                         <label>Message</label>
-                                        <textarea 
+                                        <textarea
                                             className='form-control'
                                             value={message}
-                                            onChange={(e)=>setMessage(e.target.value)}
+                                            onChange={(e) => setMessage(e.target.value)}
                                         />
                                     </div>
                                     <div className="form-group">
@@ -367,7 +367,7 @@ const AppointmentHistory = () => {
                                         <select
                                             className="form-control"
                                             value={formData.appointment_status}
-                                            onChange={(e) => setFormData({ ...formData, appointment_status: e.target.value })}
+                                            onChange={(e) => setFormData({...formData, appointment_status: e.target.value })}
                                         >
                                             <option value="Active">Active</option>
                                             <option value="Cheaked">Cheaked</option>
@@ -399,17 +399,16 @@ const AppointmentHistory = () => {
                             <div className='modal-body'>
                                 <h3>Reschedule Appointment</h3>
                                 <DatePicker
-                                    name='appointment_date'
-                                    selected={newDate}
-                                    value={formData.appointment_date}
-                                    onChange={(e) => setFormData({ ...formData, appointment_date: e.target.value })}
-                                    minDate={new Date()} // Only allow dates from today onward
+                                    selected={followUpDate}
+                                    onChange={(date) => setFollowUpDate(date)}
+                                    minDate={new Date()} // Disable past dates and today
                                     dateFormat="yyyy-MM-dd"
+                                    className="form-control"
                                 />
                             </div>
                             <div className='modal-footer'>
-                                <button onClick={handleRescheduleSubmit}>Submit</button>
-                                <button onClick={() => setShowRescheduleModal(false)}>Cancel</button>
+                                <button className='btn btn-primary' onClick={handleRescheduleSubmit}>Submit</button>
+                                <button className='btn btn-primary' onClick={() => setShowRescheduleModal(false)}>Cancel</button>
                             </div>
                         </div>
                     </div>
