@@ -1,4 +1,3 @@
-// ReceptionistRegistrationForm.js
 import axios from 'axios';
 import React, { useState } from 'react';
 import { IoReturnUpBackSharp } from "react-icons/io5";
@@ -13,6 +12,8 @@ const ReceptionistReg = () => {
         contactNo: '',
     });
 
+    const [error, setError] = useState({}); // State to hold validation errors
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -23,26 +24,33 @@ const ReceptionistReg = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const res = axios.post('http://127.0.0.1:8000/api/register/user/', {
-            "email": formData.email,
-            "username": formData.username,
-            "password": formData.password,
-            "role": "receptionist",
-            "receptionist": {
-                "full_name": formData.fullName,
-                "contact_no": formData.contactNo
+        try {
+            const res = await axios.post('http://127.0.0.1:8000/api/register/user/', {
+                email: formData.email,
+                username: formData.username,
+                password: formData.password,
+                role: "receptionist",
+                receptionist: {
+                    full_name: formData.fullName,
+                    contact_no: formData.contactNo
+                }
+            });
+            if (res.status === 201) {
+                alert('Receptionist registered successfully');
+                setFormData({
+                    fullName: '',
+                    email: '',
+                    username: '',
+                    password: '',
+                    contactNo: '',
+                });
+                setError({});
             }
-        })
-        alert('Receptionist registered')
-        setFormData({
-            fullName: '',
-            email: '',
-            username: '',
-            password: '',
-            contactNo: '',
-        })
+        } catch (error) {
+            setError(error.response.data);
+        }
     };
 
     return (
@@ -57,81 +65,102 @@ const ReceptionistReg = () => {
                 </div>
             </div>
             <br />
-            <div className="container mt-5">
-                <div className="row justify-content-center">
-                    <div className="col-md-8">
-                        <div className="card">
-                            <div className="card-header">
-                                <h4 className="card-title">Receptionist Registration</h4>
-                            </div>
-                            <div className="card-body">
-                                <form onSubmit={handleSubmit}>
-                                    <div className="form-group">
-                                        <label htmlFor="fullName">Full Name</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="fullName"
-                                            name="fullName"
-                                            value={formData.fullName}
-                                            onChange={handleChange}
-                                            placeholder="Enter full name"
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="email">Email</label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            id="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            placeholder="Enter email"
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="username">username</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="username"
-                                            name="username"
-                                            value={formData.username}
-                                            onChange={handleChange}
-                                            placeholder="Enter username"
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="password">Password</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="password"
-                                            name="password"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            placeholder="Enter password"
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="contactNo">Contact Number</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="contactNo"
-                                            name="contactNo"
-                                            value={formData.contactNo}
-                                            onChange={handleChange}
-                                            placeholder="Enter contact number"
-                                        />
-                                    </div>
-                                    <button type="submit" className="btn btn-primary">Register</button>
-                                </form>
+            <div className="container mt-4">
+                <h4 className="mb-4">Receptionist Registration</h4>
+                <form onSubmit={handleSubmit} className='needs-validation'>
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="fullName" className="form-label">Full Name</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="text"
+                                className={`form-control ${error.full_name ? "is-invalid" : ""}`}
+                                id="fullName"
+                                name="fullName"
+                                value={formData.fullName}
+                                onChange={handleChange}
+                                placeholder="Enter full name"
+                            />
+                            <div className='invalid-feedback'>{error.full_name && <p>{error.full_name}</p>}</div>
+                        </div>
+                    </div>
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="email" className="form-label">Email</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="email"
+                                className={`form-control ${error.email ? "is-invalid" : ""}`}
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="Enter email"
+                            />
+                            <div className='invalid-feedback'>{error.email && <p>{error.email}</p>}</div>
+                        </div>
+                    </div>
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="username" className="form-label">Username</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="text"
+                                className={`form-control ${error.username ? "is-invalid" : ""}`}
+                                id="username"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                placeholder="Enter username"
+                            />
+                            <div className='invalid-feedback'>{error.username && <p>{error.username}</p>}</div>
+                        </div>
+                    </div>
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="password" className="form-label">Password</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="password"
+                                className={`form-control ${error.password ? 'is-invalid' : ""}`}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Enter password"
+                            />
+                            <div className='invalid-feedback'>
+                                {error.password && <p>{error.password}</p>}
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="contactNo" className="form-label">Contact Number</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="text"
+                                className={`form-control ${error.contact_no ? 'is-invalid' : ''}`}
+                                id="contactNo"
+                                name="contactNo"
+                                value={formData.contactNo}
+                                onChange={handleChange}
+                                placeholder="Enter contact number"
+                            />
+                            <div className='invalid-feedback'>
+                                {error.contactNo && <p>{error.contactNo}</p>}
+                            </div>
+                        </div>
+                    </div>
+                    <div className='text-end'>
+                        <button type="submit" className="btn btn-primary">Register</button>
+                    </div>
+                </form>
             </div>
         </div>
     );

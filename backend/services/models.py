@@ -10,9 +10,11 @@ from django.core.exceptions import ValidationError
 # Create your views here.
 
 class Appointment(models.Model):
+    id = models.BigAutoField(primary_key=True)
     patient = models.ForeignKey(Patient, to_field='uuid', on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     date = models.DateField()
+    advice = models.TextField(blank=True)
     booked_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     booked_by = models.CharField(max_length=50, blank=True)
@@ -43,9 +45,11 @@ def report_upload_to(instance, filename):
     return f'report_files/{year}/{instance.patient.uuid}/{new_filename}'
 
 class Report(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=200, blank=True)
     patient = models.ForeignKey(Patient, to_field='uuid', on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
     report_file = models.FileField(blank=True, upload_to=report_upload_to)
     uploaded_on = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.CharField(max_length=50, blank=True)
@@ -92,6 +96,7 @@ def prescription_upload_to(instance, filename):
 
 
 class Prescription(models.Model):
+    id = models.BigAutoField(primary_key=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, to_field='uuid',on_delete=models.CASCADE)
     name= models.CharField(max_length=100, blank=True)

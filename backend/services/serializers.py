@@ -44,6 +44,7 @@ class ReportUploadSerializer(serializers.ModelSerializer):
 
 class ReportViewSerializer(serializers.ModelSerializer):
     patient = PatientSerializer()
+    appointment = AppointmentViewSerializer()
     class Meta:
         model = Report
         fields = '__all__'

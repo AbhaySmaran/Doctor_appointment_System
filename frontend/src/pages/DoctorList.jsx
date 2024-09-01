@@ -243,7 +243,7 @@ const DoctorList = () => {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowUpdateModal(false)}>Close</button>
+                                <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>Close</button>
                                 <button type="button" className="btn btn-primary" onClick={handleSubmitUpdate}>Save changes</button>
                             </div>
                         </div>

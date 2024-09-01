@@ -286,7 +286,7 @@ const SupportIssues = () => {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowStatusModal(false)}>Close</button>
+                                <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>Close</button>
                                 <button type="button" className="btn btn-primary" onClick={handleStatusUpdate}>Update</button>
                             </div>
                         </div>

@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
     
 class DoctorSerializer(serializers.ModelSerializer):
-    department= serializers.PrimaryKeyRelatedField(queryset=Department.objects.all())
+    # department= serializers.PrimaryKeyRelatedField(queryset=Department.objects.all())
     class Meta:
         model = Doctor
         fields = ["user","id", "department", "doc_uid", "full_name","contact","specialization","fee","degree","joined_on"]

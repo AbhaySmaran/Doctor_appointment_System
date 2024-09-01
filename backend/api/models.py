@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 class Patient(models.Model):
+    id = models.BigAutoField(primary_key=True)
     uuid = models.CharField(max_length=255, unique=True, blank=True)
     full_name = models.CharField(max_length=255)
     age = models.IntegerField()
@@ -75,11 +76,12 @@ class CustomUser(AbstractBaseUser):
         ('receptionist', 'Receptionist'),
         ('super_admin', 'Super Admin'),
     ]
-    
-    username = models.CharField(max_length=150, unique=True, null=True, blank=True)
-    email = models.EmailField(unique=True, null=True, blank=True)
+
+    id = models.BigAutoField(primary_key=True)
+    username = models.CharField(max_length=150, unique=True)
+    email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
-    role = models.CharField(max_length=20, choices=ROLES, null=True, blank=True)
+    role = models.CharField(max_length=20, choices=ROLES,blank=True)
     status = models.CharField(max_length=20, default='active')
 
     is_active = models.BooleanField(default=True)
@@ -102,6 +104,7 @@ class CustomUser(AbstractBaseUser):
         return self.is_superuser
 
 class Doctor(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'doctor'})
     department = models.ForeignKey(Department , on_delete = models.CASCADE)
     doc_uid = models.CharField(max_length=20, blank=True)
@@ -125,6 +128,7 @@ class Doctor(models.Model):
 
 
 class Receptionist(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'receptionist'})
     uuid = models.CharField(max_length=100,blank=True)
     full_name = models.CharField(max_length=100)

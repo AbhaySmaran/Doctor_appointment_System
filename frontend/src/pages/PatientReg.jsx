@@ -1,25 +1,25 @@
-// PatientRegistrationForm.js
 import axios from 'axios';
 import React, { useState } from 'react';
 import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
-// import 'bootstrap/dist/css/bootstrap.min.css';
+// import './PatientReg.css'; // Import custom CSS
 
 const PatientReg = () => {
-    const [error,setError] = useState('')
+    const [error, setError] = useState({});
     const [formData, setFormData] = useState({
         uuid: '',
         fullName: '',
         age: '',
         email: '',
-        gender: '',  
+        gender: '',
         dob: '',
         address: '',
         nationality: '',
         contactNo: '',
     });
-    
+
     const navigate = useNavigate();
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -28,10 +28,10 @@ const PatientReg = () => {
         });
     };
 
-    const handleSubmit =async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            const res =await axios.post('http://127.0.0.1:8000/api/patients/',{
+        try {
+            const res = await axios.post('http://127.0.0.1:8000/api/patients/', {
                 "uuid": formData.uuid,
                 "full_name": formData.fullName,
                 "age": formData.age,
@@ -41,24 +41,25 @@ const PatientReg = () => {
                 "address": formData.address,
                 "nationality": formData.nationality,
                 "contact_no": formData.contactNo
-            })
+            });
 
-            if(res.status === 201) {
-                alert('Patient Registered')
+            if (res.status === 201) {
+                alert('Patient Registered');
                 setFormData({
                     uuid: '',
                     fullName: '',
                     age: '',
                     email: '',
-                    gender: '',  
+                    gender: '',
                     dob: '',
                     address: '',
                     nationality: '',
                     contactNo: '',
                 });
+                setError({});
             }
-        }catch(error){
-            setError(error.response.data)
+        } catch (error) {
+            setError(error.response.data);
         }
     };
 
@@ -74,161 +75,199 @@ const PatientReg = () => {
                 </div>
             </div>
             <br />
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-8">
-                    <div className="card">
-                        <div className="card-header">
-                            <h4 className="card-title">Patient Registration</h4>
+            <div className="container mt-7">
+                <h4 className="mb-4">Patient Registration</h4>
+                <form onSubmit={handleSubmit}>
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="uuid" className="form-label">UHID</label>
                         </div>
-                        <div className="card-body">
-                            <form onSubmit={handleSubmit} className='needs-validation'>
-                                <div className="form-group">
-                                    <label htmlFor="uuid">UHID</label>
-                                    <input
-                                        type="text"
-                                        className={`form-control ${error.uuid ? 'is-invalid' : ''}`}
-                                        id="uuid"
-                                        name="uuid"
-                                        value={formData.uuid}
-                                        onChange={handleChange}
-                                        placeholder="Enter UHID"
-                                    />
-                                    <div className='invalid-feedback'>
-                                        {error.uuid && <p>{error.uuid[0]}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="fullName">Full Name</label>
-                                    <input
-                                        type="text"
-                                        className={`form-control ${error.full_name ? 'is-invalid' : ''}`}
-                                        id="fullName"
-                                        name="fullName"
-                                        value={formData.fullName}
-                                        onChange={handleChange}
-                                        placeholder="Enter full name"
-                                    />
-                                    <div className='invalid-feedback'>
-                                        {error.full_name && <p>{error.full_name[0]}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="age">Age</label>
-                                    <input
-                                        type="number"
-                                        className={`form-control ${error.age ? 'is-invalid' : ''}`}
-                                        id="age"
-                                        name="age"
-                                        value={formData.age}
-                                        onChange={handleChange}
-                                        placeholder="Enter age"
-                                    />
-                                    <div className='invalid-feedback'>
-                                        {error.age && <p>{error.age}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="email">Email</label>
-                                    <input
-                                        type="email"
-                                        className={`form-control ${error.email ? 'is-invalid' : ''}`}
-                                        id="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="Enter email"
-                                    />
-                                    <div className='invalid-feedback'>
-                                        {error.email && <p>{error.email}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="gender">Gender</label>
-                                    <select
-                                        className={`form-control ${error.gender ? 'is-invalid' : ""}`}
-                                        id="gender"
-                                        name="gender"
-                                        value={formData.gender}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="">Select gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                    <div className='invalid-feedback'>
-                                        {error.gender && <p>{error.gender}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="dob">Date of Birth</label>
-                                    <input
-                                        type="date"
-                                        className={`form-control ${error.dob ? 'is-invalid' : ''}`}
-                                        id="dob"
-                                        name="dob"
-                                        value={formData.dob}
-                                        onChange={handleChange}
-                                    />
-                                    <div className='invalid-feedback'>
-                                        {error.dob && <p>{error.dob}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="address">Address</label>
-                                    <input
-                                        type="text"
-                                        className={`form-control ${error.address ? 'is-invalid' : ''}`}
-                                        id="address"
-                                        name="address"
-                                        value={formData.address}
-                                        onChange={handleChange}
-                                        placeholder="Enter address"
-                                    />
-                                    <div className='invalid-feedback'>
-                                        {error.address && <p>{error.address}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="nationality">Nationality</label>
-                                    <input
-                                        type="text"
-                                        className={`form-control ${error.nationality ? 'is-invalid' : ''}`}
-                                        id="nationality"
-                                        name="nationality"
-                                        value={formData.nationality}
-                                        onChange={handleChange}
-                                        placeholder="Enter nationality"
-                                    />
-                                    <div className='invalid-feedback'>
-                                        {error.nationality && <p>{error.nationality}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="contactNo">Contact Number</label>
-                                    <input
-                                        type="number"
-                                        className={`form-control ${error.contact_no ? 'is-invalid' : ''}`}
-                                        id="contactNo"
-                                        name="contactNo"
-                                        value={formData.contactNo}
-                                        onChange={handleChange}
-                                        placeholder="Enter contact number"
-                                        min='10'
-                                        max='15'
-                                    />
-                                    <div className='invalid-feedback'>
-                                        {error.contact_no && <p>{error.contact_no}</p>}
-                                    </div>
-                                </div>
-                                <button type="submit" className="btn btn-primary">Register</button>
-                            </form>
+                        <div className="col-md-10">
+                            <input
+                                type="text"
+                                className={`form-control ${error.uuid ? 'is-invalid' : ''}`}
+                                id="form-row"
+                                name="uuid"
+                                value={formData.uuid}
+                                onChange={handleChange}
+                                placeholder="Enter UHID"
+                            />
+                            <div className="invalid-feedback">
+                                {error.uuid && <p>{error.uuid}</p>}
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="fullName" className="form-label">Full Name</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="text"
+                                className={`form-control ${error.full_name ? 'is-invalid' : ''}`}
+                                id="form-row"
+                                name="fullName"
+                                value={formData.fullName}
+                                onChange={handleChange}
+                                placeholder="Enter full name"
+                            />
+                            <div className="invalid-feedback">
+                                {error.full_name && <p>{error.full_name}</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="age" className="form-label">Age</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="number"
+                                className={`form-control ${error.age ? 'is-invalid' : ''}`}
+                                id="form-row"
+                                name="age"
+                                value={formData.age}
+                                onChange={handleChange}
+                                placeholder="Enter age"
+                                min="0"
+                            />
+                            <div className="invalid-feedback">
+                                {error.age && <p>{error.age}</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="email" className="form-label">Email</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="email"
+                                className={`form-control ${error.email ? 'is-invalid' : ''}`}
+                                id="form-row"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="Enter email"
+                            />
+                            <div className="invalid-feedback">
+                                {error.email && <p>{error.email}</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="gender" className="form-label">Gender</label>
+                        </div>
+                        <div className="col-md-10">
+                            <select
+                                className={`form-control ${error.gender ? 'is-invalid' : ''}`}
+                                id="form-row"
+                                name="gender"
+                                value={formData.gender}
+                                onChange={handleChange}
+                            >
+                                <option value="">Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div className="invalid-feedback">
+                                {error.gender && <p>{error.gender}</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="dob" className="form-label">Date of Birth</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="date"
+                                className={`form-control ${error.dob ? 'is-invalid' : ''}`}
+                                id='form-row'
+                                name="dob"
+                                value={formData.dob}
+                                onChange={handleChange}
+                            />
+                            <div className="invalid-feedback">
+                                {error.dob && <p>Choose a Date</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row mb-3" id='form-row'>
+                        <div className="col-md-2">
+                            <label htmlFor="address" className="form-label">Address</label>
+                        </div>
+                        <div className="col-md-10">
+                            <textarea
+                                type="text"
+                                className={`form-control ${error.address ? 'is-invalid' : ''}`}
+                                id='form-row'
+                                name="address"
+                                value={formData.address}
+                                onChange={handleChange}
+                                placeholder="Enter address"
+                            />
+                            <div className="invalid-feedback">
+                                {error.address && <p>{error.address}</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="nationality" className="form-label">Nationality</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="text"
+                                className={`form-control ${error.nationality ? 'is-invalid' : ''}`}
+                                id='form-row'
+                                name="nationality"
+                                value={formData.nationality}
+                                onChange={handleChange}
+                                placeholder="Enter nationality"
+                            />
+                            <div className="invalid-feedback">
+                                {error.nationality && <p>{error.nationality}</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row mb-3">
+                        <div className="col-md-2">
+                            <label htmlFor="contactNo" className="form-label">Contact Number</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="number"
+                                className={`form-control ${error.contact_no ? 'is-invalid' : ''}`}
+                                id='form-row'
+                                name="contactNo"
+                                value={formData.contactNo}
+                                onChange={handleChange}
+                                placeholder="Enter contact number"
+                                min="10"
+                                max="15"
+                            />
+                            <div className="invalid-feedback">
+                                {error.contact_no && <p>{error.contact_no}</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="text-end">
+                        <button type="submit" className="btn btn-primary">Register</button>
+                    </div>
+                </form>
             </div>
-        </div>
         </div>
     );
 };

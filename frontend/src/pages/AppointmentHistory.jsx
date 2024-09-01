@@ -19,9 +19,12 @@ const AppointmentHistory = () => {
     // const today = useState(new Date()); // Initialize with today's date
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [showFollowUpDateModal,setFollowUpDateModal] = useState(false);
-    const [uploadError, setUploadError] = useState(null);
+    const [uploadError, setUploadError] = useState('');
     const [reportFile, setReportFile] = useState(null);
     const [followUpDate,setFollowUpDate] = useState(null)
+    const [showUploadReportModal,setShowUploadReportModal] = useState(false)
+    const [test, setTest] = useState('');
+    const [allTests, setAllTests] = useState([]);
     const [formData, setFormData] = useState({
         id: '',
         patient_id: '',
@@ -32,7 +35,8 @@ const AppointmentHistory = () => {
         patient_address: '',
         patient_age: '',
         appointment_status: '',
-        appointment_date: ''
+        appointment_date: '',
+        appointment_advice: '' ,
     });
 
     const user = localStorage.getItem("name");
@@ -53,6 +57,15 @@ const AppointmentHistory = () => {
         });
     };
 
+    const fetchTests = async () => {
+        const res = await axios.get('http://127.0.0.1:8000/services/test/');
+        setAllTests(res.data);
+    };
+
+    useEffect(() => {
+        fetchTests();
+    }, []);
+
     const fetchAppointments = async () => {
         const res = await axios.get(`http://127.0.0.1:8000/services/appointments/history/${year}/${month}/${day}/`);
         setAppointments(res.data);
@@ -70,6 +83,7 @@ const AppointmentHistory = () => {
     const handleStatusSubmit = async () => {
         const reportData = new FormData();
         reportData.append("status", formData.appointment_status);
+        reportData.append("advice", formData.appointment_advice);
         try {
             const res = await axios.put(`http://127.0.0.1:8000/services/appointment/history/${formData.id}/`, reportData);
             if (window.confirm("Are you sure you want to change the status?")) {
@@ -80,6 +94,41 @@ const AppointmentHistory = () => {
             }
         } catch (error) {
             alert("Error updating status: " + error.message);
+        }
+    };
+
+    const handleUpoadReport = (appointment) =>{
+        handleSelectAppointment(appointment);
+        setShowUploadReportModal(true);
+    }
+
+    const handleUploadReportSubmit = async () => {
+        const reportData = new FormData();
+        reportData.append('patient', formData.patient_uuid);
+        reportData.append('test', test);
+        reportData.append('report_file', reportFile);
+        reportData.append('uploaded_by', user);
+        reportData.append('message', message);
+        reportData.append('appointment', formData.id)
+
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/services/upload/report/', reportData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 201) {
+                alert('Report uploaded')
+                setShowUploadReportModal(false);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data)
+                setUploadError(error.response.data || 'Failed to upload report');
+            } else {
+                setUploadError('An error occurred while uploading the report');
+            }
         }
     };
 
@@ -298,6 +347,9 @@ const AppointmentHistory = () => {
                                         <button className='btn btn-primary' onClick={() => handleRescheduleClick(selectedAppointment)}>
                                             Reschedule
                                         </button>
+                                        <button className='btn btn-primary' onClick={()=> handleUpoadReport(selectedAppointment)}>
+                                            Upload Report
+                                        </button>
                                     </div>
                                 </div>
                             ) : (
@@ -339,7 +391,7 @@ const AppointmentHistory = () => {
                                 {uploadError && <p className="text-danger">{uploadError}</p>}
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowPrescriptionUploadModal(false)}>Cancel</button>
+                                <button type="button" className="btn btn-primary" onClick={() => setShowPrescriptionUploadModal(false)}>Cancel</button>
                                 <button type="button" className="btn btn-primary" onClick={handleUploadPrescriptionSubmit}>Upload</button>
                             </div>
                         </div>
@@ -373,15 +425,23 @@ const AppointmentHistory = () => {
                                             onChange={(e) => setFormData({...formData, appointment_status: e.target.value })}
                                         >
                                             <option value="Active">Active</option>
-                                            <option value="Cheaked">Cheaked</option>
+                                            <option value="Checked">Checked</option>
                                             <option value="Cancelled">Cancelled</option>
                                             <option value='Not Available'>Not Available</option>
                                         </select>
                                     </div>
+                                    <div className='form-group'>
+                                        <label>Advice</label>
+                                        <textarea 
+                                            className='form-control'
+                                            value={formData.appointment_advice}
+                                            onChange={(e)=>setFormData({...formData, appointment_advice: e.target.value})}
+                                        />
+                                    </div>
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowStatusModal(false)}>Cancel</button>
+                                <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>Cancel</button>
                                 <button type="button" className="btn btn-primary" onClick={handleStatusSubmit}>Save changes</button>
                             </div>
                         </div>
@@ -418,7 +478,7 @@ const AppointmentHistory = () => {
                 </div>
             )}
 
-    {showFollowupModal && (
+            {showFollowUpDateModal && (
                 <div className="modal show" style={{ display: 'block' }}>
                     <div className='modal-dialog'>
                         <div className='modal-content'>
@@ -446,6 +506,70 @@ const AppointmentHistory = () => {
                     </div>
                 </div>
             )}
+            {showUploadReportModal && (
+                    <div className="modal show" style={{ display: 'block' }}>
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Upload Report</h5>
+                                    <button type="button" className="close" onClick={() => setShowUploadReportModal(false)}>
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <form>
+                                        <div className="form-group">
+                                            <label>Test</label>
+                                            <select
+                                                className={`form-control ${uploadError.test ? 'is-invalid' : ""}`}
+                                                value={test}
+                                                onChange={(e) => setTest(e.target.value)}
+                                            >
+                                                <option value="">Select a test</option>
+                                                {allTests.map((test) => (
+                                                    <option key={test.id} value={test.id}>
+                                                        {test.test_name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <div className='invalid-feedback'>
+                                                {uploadError.test && <p>{uploadError.test}</p>}
+                                            </div>
+                                        </div>
+                                        <div className='form-group'>
+                                            <label>Advice / Imprresion</label>
+                                            <textarea 
+                                                className='form-control'
+                                                type='text'
+                                                value={message}
+                                                onChange={(e)=>setMessage(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Report File</label>
+                                            <input
+                                                className= {`form-control ${uploadError.report_file  ? "is-invalid" : ""}`}
+                                                type="file"
+                                                onChange={(e) => setReportFile(e.target.files[0])}
+                                            />
+                                            <div className='invalid-feedback'>
+                                                {uploadError.report_file ? <p>{uploadError.report_file}</p> : "" }
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowUploadReportModal(false)}>
+                                        Cancel
+                                    </button>
+                                    <button type="button" className="btn btn-primary" onClick={handleUploadReportSubmit}>
+                                        Upload Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
         </div>
     );

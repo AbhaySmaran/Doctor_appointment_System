@@ -7,7 +7,7 @@ import Navbar from '../components/Navbar';
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [serverError, setServerError] = useState({});
+    const [serverError, setServerError] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -33,7 +33,7 @@ function Login() {
         } catch (error) {
             if (error.response && error.response.data) {
                 setServerError(error.response.data.errors);
-                console.log(error.response.data.errors);
+                // console.log(error.response.data.errors);
             } else {
                 console.log("An unexpected error occurred:", error);
             }
@@ -59,7 +59,7 @@ function Login() {
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </Form.Group>
-                            {serverError.email && <p>{serverError.email[0]}</p>}
+                            {serverError.email && <p>{serverError.email}</p>}
                             <Form.Group controlId="formPassword">
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control
@@ -70,8 +70,8 @@ function Login() {
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
                             </Form.Group>
-                            {serverError.password && <p>{serverError.password[0]}</p>}
-                            <Button variant="primary" type="submit" className="w-100 mt-3">
+                            {serverError.password && <p>{serverError.password}</p>}
+                            <Button variant="primary" type="submit" className="w-100 mt-3" id='login-btn'>
                                 Login
                             </Button>
                         </Form>

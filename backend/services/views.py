@@ -171,6 +171,12 @@ class DoctorAppointmentsView(APIView):
         serializer = AppointmentViewSerializer(appointments, many=True)
         return Response(serializer.data)
 
+class PatientAppointsView(APIView):
+    def get(self, request,uuid, format=None):
+        patient = Patient.objects.get(uuid=uuid)
+        appointments = Appointment.objects.filter(patient=patient,status="Checked").order_by('-date')
+        serializer = AppointmentViewSerializer(appointments, many=True)
+        return Response(serializer.data)
 
 
 
@@ -257,7 +263,7 @@ class FollowUpEmailView(APIView):
 
 #         return Response(data)
     
-class DailyAppointmentsView(APIView):
+class DailyAppointmentsCountView(APIView):
     def get(self, request, year, month):
         try:
             year = int(year)

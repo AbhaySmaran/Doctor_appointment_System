@@ -21,6 +21,7 @@ import PatientDetails from './pages/PatientDetails';
 import Tests from './pages/Tests';
 import SupportIssues from './pages/SupportIssues';
 import PrescriptiontList from './pages/PrescriptionList';
+import PatientHistory from './pages/PatientHistory';
 
 function App() {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('access'));
@@ -68,6 +69,7 @@ function App() {
           <Route path='appointment/history' element={<AppointmentHistory />} />
           <Route path='patient/reports/:uuid' element={<ReportList />} />
           <Route path='patient/prescriptions/:uuid' element={<PrescriptiontList />} />
+          <Route path= 'patient/history/:uuid' element={<PatientHistory />} />
           <Route path='doctor/appointment' element={<Appointments />} />
           <Route path='doctor/reports' element={<ReportList />} />
           <Route path='configuration' element={<Tests />} />

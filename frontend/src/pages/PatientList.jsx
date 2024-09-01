@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaEdit, FaFileUpload } from "react-icons/fa";
-import { MdEmail, MdAirplanemodeInactive } from "react-icons/md";
+import { MdEmail } from "react-icons/md";
+import { GrStatusUnknown } from "react-icons/gr";
 import { CiFileOn } from "react-icons/ci";
 import { IoReturnUpBackSharp } from "react-icons/io5";
 // import { set } from 'react-datepicker/dist/date_utils';
@@ -14,6 +15,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { GrStatusCritical } from "react-icons/gr";
 import { GrStatusGood } from "react-icons/gr";
+import { MdOutlineManageHistory } from "react-icons/md";
 
 const PatientList = () => {
     const user = localStorage.getItem('name');
@@ -129,6 +131,10 @@ const PatientList = () => {
         navigate(`/dashboard/patient/prescriptions/${formData.uuid}`)
     }
 
+    const handleViewHistory = (patient) =>{
+        navigate(`/dashboard/patient/history/${formData.uuid}`)
+    }
+
     const handleUploadReport = (patient) => {
         handlePatientSelect(patient);
         setShowReportUploadModal(true);
@@ -157,11 +163,15 @@ const PatientList = () => {
         reportData.append('patient', formData.uuid);
         reportData.append('doctor', doctor);
         reportData.append('date', appointmentDate);
-        reportData.append('uploaded_by', user)
+        reportData.append('booked_by', user)
 
         try{
             const res = await axios.post('http://127.0.0.1:8000/services/appointment/book/', reportData)
-            setShowAppointmentModal(false);
+            if(window.confirm("Book Appointment")){
+                setShowAppointmentModal(false);
+                setDoctor('');
+                setAppointmentDate('');
+            }
         }catch(error){
             setUploadError(error.response.data);
             console.log(error.response.data);
@@ -397,12 +407,12 @@ const PatientList = () => {
                                         >
                                             <CiFileOn /> View Reports
                                         </button>
-                                        <button
+                                        {/* <button
                                             className="btn btn-primary btn-sm"
                                             onClick={() => handleUploadReport(selectedPatient)}
                                         >
                                             <FaFileUpload /> Upload Report
-                                        </button>
+                                        </button> */}
                                         {/* <button
                                             className="btn btn-primary btn-sm"
                                             onClick={() => handleUploadPrescription(selectedPatient)}
@@ -425,7 +435,13 @@ const PatientList = () => {
                                             className="btn btn-primary btn-sm"
                                             onClick={() => handleStatus(selectedPatient)}
                                         >
-                                            <MdAirplanemodeInactive /> Status
+                                            <GrStatusUnknown /> Status
+                                        </button>
+                                        <button
+                                            className="btn btn-primary btn-sm"
+                                            onClick={() => handleViewHistory(selectedPatient)}
+                                        >
+                                            <MdOutlineManageHistory /> History
                                         </button>
                                     </div>
                                 </div>
@@ -602,7 +618,7 @@ const PatientList = () => {
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowReportUploadModal(false)}>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowReportUploadModal(false)}>
                                         Cancel
                                     </button>
                                     <button type="button" className="btn btn-primary" onClick={handleReportUpload}>
@@ -638,7 +654,7 @@ const PatientList = () => {
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowFollowUpModal(false)}>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowFollowUpModal(false)}>
                                         Cancel
                                     </button>
                                     <button type="button" className="btn btn-primary" onClick={handleFollowUpSubmit}>
@@ -697,7 +713,7 @@ const PatientList = () => {
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowAppointmentModal(false)}>Cancel</button>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowAppointmentModal(false)}>Cancel</button>
                                     <button type="button" className="btn btn-primary" onClick={handleAppointmentSubmit}>Schedule</button>
                                 </div>
                             </div>
@@ -721,8 +737,8 @@ const PatientList = () => {
                                     <p><strong>Age:</strong> {formData.age}</p>
                                     <p><strong>Email:</strong> {formData.email}</p>
                                     <p><strong>Status:</strong>{formData.status}</p>
+                                    {/* <p><strong>Change Status:-</strong></p> */}
                                     <div>
-                                        <p><strong>Change Status:-</strong></p>
                                         <div>
                                             <input
                                                 type="radio"
@@ -751,7 +767,7 @@ const PatientList = () => {
                                     <button type="button" className="btn btn-primary" onClick={() => handleStatusChange()}>
                                         Chnage Staus
                                     </button>
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowStatusModal(false)}>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>
                                         Close
                                     </button>
                                 </div>

@@ -20,7 +20,7 @@ class UserLoginView(APIView):
     permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             email = serializer.data.get('email')
             password = serializer.data.get('password')
             if not email or not password:
@@ -40,7 +40,7 @@ class ReceptionistLoginView(APIView):
     permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             email = serializer.validated_data.get('email')
             password = serializer.validated_data.get('password')
             if not email or not password:
@@ -71,11 +71,14 @@ class PatientView(APIView):
             return Response({"msg": "Patient Registered Successfully."},status = status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request,id=None, format=None):
+    def get(self, request,id=None,uuid=None, format=None):
         Patients = Patient.objects.all().order_by('status', 'joined_on')
         serializer = PatientSerializer(Patients, many=True)
         if id is not None:
             patient = Patient.objects.get(pk=id)
+            serializer = PatientSerializer(patient)
+        if uuid is not None:
+            patient = Patient.objects.get(uuid=uuid)
             serializer = PatientSerializer(patient)
         return Response(serializer.data)
     
