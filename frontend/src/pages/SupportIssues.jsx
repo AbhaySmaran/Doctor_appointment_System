@@ -198,7 +198,7 @@ const SupportIssues = () => {
                                 </button>
                             </div>
                             <div className='modal-body'>
-                                <form>
+                                <form className='needs-validation'>
                                     <div className='form-group'>
                                         <label>Issue Caption</label>
                                         <select
@@ -215,14 +215,16 @@ const SupportIssues = () => {
                                     <div className='form-group'>
                                         <label>Issue Description</label>
                                         <textarea
-                                            className='form-control'
+                                            className={`form-control ${uploadError.Issue_Description ? 'is-invalid' : ""}`}
                                             name="Issue_Description"
                                             value={formData.Issue_Description}
                                             onChange={handleChange}
                                             required
                                         />
+                                        <div className="validation-feedback">
+                                            {uploadError.Issue_Description ? <p>{uploadError.Issue_Description}</p> : " "}
+                                        </div>
                                     </div>
-                                    {uploadError.Issue_Description ? <div className="alert alert-danger mt-3">{uploadError.Issue_Description}</div> : " "}
                                     <div className='form-group'>
                                         <label>Priority</label>
                                         <select
@@ -236,7 +238,6 @@ const SupportIssues = () => {
                                             <option value="high">High</option>
                                         </select>
                                     </div>
-                                    {uploadError.Priority ? <div className="alert alert-danger mt-3">{uploadError.Priority}</div> : " "}
                                     <div className='form-group'>
                                         <label>Upload Screenshot</label>
                                         <input
@@ -247,11 +248,10 @@ const SupportIssues = () => {
                                             onChange={handleChange}
                                         />
                                     </div>
-                                    {uploadError.Issue_ScreenShot ? <div className="alert alert-danger mt-3">{uploadError.Issue_ScreenShot}</div> : " "}                                    
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowSupportModal(false)}>Close</button>
+                                <button type="button" className="btn btn-primary" onClick={() => setShowSupportModal(false)}>Close</button>
                                 <button type="button" className="btn btn-primary" onClick={handleSupportSubmit}>Submit</button>
                             </div>
                         </div>

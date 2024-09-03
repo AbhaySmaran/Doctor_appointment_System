@@ -99,22 +99,24 @@ const Tests = () => {
                                     </button>
                                 </div>
                                 <div className='modal-body'>
-                                    <form>
+                                    <form className='needs-validation'>
                                         <div className="form-group">
                                             <label>Test Name</label>
                                             <input
                                                 type="text"
                                                 name='test_name'
-                                                className="form-control"
+                                                className={`form-control ${error.test_name ? "is-invalid" : ""}`}
                                                 value={testName}
                                                 onChange={(e) =>setTestName(e.target.value)}
                                             />
+                                            <div className='validation-feedback'>
+                                                {error.test_name && <p>{error.test_name}</p>}
+                                            </div>
                                         </div>
-                                        {error ? <div className="alert alert-danger mt-3">{error.test_name[0]}</div> : " "}
                                         <div className='form-group'>
                                             <label>Test Categoty</label>
                                             <select
-                                                className='form-control'
+                                                className={`form-control ${error.test_type ? "is-invalid" : ""}`}
                                                 name='test_type'
                                                 value={testType}
                                                 onChange={(e) => setTestType(e.target.value)}
@@ -123,17 +125,20 @@ const Tests = () => {
                                                 <option value='Test'>Test</option>
                                                 <option value='Diagnostic'>Diagnostic</option>
                                             </select>
+                                            {error.test_type && <p>{error.test_type}</p>}
                                         </div>
                                         <div className="form-group">
                                             <label>Test Code</label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${error.test_code ? "is-invalid" : ""}`}
                                                 value={testCode}
                                                 onChange={(e) =>setTestCode(e.target.value)}
                                             />
+                                            <div>
+                                                {error.test_code && <p>{error.test_code}</p>}
+                                            </div>
                                         </div>
-                                        {error ? <div className="alert alert-danger mt-3">{error.test_code[0]}</div> : " "}
                                         <div className='modal-footer'>
                                             <button className='btn btn-primary' id='btn-back' onClick={handleAddTest}>Add Test</button>
                                             <button className='btn btn-primary' id='btn-back' onClick={()=>setShowAddTestModal(false)}>Cancel</button>

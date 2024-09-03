@@ -151,7 +151,7 @@ const PatientList = () => {
     const handleSubmitUpdate = async () => {
         try {
             if (window.confirm("Are you sure you want to save changes?")) {
-                const res = await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
+                await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
                 await fetchPatients();
                 setShowUpdateModal(false);
             }
