@@ -494,13 +494,13 @@ const AppointmentHistory = () => {
                     <div className='modal-dialog'>
                         <div className='modal-content'>
                             <div className='modal-header'>
-                                <h5 className="modal-title">Reschedule Appointment</h5>
+                                <h4 className="modal-title">Reschedule Appointment</h4>
                                 <button type="button" className="close" onClick={() => setShowRescheduleModal(false)}>
                                     &times;
                                 </button>
                             </div>
                             <div className='modal-body'>
-                                <h3>Reschedule Appointment</h3>
+                                <h5>Reschedule Appointment On:-</h5>
                                 <DatePicker
                                     selected={followUpDate}
                                     onChange={(date) => setFollowUpDate(date)}
@@ -615,7 +615,7 @@ const AppointmentHistory = () => {
                         <div className='modal-dialog'>
                             <div className='modal-content'>
                                 <div className='modal-header'>
-                                    <h5 className="modal-title">Upload Report</h5>
+                                    <h5 className="modal-title">Add Advice</h5>
                                     <button type="button" className="close" onClick={() => setShaowAdviceModal(false)}>
                                         <span>&times;</span>
                                     </button>

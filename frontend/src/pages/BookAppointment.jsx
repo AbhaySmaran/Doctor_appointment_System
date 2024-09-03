@@ -5,6 +5,7 @@ import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 const BookAppointment = () => {
+    const [error,setError] = useState('')
     const [formData, setFormData] = useState({
         patient_UHID: "",
         doctor: "",
@@ -31,18 +32,23 @@ const BookAppointment = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const res = axios.post('http://127.0.0.1:8000/services/appointment/book/', {
-            patient: formData.patient_UHID,
-            doctor: formData.doctor,
-            date: formData.date,
-            booked_by: receptionistId
-        })
-        alert("Appointmrnt Booked")
-        setFormData({
-            patient_UHID: "",
-            doctor: "",
-            date: " ",
-        })
+        try{
+            if(window.confirm("Book Appointment?")){
+                const res = axios.post('http://127.0.0.1:8000/services/appointment/book/', {
+                    patient: formData.patient_UHID,
+                    doctor: formData.doctor,
+                    date: formData.date,
+                    booked_by: receptionistId
+                })
+                setFormData({
+                    patient_UHID: "",
+                    doctor: "",
+                    date: "",
+                })
+            }
+        }catch(error){
+            setError(error.response.data);
+        }
     }
 
     return (
@@ -65,22 +71,25 @@ const BookAppointment = () => {
                                 <h4 className='card-title'>Book Appointment</h4>
                             </div>
                             <div className='card-body'>
-                                <form onSubmit={handleSubmit}>
+                                <form onSubmit={handleSubmit} className='needs-validation'>
                                     <div className='form-group'>
                                         <label>Patient UHID</label>
                                         <input
                                             type='text'
-                                            className='form-control'
+                                            className={`form-control ${error.patient ? "is-invalid" : ""}`}
                                             name='patient_UHID'
                                             value={formData.patient_UHID}
                                             placeholder='Enter Patient UHID'
                                             onChange={handleChange}
                                         />
+                                        <div className='validation-feedback'>
+                                            {error.patient}
+                                        </div>
                                     </div>
                                     <div className='form-group'>
                                         <label>Doctor Name</label>
                                         <select
-                                            className='form-control'
+                                            className={`form-control ${error.doctor ? "is-invalid" : ""}`}
                                             name='doctor'
                                             id='doctor'
                                             value={formData.doctor}
@@ -91,6 +100,9 @@ const BookAppointment = () => {
                                                 <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
                                             )))}
                                         </select>
+                                        <div className="valid">
+                                            {error.doctor && <p>{error.doctor}</p>}
+                                        </div>
                                     </div>
                                     <div className='form-group'>
                                         <label htmlFor='date'>Appointment Date</label>
