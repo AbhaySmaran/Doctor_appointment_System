@@ -49,7 +49,6 @@ const DoctorList = () => {
     const handleUpdate = (doctor) => {
         handleDoctorSelect(doctor);
         setShowUpdateModal(true);
-        fetchDoctors();
     };
 
     const handleDelete = async (doctorId) => {
@@ -65,22 +64,27 @@ const DoctorList = () => {
     const handleSubmitUpdate = async () => {
         try {
             const res = await axios.put(`http://127.0.0.1:8000/api/doctors/${selectedDoctor.id}/`, formData);
-            const updatedDoctors = doctors.map(doctor =>
-                doctor.id === selectedDoctor.id ? res.data : doctor
-            );
-            setDoctors(updatedDoctors);
-            setShowUpdateModal(false);
-            setSelectedDoctor(res.data);
+            if(window.confirm("Are you sure you want to save changes")){
+                fetchDoctors();
+                setShowUpdateModal(false);
+            }
+            
         } catch (error) {
             console.error('Error updating doctor:', error);
         }
     };
 
-    const filteredDoctors = doctors.filter((doctor) =>
-        doctor.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredDoctors = doctors.filter((doctor) =>{
+        const doctorName = doctor.full_name ?.toLowerCase() || "";
+        const doctorEmail = doctor.user?.email?.toLowerCase() || "";
+        const doctosSpecialiation = doctor.specialization?.toLowerCase() || "";
+        
+        return(
+            doctorName.includes(searchTerm) ||
+            doctorEmail.includes(searchTerm) ||
+            doctosSpecialiation.includes(searchTerm)
+        );
+    });
 
     const indexOfLastRecord = currentPage * recordsPerPage;
     const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;

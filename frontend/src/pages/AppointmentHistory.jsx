@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { IoReturnUpBackSharp } from "react-icons/io5";
 import DatePicker from 'react-datepicker';
+import { GrUpdate } from "react-icons/gr";
+
 import 'react-datepicker/dist/react-datepicker.css';
 
 const AppointmentHistory = () => {
@@ -378,7 +380,7 @@ const AppointmentHistory = () => {
                                             Status
                                         </button>
                                         <button className='btn btn-primary' onClick={() => handleRescheduleClick(selectedAppointment)}>
-                                            Reschedule
+                                            {/*<GrUpdate />*/}Reschedule
                                         </button>
                                         <button className='btn btn-primary' onClick={()=> handleUpoadReport(selectedAppointment)}>
                                             Upload Report

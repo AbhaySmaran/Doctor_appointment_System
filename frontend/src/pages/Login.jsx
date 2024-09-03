@@ -46,7 +46,7 @@ function Login() {
             <Navbar />
             <Container>
                 <Row className="justify-content-md-center">
-                    <Col xs={12} md={12}>
+                    <Col xs={8} md={8}>
                         <h2 className="text-center">Login</h2>
                         <Form onSubmit={handleLogin}>
                             <Form.Group controlId="formEmail">

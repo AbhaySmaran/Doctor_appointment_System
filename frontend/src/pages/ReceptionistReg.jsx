@@ -64,8 +64,7 @@ const ReceptionistReg = () => {
                     </button>
                 </div>
             </div>
-            <br />
-            <div className="container mt-4">
+            <div className="container">
                 <h4 className="mb-4">Receptionist Registration</h4>
                 <form onSubmit={handleSubmit} className='needs-validation'>
                     <div className="row mb-3">

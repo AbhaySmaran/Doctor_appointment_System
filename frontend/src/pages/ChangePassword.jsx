@@ -25,23 +25,22 @@ function ChangePassword() {
         }
         // Confirmation dialog before proceeding
         try {
-            const response = await axios.put('http://127.0.0.1:8000/api/password-change/', {
-                "old_password": oldPassword,
-                "new_password": newPassword,
-                "confirm_password": confirmPassword,
-            },
+            if (window.confirm('Are you sure you want to change your password?')) {
+                const response = await axios.put('http://127.0.0.1:8000/api/password-change/', {
+                    "old_password": oldPassword,
+                    "new_password": newPassword,
+                    "confirm_password": confirmPassword,
+                },
                 {
                     headers: {
                         "Authorization": `Bearer ${access}`
                     }
-                }
-            );
-            if(response.status=== 200){
-                if (!window.confirm('Are you sure you want to change your password?')) {
+                });    
+                if(response.status=== 200){
                     alert('Password updated successfully');       
                     localStorage.clear();
                     navigate('/');
-                }               
+                }           
             }   
             
         } catch (error) {

@@ -48,26 +48,23 @@ const PatientList = () => {
     const recordsPerPage = 10;
     const [doctor, setDoctor] = useState('');
     const [doctors, setDoctors] = useState([])
-    useEffect(() => {
-        const fetchDoctors = async () => {
-            const res = await axios.get('http://127.0.0.1:8000/api/doctors/')
-            setDoctors(res.data)
-        };
-        fetchDoctors();
-    }, [])
+
+    const fetchDoctors = async () => {
+        const res = await axios.get('http://127.0.0.1:8000/api/doctors/')
+        setDoctors(res.data)
+    };
+    // useEffect(() => {
+    //     fetchDoctors();
+    // }, [])
 
     const fetchTests = async () => {
         const res = await axios.get('http://127.0.0.1:8000/services/test/');
         setAllTests(res.data);
     };
 
-    useEffect(() => {
-        fetchTests();
-    }, []);
-
-    useEffect(() => {
-        fetchPatients();
-    }, []);
+    // useEffect(() => {
+    //     fetchTests();
+    // }, []);
 
     const fetchPatients = async () => {
         try {
@@ -77,6 +74,12 @@ const PatientList = () => {
             console.error('Error fetching patients:', error);
         }
     };
+
+    useEffect(() => {
+        fetchDoctors();
+        fetchPatients();
+        fetchTests();
+    }, []);
 
     const handlePatientSelect = (patient) => {
         setSelectedPatient(patient);
@@ -89,7 +92,7 @@ const PatientList = () => {
             gender: patient.gender,
             address: patient.address,
             contact_no: patient.contact_no,
-            status: patient.status,
+            status: patient.status
         });
     };
 
@@ -110,8 +113,8 @@ const PatientList = () => {
 
     const handleStatusChange = async () => {
         try {
-            await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
             if (window.confirm("Are you sure you want to change status?")) {
+                await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
                 await fetchPatients();
                 setShowStatusModal(false);
             }
@@ -147,11 +150,18 @@ const PatientList = () => {
 
     const handleSubmitUpdate = async () => {
         try {
-            await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
-            if (window.confirm("Are you sure you want to change status?")) {
+            if (window.confirm("Are you sure you want to save changes?")) {
+                const res = await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
                 await fetchPatients();
                 setShowUpdateModal(false);
             }
+            // const res = await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
+            // if (window.confirm("Are you sure you want to save changes?")) {
+            //     setPatients(patients.map((patient) => 
+            //     patient.id === formData.id ? { ...patient, ...formData } : patient
+            // ));
+            // setShowUpdateModal(false);
+            // }
         } catch (error) {
             setUploadError(error.response.data)
             console.error('Error updating patient:', error);
@@ -161,13 +171,15 @@ const PatientList = () => {
     const handleAppointmentSubmit = async () => {
         const reportData = new FormData();
         reportData.append('patient', formData.uuid);
-        reportData.append('doctor', doctor);
+        if(doctor){
+            reportData.append('doctor', doctor);
+        }
         reportData.append('date', appointmentDate);
         reportData.append('booked_by', user)
 
-        try{
-            const res = await axios.post('http://127.0.0.1:8000/services/appointment/book/', reportData)
+        try{       
             if(window.confirm("Book Appointment")){
+                const res = await axios.post('http://127.0.0.1:8000/services/appointment/book/', reportData);
                 setShowAppointmentModal(false);
                 setDoctor('');
                 setAppointmentDate('');

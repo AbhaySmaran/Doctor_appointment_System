@@ -9,15 +9,15 @@ const PrescriptionList = () => {
     const { uuid } = useParams();
     const [reports, setReports] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [patient,setPatient] = useState({});
+    const [patient, setPatient] = useState({});
     const access = localStorage.getItem('access');
     const navigate = useNavigate();
 
-    const fetchPatient = async()=>{
-        try{
+    const fetchPatient = async () => {
+        try {
             const response = await axios.get(`http://127.0.0.1:8000/api/patients/${uuid}/`)
-            setPatient(error.response.data)
-        }catch(error){
+            setPatient(response.data)
+        } catch (error) {
             console.error(error.response.data);
         }
     }
@@ -90,64 +90,66 @@ const PrescriptionList = () => {
                     <IoReturnUpBackSharp /> Back
                 </button>
             </div>
-            <br />
-            <br />
-            <input
-                type="text"
-                id="search-input"
-                className="form-control mb-3"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <div className='row mb-3'>
-                <div className='col-md-4'>
-                    <p><strong>Patient UHID: </strong>{patient.uuid}</p>
+            
+            <div className='container'>
+                <h4>Prescriptions List</h4>
+                <input
+                    type="text"
+                    id="search-input"
+                    className="form-control mb-3"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div className='row mb-3'>
+                    <div className='col-md-4'>
+                        <p><strong>Patient UHID: </strong>{patient.uuid}</p>
+                    </div>
+                    <div className='col-md-5'>
+                        <p><strong>Patient's Name: </strong>{patient.full_name}</p>
+                    </div>
+                    <div className='col-md-3'>
+                        <p><strong>Patient's Age: </strong>{patient.age}</p>
+                    </div>
                 </div>
-                <div className='col-md-5'>
-                    <p><strong>Patient's Name: </strong>{patient.full_name}</p>
-                </div>
-                <div className='col-md-3'>
-                    <p><strong>Patient's Age: </strong>{patient.age}</p>
-                </div>
-            </div>
-            <h2>Prescriptions List</h2>
-            <table className="table table-striped table-light">
-                <thead className='thead'>
-                    <tr>
-                        <th>Doctor's Name</th>
-                        {/* <th>Messege</th> */}
-                        <th>Download</th>
-                        <th>Uploaded On</th>
-                        <th>Uploaded By</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredReports.length > 0 ? (
-                        filteredReports.map((report) => (
-                            <tr key={report.id}>
-                                <td>{report.doctor.full_name}</td>
-                                {/* <td>{report.message}</td> */}
-                                <td>
-                                    <FaCloudDownloadAlt
-                                        style={{ cursor: 'pointer', marginRight: '10px' }}
-                                        onClick={() => handleDownload(report.report_file)}
-                                    /> 
-                                    <a href={`http://127.0.0.1:8000${report.prescription_file}`} target="_blank" rel="noopener noreferrer">
-                                        View Report
-                                    </a>
-                                </td>
-                                <td>{new Date(report.uploaded_on).toLocaleString()}</td>
-                                <td>{report.uploaded_by}</td>
-                            </tr>
-                        ))
-                    ) : (
+
+                <table className="table table-striped table-light">
+                    <thead className='thead'>
                         <tr>
-                            <td colSpan="7" className="text-center">No reports found</td>
+                            <th>Doctor's Name</th>
+                            {/* <th>Messege</th> */}
+                            <th>Download</th>
+                            <th>Uploaded On</th>
+                            <th>Uploaded By</th>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {filteredReports.length > 0 ? (
+                            filteredReports.map((report) => (
+                                <tr key={report.id}>
+                                    <td>{report.doctor.full_name}</td>
+                                    {/* <td>{report.message}</td> */}
+                                    <td>
+                                        <FaCloudDownloadAlt
+                                            style={{ cursor: 'pointer', marginRight: '10px' }}
+                                            onClick={() => handleDownload(report.report_file)}
+                                        />
+                                        <a href={`http://127.0.0.1:8000${report.prescription_file}`} target="_blank" rel="noopener noreferrer">
+                                            View Report
+                                        </a>
+                                    </td>
+                                    <td>{new Date(report.uploaded_on).toLocaleString()}</td>
+                                    <td>{report.uploaded_by}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="7" className="text-center">No reports found</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };

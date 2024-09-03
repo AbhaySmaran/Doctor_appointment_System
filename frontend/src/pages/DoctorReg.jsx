@@ -87,8 +87,8 @@ const DoctorReg = () => {
                     </button>
                 </div>
             </div>
-            <br />
-            <div className="container mt-6">
+
+            <div className="container">
                 <h4 className="mb-4">Doctor Registration</h4>
                 <form onSubmit={handleSubmit} className='needs-validation'>
                     <div className="row mb-3" id='form-row'>

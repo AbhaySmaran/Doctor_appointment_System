@@ -74,8 +74,8 @@ const PatientReg = () => {
                     </button>
                 </div>
             </div>
-            <br />
-            <div className="container mt-7">
+    
+            <div className="container">
                 <h4 className="mb-4">Patient Registration</h4>
                 <form onSubmit={handleSubmit}>
                     <div className="row mb-3" id='form-row'>
