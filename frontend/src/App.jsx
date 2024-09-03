@@ -16,12 +16,13 @@ import BookAppointment from './pages/BookAppointment';
 import ReportUpload from './pages/ReportUpload';
 import AppointmentHistory from './pages/AppointmentHistory';
 import ReportList from './pages/ReportList';
-import Appointments from './pages/Appointments';
+import DoctorAppointments from './pages/DoctorAppointments';
 import PatientDetails from './pages/PatientDetails';
 import Tests from './pages/Tests';
 import SupportIssues from './pages/SupportIssues';
 import PrescriptiontList from './pages/PrescriptionList';
 import PatientHistory from './pages/PatientHistory';
+import ChangePassword from './pages/ChangePassword';
 
 function App() {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('access'));
@@ -70,10 +71,11 @@ function App() {
           <Route path='patient/reports/:uuid' element={<ReportList />} />
           <Route path='patient/prescriptions/:uuid' element={<PrescriptiontList />} />
           <Route path= 'patient/history/:uuid' element={<PatientHistory />} />
-          <Route path='doctor/appointment' element={<Appointments />} />
+          <Route path='doctor/appointment' element={<DoctorAppointments />} />
           <Route path='doctor/reports' element={<ReportList />} />
           <Route path='configuration' element={<Tests />} />
           <Route path='support' element={<SupportIssues />} />
+          <Route path='change-password' element={<ChangePassword />} />
           {/* <Route path='patients/reports/:uuid' element */}
         </Route>
         <Route path="*" element={<h1>Page Not Found</h1>} />

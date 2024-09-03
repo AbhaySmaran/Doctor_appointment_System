@@ -18,4 +18,5 @@ urlpatterns=[
     path('user/profile/',UserProfileView.as_view()),
     path('issue/support/',SupportView.as_view()),
     path('issue/support/<int:id>/',SupportView.as_view()),
+    path('password-change/', PasswordChangeView.as_view(), name='password-reset')
 ]

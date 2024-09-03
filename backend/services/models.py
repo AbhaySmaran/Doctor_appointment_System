@@ -50,7 +50,7 @@ class Report(models.Model):
     patient = models.ForeignKey(Patient, to_field='uuid', on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
-    report_file = models.FileField(blank=True, upload_to=report_upload_to)
+    report_file = models.FileField( upload_to=report_upload_to)
     uploaded_on = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.CharField(max_length=50, blank=True)
     year = models.IntegerField(blank=True, null=True)
@@ -113,11 +113,11 @@ class Prescription(models.Model):
             raise ValidationError("Only PDF, JPEG, JPG, and PNG files are allowed.")
 
         # Validate file size
-        if self.report_file.size > 10 * 1024 * 1024:  # 15 MB
+        if self.prescription_file.size > 10 * 1024 * 1024:  # 15 MB
             raise ValidationError("File size must be less than 10 MB.")
         
         # Combined error message if both conditions fail
-        if file_extension not in allowed_extensions and self.report_file.size > 10 * 1024 * 1024:
+        if file_extension not in allowed_extensions and self.prescription_file.size > 10 * 1024 * 1024:
             raise ValidationError("Only PDF, JPEG, JPG, and PNG files are allowed and file size must be less than 10 MB.")
 
     def save(self,*args,**kwargs):

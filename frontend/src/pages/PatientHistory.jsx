@@ -14,6 +14,7 @@ const PatientHistory = () => {
     const [appointments, setAppointments] = useState([]);
     const [reports, setReports] = useState([]);
     const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
+    const [appointmentAdvice,setAppointmentAdvice] = useState("");
     const access = localStorage.getItem('access');
     const navigate = useNavigate();
     // Fetch patient details
@@ -61,8 +62,9 @@ const PatientHistory = () => {
         });
     }, [uuid]);
 
-    const onReportClick = (appointmentId) => {
+    const onReportClick = (appointmentId,advice) => {
         setSelectedAppointmentId(appointmentId);
+        setAppointmentAdvice(advice)
     };
 
     return (
@@ -119,7 +121,7 @@ const PatientHistory = () => {
                                                         </a>
                                                     </td>
                                                     <td className='text-center'>
-                                                        <a href="#" style={{ textDecoration: 'none', color: 'inherit' }} onClick={() => onReportClick(appointment.id)}><GiClick /></a>
+                                                        <a href="#" style={{ textDecoration: 'none', color: 'inherit' }} onClick={() => onReportClick(appointment.id,appointment.advice)}><GiClick /></a>
                                                     </td>
                                                 </tr>
                                             ))
@@ -143,12 +145,6 @@ const PatientHistory = () => {
                                             <li key={report.id}>{report.name}</li>
                                         )) : <p>No Reports Found</p>}
                                     </ul> */}
-                                    <div>
-                                        <h6>Advice</h6>
-                                        <p>
-
-                                        </p>
-                                    </div>
                                     <div>
                                         <table className='table table-striped'>
                                             <thead className='thead' id='thead'>
@@ -182,6 +178,22 @@ const PatientHistory = () => {
                                                 }
                                             </tbody>
                                         </table>
+                                    </div>
+                                    <div>
+                                        <h6>Advice</h6>
+                                        <textarea 
+                                            className='form-control'
+                                            value={
+                                                appointmentAdvice === "undefined"
+                                                ?
+                                                "No Advice Given"
+                                                :
+                                                appointmentAdvice
+
+                                            }
+                                            readOnly
+                                            style={{ height: '100px' }}
+                                        />
                                     </div>
                                 </div>
                             ) : <p>Select an appointment to view reports</p>}

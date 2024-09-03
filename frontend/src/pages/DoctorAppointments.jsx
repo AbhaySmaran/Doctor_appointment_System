@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { useEffect,useState } from 'react'
 
-const Appointments = () => {
+const DoctorAppointments = () => {
   const [myAppointments,setMyAppointments] = useState([])
   const access = localStorage.getItem("access")
   useEffect(()=>{
@@ -40,4 +40,4 @@ const Appointments = () => {
   )
 }
 
-export default Appointments
+export default DoctorAppointments

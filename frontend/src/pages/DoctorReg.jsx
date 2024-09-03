@@ -88,10 +88,10 @@ const DoctorReg = () => {
                 </div>
             </div>
             <br />
-            <div className="container mt-4">
+            <div className="container mt-6">
                 <h4 className="mb-4">Doctor Registration</h4>
                 <form onSubmit={handleSubmit} className='needs-validation'>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="fullName" className="form-label">Full Name</label>
                         </div>
@@ -108,7 +108,7 @@ const DoctorReg = () => {
                             <div className='invalid-feedback'>{error.full_name && <p>{error.full_name}</p>}</div>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="email" className="form-label">Email</label>
                         </div>
@@ -125,7 +125,7 @@ const DoctorReg = () => {
                             <div className='invalid-feedback'>{error.email && <p>{error.email}</p>}</div>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="username" className="form-label">Username</label>
                         </div>
@@ -142,7 +142,7 @@ const DoctorReg = () => {
                             <div className='invalid-feedback'>{error.username && <p>{error.username}</p>}</div>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="password" className="form-label">Password</label>
                         </div>
@@ -161,7 +161,7 @@ const DoctorReg = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="department" className="form-label">Department</label>
                         </div>
@@ -185,7 +185,7 @@ const DoctorReg = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="specialization" className="form-label">Specialization</label>
                         </div>
@@ -204,7 +204,7 @@ const DoctorReg = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="degree" className="form-label">Degree</label>
                         </div>
@@ -223,7 +223,7 @@ const DoctorReg = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="contactNo" className="form-label">Contact Number</label>
                         </div>
@@ -242,7 +242,7 @@ const DoctorReg = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="fee" className="form-label">Consultation Fee</label>
                         </div>

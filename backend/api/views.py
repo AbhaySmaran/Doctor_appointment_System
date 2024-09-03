@@ -236,5 +236,15 @@ class SupportView(APIView):
         return Response(serializer.errors)
 
 
-    
+class PasswordChangeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        serializer = PasswordChangeSerializer(user, data=request.data, context={'request': request},partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({"detail": "Password updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 

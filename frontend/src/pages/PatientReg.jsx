@@ -78,7 +78,7 @@ const PatientReg = () => {
             <div className="container mt-7">
                 <h4 className="mb-4">Patient Registration</h4>
                 <form onSubmit={handleSubmit}>
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="uuid" className="form-label">UHID</label>
                         </div>
@@ -86,7 +86,6 @@ const PatientReg = () => {
                             <input
                                 type="text"
                                 className={`form-control ${error.uuid ? 'is-invalid' : ''}`}
-                                id="form-row"
                                 name="uuid"
                                 value={formData.uuid}
                                 onChange={handleChange}
@@ -98,7 +97,7 @@ const PatientReg = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="fullName" className="form-label">Full Name</label>
                         </div>
@@ -106,7 +105,6 @@ const PatientReg = () => {
                             <input
                                 type="text"
                                 className={`form-control ${error.full_name ? 'is-invalid' : ''}`}
-                                id="form-row"
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
@@ -118,7 +116,7 @@ const PatientReg = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="age" className="form-label">Age</label>
                         </div>
@@ -126,7 +124,6 @@ const PatientReg = () => {
                             <input
                                 type="number"
                                 className={`form-control ${error.age ? 'is-invalid' : ''}`}
-                                id="form-row"
                                 name="age"
                                 value={formData.age}
                                 onChange={handleChange}
@@ -139,7 +136,7 @@ const PatientReg = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="email" className="form-label">Email</label>
                         </div>
@@ -147,7 +144,6 @@ const PatientReg = () => {
                             <input
                                 type="email"
                                 className={`form-control ${error.email ? 'is-invalid' : ''}`}
-                                id="form-row"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
@@ -159,14 +155,13 @@ const PatientReg = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="gender" className="form-label">Gender</label>
                         </div>
                         <div className="col-md-10">
                             <select
                                 className={`form-control ${error.gender ? 'is-invalid' : ''}`}
-                                id="form-row"
                                 name="gender"
                                 value={formData.gender}
                                 onChange={handleChange}
@@ -182,7 +177,7 @@ const PatientReg = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="dob" className="form-label">Date of Birth</label>
                         </div>
@@ -190,7 +185,6 @@ const PatientReg = () => {
                             <input
                                 type="date"
                                 className={`form-control ${error.dob ? 'is-invalid' : ''}`}
-                                id='form-row'
                                 name="dob"
                                 value={formData.dob}
                                 onChange={handleChange}
@@ -209,7 +203,6 @@ const PatientReg = () => {
                             <textarea
                                 type="text"
                                 className={`form-control ${error.address ? 'is-invalid' : ''}`}
-                                id='form-row'
                                 name="address"
                                 value={formData.address}
                                 onChange={handleChange}
@@ -221,7 +214,7 @@ const PatientReg = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="nationality" className="form-label">Nationality</label>
                         </div>
@@ -229,7 +222,6 @@ const PatientReg = () => {
                             <input
                                 type="text"
                                 className={`form-control ${error.nationality ? 'is-invalid' : ''}`}
-                                id='form-row'
                                 name="nationality"
                                 value={formData.nationality}
                                 onChange={handleChange}
@@ -241,7 +233,7 @@ const PatientReg = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-3">
+                    <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
                             <label htmlFor="contactNo" className="form-label">Contact Number</label>
                         </div>
@@ -249,7 +241,6 @@ const PatientReg = () => {
                             <input
                                 type="number"
                                 className={`form-control ${error.contact_no ? 'is-invalid' : ''}`}
-                                id='form-row'
                                 name="contactNo"
                                 value={formData.contactNo}
                                 onChange={handleChange}

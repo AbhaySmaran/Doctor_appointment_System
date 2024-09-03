@@ -9,8 +9,18 @@ const PrescriptionList = () => {
     const { uuid } = useParams();
     const [reports, setReports] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [patient,setPatient] = useState({});
     const access = localStorage.getItem('access');
     const navigate = useNavigate();
+
+    const fetchPatient = async()=>{
+        try{
+            const response = await axios.get(`http://127.0.0.1:8000/api/patients/${uuid}/`)
+            setPatient(error.response.data)
+        }catch(error){
+            console.error(error.response.data);
+        }
+    }
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -28,6 +38,7 @@ const PrescriptionList = () => {
         };
 
         fetchReports();
+        fetchPatient();
     }, [uuid]);
 
     const onBackClick = () => {
@@ -89,12 +100,21 @@ const PrescriptionList = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <h2>Reports List</h2>
+            <div className='row mb-3'>
+                <div className='col-md-4'>
+                    <p><strong>Patient UHID: </strong>{patient.uuid}</p>
+                </div>
+                <div className='col-md-5'>
+                    <p><strong>Patient's Name: </strong>{patient.full_name}</p>
+                </div>
+                <div className='col-md-3'>
+                    <p><strong>Patient's Age: </strong>{patient.age}</p>
+                </div>
+            </div>
+            <h2>Prescriptions List</h2>
             <table className="table table-striped table-light">
                 <thead className='thead'>
                     <tr>
-                        <th>Patient Name</th>
-                        <th>Patient UHID</th>
                         <th>Doctor's Name</th>
                         {/* <th>Messege</th> */}
                         <th>Download</th>
@@ -106,8 +126,6 @@ const PrescriptionList = () => {
                     {filteredReports.length > 0 ? (
                         filteredReports.map((report) => (
                             <tr key={report.id}>
-                                <td>{report.patient.full_name}</td>
-                                <td>{report.patient.uuid}</td>
                                 <td>{report.doctor.full_name}</td>
                                 {/* <td>{report.message}</td> */}
                                 <td>

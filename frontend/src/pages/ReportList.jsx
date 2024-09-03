@@ -8,9 +8,15 @@ import { IoReturnUpBackSharp } from "react-icons/io5";
 const ReportList = () => {
     const { uuid } = useParams();
     const [reports, setReports] = useState([]);
+    const [patient, setPatient] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
     const access = localStorage.getItem('access');
     const navigate = useNavigate();
+
+    const fetchPatientDetails = async () => {
+        const res = await axios.get(`http://127.0.0.1:8000/api/patients/${uuid}/`);
+        setPatient(res.data);
+    };
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -28,6 +34,7 @@ const ReportList = () => {
         };
 
         fetchReports();
+        fetchPatientDetails();
     }, [uuid]);
 
     const onBackClick = () => {
@@ -89,46 +96,55 @@ const ReportList = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <h2>Reports List</h2>
-            <table className="table table-striped table-light">
-                <thead className='thead'>
-                    <tr>
-                        <th>Patient Name</th>
-                        <th>Patient UHID</th>
-                        <th>Report Name</th>
-                        {/* <th>Messege</th> */}
-                        <th>Download</th>
-                        <th>Uploaded On</th>
-                        <th>Uploaded By</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredReports.length > 0 ? (
-                        filteredReports.map((report) => (
-                            <tr key={report.id}>
-                                <td>{report.patient.full_name}</td>
-                                <td>{report.patient.uuid}</td>
-                                <td>{report.name}</td>
-                                <td>
-                                    <FaCloudDownloadAlt
-                                        style={{ cursor: 'pointer', marginRight: '10px' }}
-                                        onClick={() => handleDownload(report.report_file)}
-                                    />
-                                    <a href={`http://127.0.0.1:8000${report.report_file}`} target="_blank" rel="noopener noreferrer">
-                                        View Report
-                                    </a>
-                                </td>
-                                <td>{new Date(report.uploaded_on).toLocaleString()}</td>
-                                <td>{report.uploaded_by}</td>
-                            </tr>
-                        ))
-                    ) : (
+            <div className='row mb-3'>
+                <div className='col-md-4'>
+                    <p><strong>Patient UHID: </strong>{patient.uuid}</p>
+                </div>
+                <div className='col-md-5'>
+                    <p><strong>Patient's Name: </strong>{patient.full_name}</p>
+                </div>
+                <div className='col-md-3'>
+                    <p><strong>Patient's Age: </strong>{patient.age}</p>
+                </div>
+            </div>
+            <h4>Reports List</h4>
+            <div className='table-responsive'>
+                <table className="table table-striped table-light">
+                    <thead className='thead'>
                         <tr>
-                            <td colSpan="7" className="text-center">No reports found</td>
+                            <th>Report Name</th>
+                            {/* <th>Messege</th> */}
+                            <th>Download</th>
+                            <th>Uploaded On</th>
+                            <th>Uploaded By</th>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {filteredReports.length > 0 ? (
+                            filteredReports.map((report) => (
+                                <tr key={report.id}>
+                                    <td>{report.name}</td>
+                                    <td>
+                                        <FaCloudDownloadAlt
+                                            style={{ cursor: 'pointer', marginRight: '10px' }}
+                                            onClick={() => handleDownload(report.report_file)}
+                                        />
+                                        <a href={`http://127.0.0.1:8000${report.report_file}`} target="_blank" rel="noopener noreferrer">
+                                            View Report
+                                        </a>
+                                    </td>
+                                    <td>{new Date(report.uploaded_on).toLocaleString()}</td>
+                                    <td>{report.uploaded_by}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="7" className="text-center">No reports found</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
