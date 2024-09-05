@@ -27,18 +27,18 @@ DROP TABLE IF EXISTS `api_customuser`;
 CREATE TABLE `api_customuser` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `last_login` datetime(6) DEFAULT NULL,
-  `username` varchar(150) DEFAULT NULL,
-  `email` varchar(254) DEFAULT NULL,
+  `username` varchar(150) NOT NULL,
+  `email` varchar(254) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` varchar(20) DEFAULT NULL,
+  `role` varchar(20) NOT NULL,
   `is_active` tinyint(1) NOT NULL,
   `is_admin` tinyint(1) NOT NULL,
   `is_staff` tinyint(1) NOT NULL,
   `is_superuser` tinyint(1) NOT NULL,
   `status` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -373,7 +373,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -382,7 +382,7 @@ CREATE TABLE `django_migrations` (
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2024-08-19 05:14:47.489776'),(2,'api','0001_initial','2024-08-19 05:14:50.911829'),(3,'admin','0001_initial','2024-08-19 05:14:51.990122'),(4,'admin','0002_logentry_remove_auto_add','2024-08-19 05:14:52.120710'),(5,'admin','0003_logentry_add_action_flag_choices','2024-08-19 05:14:52.193315'),(6,'contenttypes','0002_remove_content_type_name','2024-08-19 05:14:53.067687'),(7,'auth','0001_initial','2024-08-19 05:14:55.380408'),(8,'auth','0002_alter_permission_name_max_length','2024-08-19 05:14:55.911531'),(9,'auth','0003_alter_user_email_max_length','2024-08-19 05:14:55.958442'),(10,'auth','0004_alter_user_username_opts','2024-08-19 05:14:56.024066'),(11,'auth','0005_alter_user_last_login_null','2024-08-19 05:14:56.105218'),(12,'auth','0006_require_contenttypes_0002','2024-08-19 05:14:56.148565'),(13,'auth','0007_alter_validators_add_error_messages','2024-08-19 05:14:56.208563'),(14,'auth','0008_alter_user_username_max_length','2024-08-19 05:14:56.259548'),(15,'auth','0009_alter_user_last_name_max_length','2024-08-19 05:14:56.315048'),(16,'auth','0010_alter_group_name_max_length','2024-08-19 05:14:56.473941'),(17,'auth','0011_update_proxy_permissions','2024-08-19 05:14:56.544209'),(18,'auth','0012_alter_user_first_name_max_length','2024-08-19 05:14:56.607304'),(19,'services','0001_initial','2024-08-19 05:14:59.302619'),(20,'sessions','0001_initial','2024-08-19 05:14:59.661566'),(21,'services','0002_alter_report_report_file','2024-08-19 09:49:03.338715'),(22,'services','0003_alter_report_report_file','2024-08-19 12:16:11.583626'),(23,'services','0004_appointment_status_hospitalvisitlog','2024-08-20 12:22:13.185122'),(24,'services','0005_prescription','2024-08-20 14:33:09.508791'),(25,'services','0006_remove_prescription_date_alter_prescription_patient','2024-08-20 15:34:59.868217'),(26,'services','0007_report_year','2024-08-26 14:25:06.131689'),(27,'api','0002_patient_ststus','2024-08-27 12:51:01.415703'),(28,'api','0003_customuser_status','2024-08-27 13:02:15.166639'),(29,'api','0004_rename_ststus_patient_status','2024-08-28 13:17:57.873711'),(30,'api','0005_alter_customuser_role','2024-08-29 08:48:59.343768'),(31,'api','0006_alter_patient_address','2024-08-29 14:22:37.539840'),(32,'services','0008_test_test_type','2024-08-29 16:29:10.748454'),(33,'services','0009_alter_test_test_type','2024-08-29 16:29:41.610934'),(34,'services','0010_alter_test_test_code_alter_test_test_name','2024-08-29 17:59:59.623933'),(35,'api','0007_doctor_status_receptionist_status_and_more','2024-08-30 04:24:32.612522'),(36,'services','0011_rename_prescription_files_prescription_prescription_file','2024-08-30 04:29:21.581089'),(37,'api','0008_support','2024-08-30 11:43:55.205867'),(38,'api','0009_alter_support_issue_caption_and_more','2024-08-30 13:32:48.305716'),(39,'services','0012_followupappointments','2024-08-30 14:20:49.556841'),(40,'api','0010_alter_support_assigned_to_alter_support_comments_and_more','2024-08-31 02:54:33.720763'),(41,'api','0011_alter_support_resolution_date','2024-08-31 03:30:49.975368'),(42,'api','0012_support_created_by','2024-08-31 06:22:32.599810'),(43,'services','0013_prescription_messege_report_messege','2024-08-31 10:53:09.365935'),(44,'services','0014_rename_messege_prescription_message_and_more','2024-08-31 10:59:13.756866');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2024-08-19 05:14:47.489776'),(2,'api','0001_initial','2024-08-19 05:14:50.911829'),(3,'admin','0001_initial','2024-08-19 05:14:51.990122'),(4,'admin','0002_logentry_remove_auto_add','2024-08-19 05:14:52.120710'),(5,'admin','0003_logentry_add_action_flag_choices','2024-08-19 05:14:52.193315'),(6,'contenttypes','0002_remove_content_type_name','2024-08-19 05:14:53.067687'),(7,'auth','0001_initial','2024-08-19 05:14:55.380408'),(8,'auth','0002_alter_permission_name_max_length','2024-08-19 05:14:55.911531'),(9,'auth','0003_alter_user_email_max_length','2024-08-19 05:14:55.958442'),(10,'auth','0004_alter_user_username_opts','2024-08-19 05:14:56.024066'),(11,'auth','0005_alter_user_last_login_null','2024-08-19 05:14:56.105218'),(12,'auth','0006_require_contenttypes_0002','2024-08-19 05:14:56.148565'),(13,'auth','0007_alter_validators_add_error_messages','2024-08-19 05:14:56.208563'),(14,'auth','0008_alter_user_username_max_length','2024-08-19 05:14:56.259548'),(15,'auth','0009_alter_user_last_name_max_length','2024-08-19 05:14:56.315048'),(16,'auth','0010_alter_group_name_max_length','2024-08-19 05:14:56.473941'),(17,'auth','0011_update_proxy_permissions','2024-08-19 05:14:56.544209'),(18,'auth','0012_alter_user_first_name_max_length','2024-08-19 05:14:56.607304'),(19,'services','0001_initial','2024-08-19 05:14:59.302619'),(20,'sessions','0001_initial','2024-08-19 05:14:59.661566'),(21,'services','0002_alter_report_report_file','2024-08-19 09:49:03.338715'),(22,'services','0003_alter_report_report_file','2024-08-19 12:16:11.583626'),(23,'services','0004_appointment_status_hospitalvisitlog','2024-08-20 12:22:13.185122'),(24,'services','0005_prescription','2024-08-20 14:33:09.508791'),(25,'services','0006_remove_prescription_date_alter_prescription_patient','2024-08-20 15:34:59.868217'),(26,'services','0007_report_year','2024-08-26 14:25:06.131689'),(27,'api','0002_patient_ststus','2024-08-27 12:51:01.415703'),(28,'api','0003_customuser_status','2024-08-27 13:02:15.166639'),(29,'api','0004_rename_ststus_patient_status','2024-08-28 13:17:57.873711'),(30,'api','0005_alter_customuser_role','2024-08-29 08:48:59.343768'),(31,'api','0006_alter_patient_address','2024-08-29 14:22:37.539840'),(32,'services','0008_test_test_type','2024-08-29 16:29:10.748454'),(33,'services','0009_alter_test_test_type','2024-08-29 16:29:41.610934'),(34,'services','0010_alter_test_test_code_alter_test_test_name','2024-08-29 17:59:59.623933'),(35,'api','0007_doctor_status_receptionist_status_and_more','2024-08-30 04:24:32.612522'),(36,'services','0011_rename_prescription_files_prescription_prescription_file','2024-08-30 04:29:21.581089'),(37,'api','0008_support','2024-08-30 11:43:55.205867'),(38,'api','0009_alter_support_issue_caption_and_more','2024-08-30 13:32:48.305716'),(39,'services','0012_followupappointments','2024-08-30 14:20:49.556841'),(40,'api','0010_alter_support_assigned_to_alter_support_comments_and_more','2024-08-31 02:54:33.720763'),(41,'api','0011_alter_support_resolution_date','2024-08-31 03:30:49.975368'),(42,'api','0012_support_created_by','2024-08-31 06:22:32.599810'),(43,'services','0013_prescription_messege_report_messege','2024-08-31 10:53:09.365935'),(44,'services','0014_rename_messege_prescription_message_and_more','2024-08-31 10:59:13.756866'),(45,'api','0013_alter_customuser_email_alter_customuser_role_and_more','2024-09-05 12:10:52.039563'),(46,'api','0014_alter_customuser_id_alter_doctor_id_alter_patient_id_and_more','2024-09-05 12:10:52.484797'),(47,'api','0015_alter_customuser_role','2024-09-05 12:10:52.531671'),(48,'services','0015_delete_hospitalvisitlog','2024-09-05 12:10:52.845727'),(49,'services','0016_report_appointment','2024-09-05 12:10:53.984106'),(50,'services','0017_alter_report_appointment','2024-09-05 12:10:55.234023'),(51,'services','0018_alter_appointment_id_alter_prescription_id_and_more','2024-09-05 12:10:55.454624'),(52,'services','0019_appointment_advice','2024-09-05 12:10:56.278876'),(53,'services','0020_alter_prescription_prescription_file','2024-09-05 12:10:56.348395'),(54,'services','0021_alter_prescription_prescription_file_and_more','2024-09-05 12:10:56.536757');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -428,12 +428,13 @@ CREATE TABLE `services_appointment` (
   `doctor_id` bigint NOT NULL,
   `patient_id` varchar(255) NOT NULL,
   `status` varchar(20) NOT NULL,
+  `advice` longtext NOT NULL DEFAULT (_utf8mb3''),
   PRIMARY KEY (`id`),
   KEY `services_appointment_doctor_id_0ddaf6d8_fk_api_doctor_id` (`doctor_id`),
   KEY `services_appointment_patient_id_5afc949e_fk_api_patient_uuid` (`patient_id`),
   CONSTRAINT `services_appointment_doctor_id_0ddaf6d8_fk_api_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `api_doctor` (`id`),
   CONSTRAINT `services_appointment_patient_id_5afc949e_fk_api_patient_uuid` FOREIGN KEY (`patient_id`) REFERENCES `api_patient` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -442,7 +443,7 @@ CREATE TABLE `services_appointment` (
 
 LOCK TABLES `services_appointment` WRITE;
 /*!40000 ALTER TABLE `services_appointment` DISABLE KEYS */;
-INSERT INTO `services_appointment` VALUES (1,'2024-08-25','2024-08-19 05:55:10.041793','2024-08-31 13:03:08.081135','',1,'P200203032','Cheaked'),(2,'2024-08-30','2024-08-20 12:56:06.619713','2024-08-31 01:43:35.553891','',2,'P200201013','active'),(3,'2024-08-25','2024-08-20 12:59:44.609726','2024-08-31 13:12:06.525967','',1,'P200201013','Cheaked'),(4,'2024-09-07','2024-08-28 14:12:26.733381','2024-08-28 14:12:26.764588','',2,'P200002024','active'),(5,'2024-08-30','2024-08-28 16:48:44.133959','2024-08-31 09:15:22.779237','',1,'P200002024','Cheaked'),(6,'2024-09-07','2024-08-30 03:28:56.128912','2024-08-30 03:28:56.131222','',3,'P200206118','active'),(7,'2024-10-09','2024-08-30 03:29:10.071392','2024-08-30 03:29:10.071392','',1,'P200206118','active'),(8,'2024-09-03','2024-08-31 11:57:02.589035','2024-08-31 12:43:41.857812','',1,'P200203031','Active');
+INSERT INTO `services_appointment` VALUES (1,'2024-08-25','2024-08-19 05:55:10.041793','2024-08-31 13:03:08.081135','Abhay Smaran',1,'P200203032','Cheaked',''),(2,'2024-08-30','2024-08-20 12:56:06.619713','2024-08-31 01:43:35.553891','Abhay Smaran',2,'P200201013','active',''),(3,'2024-08-25','2024-08-20 12:59:44.609726','2024-08-31 13:12:06.525967','Abhay Smaran',1,'P200201013','Cheaked',''),(4,'2024-09-07','2024-08-28 14:12:26.733381','2024-08-28 14:12:26.764588','Abhay Smaran',2,'P200002024','active',''),(5,'2024-08-30','2024-08-28 16:48:44.133959','2024-08-31 09:15:22.779237','Abhay Smaran',1,'P200002024','Cheaked',''),(6,'2024-09-07','2024-08-30 03:28:56.128912','2024-08-30 03:28:56.131222','Abhay Smaran',3,'P200206118','active',''),(7,'2024-10-09','2024-08-30 03:29:10.071392','2024-08-30 03:29:10.071392','Abhay Smaran',1,'P200206118','active',''),(8,'2024-09-03','2024-08-31 11:57:02.589035','2024-09-05 13:08:05.251317','Abhay Smaran',1,'P200203031','Checked',''),(9,'2024-09-05','2024-09-05 13:31:40.972521','2024-09-05 13:32:19.221792','Abhay Smaran',2,'P200203032','Checked',''),(10,'2024-09-04','2024-09-05 13:32:43.752051','2024-09-05 13:33:31.774262','Abhay Smaran',2,'P200203031','Checked','');
 /*!40000 ALTER TABLE `services_appointment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -476,31 +477,6 @@ CREATE TABLE `services_followupappointments` (
 LOCK TABLES `services_followupappointments` WRITE;
 /*!40000 ALTER TABLE `services_followupappointments` DISABLE KEYS */;
 /*!40000 ALTER TABLE `services_followupappointments` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `services_hospitalvisitlog`
---
-
-DROP TABLE IF EXISTS `services_hospitalvisitlog`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `services_hospitalvisitlog` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `patiend_id` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `services_hospitalvis_patiend_id_4a8ec802_fk_api_patie` (`patiend_id`),
-  CONSTRAINT `services_hospitalvis_patiend_id_4a8ec802_fk_api_patie` FOREIGN KEY (`patiend_id`) REFERENCES `api_patient` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `services_hospitalvisitlog`
---
-
-LOCK TABLES `services_hospitalvisitlog` WRITE;
-/*!40000 ALTER TABLE `services_hospitalvisitlog` DISABLE KEYS */;
-/*!40000 ALTER TABLE `services_hospitalvisitlog` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -554,12 +530,15 @@ CREATE TABLE `services_report` (
   `test_id` bigint NOT NULL,
   `year` int DEFAULT NULL,
   `message` longtext NOT NULL DEFAULT (_utf8mb3''),
+  `appointment_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `services_report_patient_id_d9bd0b0e_fk_api_patient_uuid` (`patient_id`),
   KEY `services_report_test_id_699d9d70_fk_services_test_id` (`test_id`),
+  KEY `services_report_appointment_id_8621bb2a_fk_services_` (`appointment_id`),
+  CONSTRAINT `services_report_appointment_id_8621bb2a_fk_services_` FOREIGN KEY (`appointment_id`) REFERENCES `services_appointment` (`id`),
   CONSTRAINT `services_report_patient_id_d9bd0b0e_fk_api_patient_uuid` FOREIGN KEY (`patient_id`) REFERENCES `api_patient` (`uuid`),
   CONSTRAINT `services_report_test_id_699d9d70_fk_services_test_id` FOREIGN KEY (`test_id`) REFERENCES `services_test` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -568,7 +547,7 @@ CREATE TABLE `services_report` (
 
 LOCK TABLES `services_report` WRITE;
 /*!40000 ALTER TABLE `services_report` DISABLE KEYS */;
-INSERT INTO `services_report` VALUES (1,'WBC','report_files/2024/P200203031/WBC_1725076308.pdf','2024-08-31 03:51:48.024817','Abhay Smaran','P200203031',8,2024,''),(2,'DT_1','report_files/2024/P200203032/DT_1_1725076328.pdf','2024-08-31 03:52:08.853007','Abhay Smaran','P200203032',10,2024,''),(3,'BLD','report_files/2024/P200201017/BLD_1725076346.pdf','2024-08-31 03:52:26.149943','Abhay Smaran','P200201017',9,2024,''),(4,'BLD','report_files/2024/P200203031/BLD_1725102638.pdf','2024-08-31 11:10:38.996689','umasankar','P200203031',9,2024,'Reports are good no need for next cheak up');
+INSERT INTO `services_report` VALUES (1,'WBC','report_files/2024/P200203031/WBC_1725542873.pdf','2024-09-05 13:27:53.534092','Abhay Smaran','P200203031',8,2024,'',8),(2,'BLD','report_files/2024/P200203031/BLD_1725542890.pdf','2024-09-05 13:28:10.794072','Abhay Smaran','P200203031',9,2024,'',8),(3,'DT_1','report_files/2024/P200203031/DT_1_1725542921.pdf','2024-09-05 13:28:41.011721','Abhay Smaran','P200203031',10,2024,'',8),(4,'WBC','report_files/2024/P200203032/WBC_1725543130.pdf','2024-09-05 13:32:10.035873','Abhay Smaran','P200203032',8,2024,'',9),(5,'DT_1','report_files/2024/P200203031/DT_1_1725543183.pdf','2024-09-05 13:33:03.561622','Abhay Smaran','P200203031',10,2024,'',10);
 /*!40000 ALTER TABLE `services_report` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -609,4 +588,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-31 18:47:28
+-- Dump completed on 2024-09-05 19:12:52
