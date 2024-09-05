@@ -9,7 +9,7 @@ import { Tooltip } from 'bootstrap';
 import { FaCloudDownloadAlt } from "react-icons/fa";
 
 const PatientHistory = () => {
-    const url = localStorage.getItem('url');
+    const base_url = localStorage.getItem('url');
     const { uuid } = useParams();
     const [patient, setPatient] = useState({});
     const [appointments, setAppointments] = useState([]);
@@ -20,13 +20,13 @@ const PatientHistory = () => {
     const navigate = useNavigate();
     // Fetch patient details
     const fetchPatientDetails = async () => {
-        const res = await axios.get(`${url}/api/patients/${uuid}/`);
+        const res = await axios.get(`${base_url}/api/patients/${uuid}/`);
         setPatient(res.data);
     };
 
     // Fetch appointments
     const fetchAppointments = async () => {
-        const res = await axios.get(`${url}/services/patient/appointment/${uuid}/`);
+        const res = await axios.get(`${base_url}/services/patient/appointment/${uuid}/`);
         setAppointments(res.data);
     };
 
@@ -39,8 +39,31 @@ const PatientHistory = () => {
     // }, []);
 
     // Fetch reports for a specific appointment
+
+    const handleDownload = async (fileUrl) => {
+        try {
+            // Make a request to get the file blob
+            const response = await axios.get(`${base_url}${fileUrl}`, {
+                headers: {
+                    'Authorization': `Bearer ${access}`
+                },
+                responseType: 'blob' // Important: This tells axios to expect a binary file
+            });
+
+            // Create a temporary URL to download the file
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileUrl.split('/').pop()); // Set the file name
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link); // Clean up
+        } catch (error) {
+            console.error('Error downloading file:', error);
+        }
+    };
     const fetchReports = async () => {
-        const res = await axios.get(`${url}/services/reports/${uuid}/`, {
+        const res = await axios.get(`${base_url}/services/reports/${uuid}/`, {
             headers: {
                 'Authorization': `Bearer ${access}`
             }
@@ -164,7 +187,7 @@ const PatientHistory = () => {
                                                                     style={{ cursor: 'pointer', marginRight: '10px' }}
                                                                     onClick={() => handleDownload(report.report_file)}
                                                                 />
-                                                                <a href={`${url}${report.report_file}`} target="_blank" rel="noopener noreferrer">
+                                                                <a href={`${base_url}${report.report_file}`} target="_blank" rel="noopener noreferrer">
                                                                     View Report
                                                                 </a>
                                                             </td>
