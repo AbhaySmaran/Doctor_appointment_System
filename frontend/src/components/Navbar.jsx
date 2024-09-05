@@ -7,7 +7,11 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    const url = localStorage.getItem('url');
     localStorage.clear();
+    if (url) {
+      localStorage.setItem('url', url); // put the value back
+    }
     navigate('/', { replace: true });  
   };
 
