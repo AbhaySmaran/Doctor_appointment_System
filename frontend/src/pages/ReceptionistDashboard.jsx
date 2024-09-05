@@ -13,6 +13,7 @@ import Chart from "chart.js/auto"
 import { GiTestTubes } from "react-icons/gi";
 
 const ReceptionistDashboard = () => {
+    const url = localStorage.getItem('url');
     const [user,setUser] = useState([]);
     const [error,setError] = useState(null);
     const [patientData, setPatientData] = useState({});
@@ -33,21 +34,11 @@ const ReceptionistDashboard = () => {
     const role = localStorage.getItem('role');
     useEffect(() => {
         const fetchUser = async () => {
-            // const res = await axios.get('http://127.0.0.1:8000/api/receptionist/profile/', {
-            //     headers: {
-            //         "Authorization": `Bearer ${access}`,
-            //     },
-            // });
-            // setReceptionist(res.data);
-            // if (res.data) {
-            //     localStorage.setItem('uuid', res.data.uuid);
-            //     localStorage.setItem('name', res.data.full_name);
-            // }
             try {
                 let response;
                 if (role === 'super_admin') {
                     // Fetch data specific to super_admin
-                    response = await axios.get('http://127.0.0.1:8000/api/user/profile/',{
+                    response = await axios.get(`${url}/api/user/profile/`,{
                             headers: {
                                 "Authorization": `Bearer ${access}`,
                             },
@@ -57,7 +48,7 @@ const ReceptionistDashboard = () => {
                         }
                 } else if (role === 'receptionist') {
                     // Fetch data specific to receptionist
-                    response = await axios.get(`http://127.0.0.1:8000/api/receptionist/profile/`,{
+                    response = await axios.get(`${url}/api/receptionist/profile/`,{
                             headers: {
                                 "Authorization": `Bearer ${access}`,
                             },
@@ -75,7 +66,7 @@ const ReceptionistDashboard = () => {
 
         const fetchPatientData = async () => {
             try {
-                const res = await axios.get('http://127.0.0.1:8000/api/patients/', {
+                const res = await axios.get(`${url}/api/patients/`, {
                     headers: {
                         "Authorization": `Bearer ${access}`,
                     },
@@ -106,7 +97,7 @@ const ReceptionistDashboard = () => {
 
         const fetchLineChartData = async () => {
             try {
-                const res = await axios.get(`http://127.0.0.1:8000/services/appointments/daily/${selectedYear}/${selectedMonth}/`, {
+                const res = await axios.get(`${url}/services/appointments/daily/${selectedYear}/${selectedMonth}/`, {
                     headers: {
                         "Authorization": `Bearer ${access}`,
                     },
@@ -142,7 +133,7 @@ const ReceptionistDashboard = () => {
         };
         const fetchReportData = async () => {
             try {
-                const res = await axios.get(`http://127.0.0.1:8000/services/api/tests/${testCatagory}/`, {
+                const res = await axios.get(`${url}/services/api/tests/${testCatagory}/`, {
                     headers: {
                         "Authorization": `Bearer ${access}`,
                     },

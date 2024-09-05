@@ -5,6 +5,7 @@ import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 const SupportIssues = () => {
+    const url = localStorage.getItem('url');
     const role = localStorage.getItem('role');
     const user = localStorage.getItem('name');
     const [issues, setIssues] = useState([]);
@@ -25,7 +26,7 @@ const SupportIssues = () => {
     });
 
     const fetchIssues = async () => {
-        const res = await axios.get('http://127.0.0.1:8000/api/issue/support/');
+        const res = await axios.get(`${url}/api/issue/support/`);
         setIssues(res.data);
     };
 
@@ -60,7 +61,7 @@ const SupportIssues = () => {
         }
 
         try {
-            const res = await axios.post('http://127.0.0.1:8000/api/issue/support/', reportData);
+            const res = await axios.post(`${url}/api/issue/support/`, reportData);
             alert('Issue Submitted');
             setShowSupportModal(false);
             fetchIssues();
@@ -72,7 +73,7 @@ const SupportIssues = () => {
 
     const handleStatusUpdate = async () => {
         try {
-            await axios.put(`http://127.0.0.1:8000/api/issue/support/${selectedIssue.Ticket_id}/`, { Status: status });
+            await axios.put(`${url}/api/issue/support/${selectedIssue.Ticket_id}/`, { Status: status });
             alert('Issue status updated');
             setShowStatusModal(false);
             fetchIssues();
@@ -134,7 +135,7 @@ const SupportIssues = () => {
                                         <td>{issue.Created_Date}</td>
                                         <td>{issue.created_by}</td>
                                         <td>
-                                            {(issue.Issue_ScreenShot !== null) ? <a href={`http://127.0.0.1:8000${issue.Issue_ScreenShot}`} target="_blank" rel="noopener noreferrer">
+                                            {(issue.Issue_ScreenShot !== null) ? <a href={`${url}${issue.Issue_ScreenShot}`} target="_blank" rel="noopener noreferrer">
                                                 View ScreenShot
                                             </a> :
                                                 <p>No ScreenShot</p>
@@ -172,7 +173,7 @@ const SupportIssues = () => {
                                         <td>{issue.Status}</td>
                                         <td>{issue.Created_Date}</td>
                                         <td>
-                                            {(issue.Issue_ScreenShot !== null) ? <a href={`http://127.0.0.1:8000${issue.Issue_ScreenShot}`} target="_blank" rel="noopener noreferrer">
+                                            {(issue.Issue_ScreenShot !== null) ? <a href={`${url}${issue.Issue_ScreenShot}`} target="_blank" rel="noopener noreferrer">
                                                 View ScreenShot
                                             </a> :
                                                 <p>No ScreenShot</p>

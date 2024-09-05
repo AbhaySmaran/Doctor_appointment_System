@@ -6,6 +6,7 @@ import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 const ReceptionistList = () => {
+    const url = localStorage.getItem('url');
     const [receptionists, setReceptionists] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -25,7 +26,7 @@ const ReceptionistList = () => {
 
     const fetchReceptionists = async () => {
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/receptionists/');
+            const res = await axios.get(`${url}/api/receptionists/`);
             setReceptionists(res.data);
         } catch (error) {
             console.error('Error fetching receptionists:', error);
@@ -49,7 +50,7 @@ const ReceptionistList = () => {
 
     const handleDelete = async (receptionistId) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/receptionists/${receptionistId}/`);
+            await axios.delete(`${url}/api/receptionists/${receptionistId}/`);
             setReceptionists(receptionists.filter(receptionist => receptionist.id !== receptionistId));
             setSelectedReceptionist(null); // Clear selection after deletion
         } catch (error) {
@@ -59,7 +60,7 @@ const ReceptionistList = () => {
 
     const handleSubmitUpdate = async () => {
         try {
-            await axios.put(`http://127.0.0.1:8000/api/receptionists/${formData.id}/`, formData);
+            await axios.put(`${url}/api/receptionists/${formData.id}/`, formData);
             await fetchReceptionists(); // Fetch updated list after update
             setShowUpdateModal(false);
             fetchReceptionists();

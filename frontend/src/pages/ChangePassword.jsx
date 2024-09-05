@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navigate,useNavigate } from 'react-router-dom';
 
 function ChangePassword() {
+    const url = localStorage.getItem('url');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -26,7 +27,7 @@ function ChangePassword() {
         // Confirmation dialog before proceeding
         try {
             if (window.confirm('Are you sure you want to change your password?')) {
-                const response = await axios.put('http://127.0.0.1:8000/api/password-change/', {
+                const response = await axios.put(`${url}/api/password-change/`, {
                     "old_password": oldPassword,
                     "new_password": newPassword,
                     "confirm_password": confirmPassword,

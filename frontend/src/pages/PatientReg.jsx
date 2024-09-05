@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 // import './PatientReg.css'; // Import custom CSS
 
 const PatientReg = () => {
+    const url = localStorage.getItem('url');
     const [error, setError] = useState({});
     const [formData, setFormData] = useState({
         uuid: '',
@@ -31,7 +32,7 @@ const PatientReg = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://127.0.0.1:8000/api/patients/', {
+            const res = await axios.post(`${url}/api/patients/`, {
                 "uuid": formData.uuid,
                 "full_name": formData.fullName,
                 "age": formData.age,

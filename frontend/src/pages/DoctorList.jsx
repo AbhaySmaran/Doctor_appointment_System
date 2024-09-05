@@ -6,6 +6,7 @@ import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 const DoctorList = () => {
+    const url = localStorage.getItem('url');
     const [doctors, setDoctors] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -23,7 +24,7 @@ const DoctorList = () => {
     const navigate = useNavigate();
     const fetchDoctors = async () => {
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/doctors/');
+            const res = await axios.get(`${url}/api/doctors/`);
             setDoctors(res.data);
         } catch (error) {
             console.error('Error fetching doctors:', error);
@@ -53,7 +54,7 @@ const DoctorList = () => {
 
     const handleDelete = async (doctorId) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/doctors/${doctorId}/`);
+            await axios.delete(`${url}/api/doctors/${doctorId}/`);
             setDoctors(doctors.filter(doctor => doctor.id !== doctorId));
             setSelectedDoctor(null); // Clear selection after deletion
         } catch (error) {
@@ -63,7 +64,7 @@ const DoctorList = () => {
 
     const handleSubmitUpdate = async () => {
         try {
-            const res = await axios.put(`http://127.0.0.1:8000/api/doctors/${selectedDoctor.id}/`, formData);
+            const res = await axios.put(`${url}/api/doctors/${selectedDoctor.id}/`, formData);
             if(window.confirm("Are you sure you want to save changes")){
                 fetchDoctors();
                 setShowUpdateModal(false);

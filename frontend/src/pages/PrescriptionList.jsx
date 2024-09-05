@@ -6,6 +6,7 @@ import { FaCloudDownloadAlt } from "react-icons/fa";
 import { IoReturnUpBackSharp } from "react-icons/io5";
 
 const PrescriptionList = () => {
+    const base_url = localStorage.getItem('url');
     const { uuid } = useParams();
     const [reports, setReports] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -15,7 +16,7 @@ const PrescriptionList = () => {
 
     const fetchPatient = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/patients/${uuid}/`)
+            const response = await axios.get(`${base_url}/api/patients/${uuid}/`)
             setPatient(response.data)
         } catch (error) {
             console.error(error.response.data);
@@ -25,7 +26,7 @@ const PrescriptionList = () => {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/services/prescriptions/${uuid}/`, {
+                const response = await axios.get(`${base_url}/services/prescriptions/${uuid}/`, {
                     headers: {
                         'Authorization': `Bearer ${access}`
                     }
@@ -48,7 +49,7 @@ const PrescriptionList = () => {
     const handleDownload = async (fileUrl) => {
         try {
             // Make a request to get the file blob
-            const response = await axios.get(`http://127.0.0.1:8000${fileUrl}`, {
+            const response = await axios.get(`${base_url}${fileUrl}`, {
                 headers: {
                     'Authorization': `Bearer ${access}`
                 },
@@ -132,9 +133,9 @@ const PrescriptionList = () => {
                                     <td>
                                         <FaCloudDownloadAlt
                                             style={{ cursor: 'pointer', marginRight: '10px' }}
-                                            onClick={() => handleDownload(report.report_file)}
+                                            onClick={() => handleDownload(report.prescription_file)}
                                         />
-                                        <a href={`http://127.0.0.1:8000${report.prescription_file}`} target="_blank" rel="noopener noreferrer">
+                                        <a href={`${base_url}${report.prescription_file}`} target="_blank" rel="noopener noreferrer">
                                             View Report
                                         </a>
                                     </td>

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function ReceptionistLogin() {
+    const url = localStorage.getItem('url');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [serverError,setServerError] = useState({});
@@ -12,7 +13,7 @@ function ReceptionistLogin() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/receptionist/login/', { 
+            const response = await axios.post(`${url}/api/receptionist/login/`, { 
                 "email":email, 
                 "password":password 
             });

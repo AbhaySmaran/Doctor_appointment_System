@@ -3,11 +3,12 @@ import axios from 'axios'
 import { useEffect,useState } from 'react'
 
 const DoctorAppointments = () => {
+  const url = localStorage.getItem('url');
   const [myAppointments,setMyAppointments] = useState([])
   const access = localStorage.getItem("access")
   useEffect(()=>{
     const fetchAppointments=async()=>{
-      const res =await axios.get("http://127.0.0.1:8000/services/doctor/appointments/",{
+      const res =await axios.get(`${url}/services/doctor/appointments/`,{
         headers: {
           'Authorization' : `Bearer ${access}`
         }

@@ -5,6 +5,7 @@ import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 const BookAppointment = () => {
+    const url = localStorage.getItem('url');
     const [error,setError] = useState('')
     const [formData, setFormData] = useState({
         patient_UHID: "",
@@ -16,7 +17,7 @@ const BookAppointment = () => {
     const receptionistId = localStorage.getItem("uuid")
     useEffect(() => {
         const fetchDoctors = async () => {
-            const res = await axios.get('http://127.0.0.1:8000/api/doctors/')
+            const res = await axios.get(`${url}/api/doctors/`)
             setDoctors(res.data)
         };
         fetchDoctors();
@@ -34,7 +35,7 @@ const BookAppointment = () => {
         e.preventDefault();
         try{
             if(window.confirm("Book Appointment?")){
-                const res = axios.post('http://127.0.0.1:8000/services/appointment/book/', {
+                const res = axios.post(`${url}/services/appointment/book/`, {
                     patient: formData.patient_UHID,
                     doctor: formData.doctor,
                     date: formData.date,

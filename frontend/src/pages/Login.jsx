@@ -9,11 +9,12 @@ function Login() {
     const [password, setPassword] = useState('');
     const [serverError, setServerError] = useState('');
     const navigate = useNavigate();
+    const url = localStorage.getItem('url');
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/user/login/', {
+            const response = await axios.post(`${url}/api/user/login/`, {
                 "email": email,
                 "password": password
             });
@@ -31,12 +32,15 @@ function Login() {
                 }
             }
         } catch (error) {
-            if (error.response && error.response.data) {
-                setServerError(error.response.data.errors);
+            if (error.response) {
+                setServerError(error.response.data);
                 // console.log(error.response.data.errors);
-            } else {
+            }else{
                 console.log("An unexpected error occurred:", error);
-            }
+            };
+            if(error.response.data.errors){
+                setServerError(error.response.data.errors);
+            };
         }
 
     };
@@ -44,7 +48,7 @@ function Login() {
     return (
         <div>
             <Navbar />
-            <Container>
+            {/* <Container>
                 <Row className="justify-content-md-center">
                     <Col xs={8} md={8}>
                         <h2 className="text-center">Login</h2>
@@ -56,8 +60,12 @@ function Login() {
                                     placeholder="*Enter email"
                                     value={email}
                                     required
+                                    isInvalid={serverError.email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
+                                <Form.Control.Feedback type="invalid">
+                                    {serverError.email ? <p>{serverError.email}</p>: ''}
+                                </Form.Control.Feedback>
                             </Form.Group>
                             {serverError.email && <p>{serverError.email}</p>}
                             <Form.Group controlId="formPassword">
@@ -67,15 +75,61 @@ function Login() {
                                     placeholder="*Password"
                                     value={password}
                                     required
+                                    isInvalid = {serverError.password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                                <Form.Control.Feedback type="invalid">
+                                    {serverError.password ? <p>{serverError.password}</p>: ''}
+                                </Form.Control.Feedback>
                             </Form.Group>
-                            {serverError.password && <p>{serverError.password}</p>}
                             <Button variant="primary" type="submit" className="w-100 mt-3" id='login-btn'>
                                 Login
                             </Button>
                         </Form>
                         {serverError.error && <div className='alert alert-info' role='alert'> <p>{serverError.error[0]}</p></div>}
+                    </Col>
+                </Row>
+            </Container> */}
+
+            <Container>
+                <Row className="justify-content-md-center">
+                    <Col xs={8} md={8}>
+                        <h2 className="text-center">Login</h2>
+                        <form className='needs-validation'>
+                            <div className='form-group'>
+                                <label>Email Address</label>
+                                <input 
+                                    type='email'
+                                    className={`form-control ${serverError.email ? "is-invalid" : " "}`}
+                                    value={email}
+                                    placeholder='*Enter Email'
+                                    required
+                                    onChange={(e)=>setEmail(e.target.value)}
+                                />
+                                <div className="validation feedback">
+                                    {serverError.email ? <p>{serverError.email}</p> : " "}
+                                </div>
+                            </div>
+                            <div className='form-group'>
+                                <label>Password</label>
+                                <input 
+                                    type='password'
+                                    className={`form-control ${serverError.password || serverError.error ? "is-invalid" : " "}`}
+                                    value={password}
+                                    placeholder='*Enter Password'
+                                    required
+                                    onChange={(e)=>setPassword(e.target.value)}
+                                />
+                                <div className="validation feedback">
+                                    {serverError.password ? <p>{serverError.password}</p> : " "}
+                                    {serverError.error ? <p>{serverError.error[0]}</p> : ''}
+                                </div>
+                            </div>
+                            <Button variant="primary" type="submit" className="w-100 mt-3" id='login-btn' onClick={handleLogin}>
+                                Login
+                            </Button>
+                        </form>
+                        {/* {serverError.error && <div className='alert alert-info' role='alert'> <p>{serverError.error[0]}</p></div>} */}
                     </Col>
                 </Row>
             </Container>

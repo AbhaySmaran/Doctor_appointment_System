@@ -4,6 +4,7 @@ import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 const DoctorReg = () => {
+    const url = localStorage.getItem('url');
     const navigate = useNavigate();
     const [error, setError] = useState({});
     const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const DoctorReg = () => {
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
-                const res = await axios.get('http://127.0.0.1:8000/api/departments/');
+                const res = await axios.get(`${url}/api/departments/`);
                 setDepartments(res.data);
             } catch (err) {
                 console.error("Error fetching departments", err);
@@ -42,7 +43,7 @@ const DoctorReg = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://127.0.0.1:8000/api/register/user/', {
+            const res = await axios.post(`${url}/api/register/user/`, {
                 email: formData.email,
                 username: formData.username,
                 password: formData.password,

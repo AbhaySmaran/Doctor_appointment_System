@@ -18,6 +18,7 @@ import { GrStatusGood } from "react-icons/gr";
 import { MdOutlineManageHistory } from "react-icons/md";
 
 const PatientList = () => {
+    const url = localStorage.getItem('url');
     const user = localStorage.getItem('name');
     const [message,setMessage] = useState('');
     const [patients, setPatients] = useState([]);
@@ -50,7 +51,7 @@ const PatientList = () => {
     const [doctors, setDoctors] = useState([])
 
     const fetchDoctors = async () => {
-        const res = await axios.get('http://127.0.0.1:8000/api/doctors/')
+        const res = await axios.get(`${url}/api/doctors/`)
         setDoctors(res.data)
     };
     // useEffect(() => {
@@ -58,7 +59,7 @@ const PatientList = () => {
     // }, [])
 
     const fetchTests = async () => {
-        const res = await axios.get('http://127.0.0.1:8000/services/test/');
+        const res = await axios.get(`${url}/services/test/`);
         setAllTests(res.data);
     };
 
@@ -68,7 +69,7 @@ const PatientList = () => {
 
     const fetchPatients = async () => {
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/patients/');
+            const res = await axios.get(`${url}/api/patients/`);
             setPatients(res.data);
         } catch (error) {
             console.error('Error fetching patients:', error);
@@ -114,7 +115,7 @@ const PatientList = () => {
     const handleStatusChange = async () => {
         try {
             if (window.confirm("Are you sure you want to change status?")) {
-                await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
+                await axios.put(`${url}/api/patients/${formData.id}/`, formData);
                 await fetchPatients();
                 setShowStatusModal(false);
             }
@@ -151,11 +152,11 @@ const PatientList = () => {
     const handleSubmitUpdate = async () => {
         try {
             if (window.confirm("Are you sure you want to save changes?")) {
-                await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
+                await axios.put(`${url}/api/patients/${formData.id}/`, formData);
                 await fetchPatients();
                 setShowUpdateModal(false);
             }
-            // const res = await axios.put(`http://127.0.0.1:8000/api/patients/${formData.id}/`, formData);
+            // const res = await axios.put(`${url}/api/patients/${formData.id}/`, formData);
             // if (window.confirm("Are you sure you want to save changes?")) {
             //     setPatients(patients.map((patient) => 
             //     patient.id === formData.id ? { ...patient, ...formData } : patient
@@ -179,7 +180,7 @@ const PatientList = () => {
 
         try{       
             if(window.confirm("Book Appointment")){
-                const res = await axios.post('http://127.0.0.1:8000/services/appointment/book/', reportData);
+                const res = await axios.post(`${url}/services/appointment/book/`, reportData);
                 setShowAppointmentModal(false);
                 setDoctor('');
                 setAppointmentDate('');
@@ -199,7 +200,7 @@ const PatientList = () => {
         reportData.append('message', message);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/services/upload/report/', reportData, {
+            const response = await axios.post(`${url}/services/upload/report/`, reportData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -227,7 +228,7 @@ const PatientList = () => {
         reportData.append('uploaded_by', user);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/services/upload/prescription/', reportData, {
+            const response = await axios.post(`${url}/services/upload/prescription/`, reportData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -275,7 +276,7 @@ const PatientList = () => {
         }
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/services/follow-up/', {
+            const response = await axios.post(`${url}/services/follow-up/`, {
                 patient_uuid: selectedPatient.uuid,
                 follow_up_date: followUpDate.toISOString().split('T')[0]  // Convert date to YYYY-MM-DD format
             });

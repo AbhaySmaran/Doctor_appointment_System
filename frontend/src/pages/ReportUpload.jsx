@@ -5,6 +5,7 @@ import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 const ReportUpload = () => {
+    const url = localStorage.getItem('url');
     const [file, setFile] = useState(null);
     const [patient, setPatient] = useState('');
     const [test, setTest] = useState('');
@@ -13,7 +14,7 @@ const ReportUpload = () => {
     const navigate = useNavigate();
     useEffect(() => {
         const fetchTests = async () => {
-            const res = await axios.get('http://127.0.0.1:8000/services/test/');
+            const res = await axios.get(`${url}/services/test/`);
             setTests(res.data);
         };
         fetchTests();
@@ -43,7 +44,7 @@ const ReportUpload = () => {
         formData.append('report_file', file);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/services/upload/report/', formData, {
+            const response = await axios.post(`${url}/services/upload/report/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

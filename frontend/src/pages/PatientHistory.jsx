@@ -9,6 +9,7 @@ import { Tooltip } from 'bootstrap';
 import { FaCloudDownloadAlt } from "react-icons/fa";
 
 const PatientHistory = () => {
+    const url = localStorage.getItem('url');
     const { uuid } = useParams();
     const [patient, setPatient] = useState({});
     const [appointments, setAppointments] = useState([]);
@@ -19,13 +20,13 @@ const PatientHistory = () => {
     const navigate = useNavigate();
     // Fetch patient details
     const fetchPatientDetails = async () => {
-        const res = await axios.get(`http://127.0.0.1:8000/api/patients/${uuid}/`);
+        const res = await axios.get(`${url}/api/patients/${uuid}/`);
         setPatient(res.data);
     };
 
     // Fetch appointments
     const fetchAppointments = async () => {
-        const res = await axios.get(`http://127.0.0.1:8000/services/patient/appointment/${uuid}/`);
+        const res = await axios.get(`${url}/services/patient/appointment/${uuid}/`);
         setAppointments(res.data);
     };
 
@@ -39,7 +40,7 @@ const PatientHistory = () => {
 
     // Fetch reports for a specific appointment
     const fetchReports = async () => {
-        const res = await axios.get(`http://127.0.0.1:8000/services/reports/${uuid}/`, {
+        const res = await axios.get(`${url}/services/reports/${uuid}/`, {
             headers: {
                 'Authorization': `Bearer ${access}`
             }
@@ -156,14 +157,14 @@ const PatientHistory = () => {
                                             <tbody>
                                                 {filteredReports.length > 0 ?
                                                     (filteredReports.map((report) => (
-                                                        <tr>
+                                                        <tr key={report.id}>
                                                             <td>{report.name}</td>
                                                             <td>
                                                                 <FaCloudDownloadAlt
                                                                     style={{ cursor: 'pointer', marginRight: '10px' }}
                                                                     onClick={() => handleDownload(report.report_file)}
                                                                 />
-                                                                <a href={`http://127.0.0.1:8000${report.report_file}`} target="_blank" rel="noopener noreferrer">
+                                                                <a href={`${url}${report.report_file}`} target="_blank" rel="noopener noreferrer">
                                                                     View Report
                                                                 </a>
                                                             </td>

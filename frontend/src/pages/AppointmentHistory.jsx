@@ -8,6 +8,7 @@ import { GrUpdate } from "react-icons/gr";
 import 'react-datepicker/dist/react-datepicker.css';
 
 const AppointmentHistory = () => {
+    const url = localStorage.getItem('url');
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
     const [appointments, setAppointments] = useState([]);
@@ -62,7 +63,7 @@ const AppointmentHistory = () => {
     };
 
     const fetchTests = async () => {
-        const res = await axios.get('http://127.0.0.1:8000/services/test/');
+        const res = await axios.get(`${url}/services/test/`);
         setAllTests(res.data);
     };
 
@@ -71,7 +72,7 @@ const AppointmentHistory = () => {
     }, []);
 
     const fetchAppointments = async () => {
-        const res = await axios.get(`http://127.0.0.1:8000/services/appointments/history/${year}/${month}/${day}/`);
+        const res = await axios.get(`${url}/services/appointments/history/${year}/${month}/${day}/`);
         setAppointments(res.data);
     };
 
@@ -89,7 +90,7 @@ const AppointmentHistory = () => {
         reportData.append("status", formData.appointment_status);
         // reportData.append("advice", formData.appointment_advice);
         try {
-            const res = await axios.put(`http://127.0.0.1:8000/services/appointment/history/${formData.id}/`, reportData);
+            const res = await axios.put(`${url}/services/appointment/history/${formData.id}/`, reportData);
             if (window.confirm("Are you sure you want to change the status?")) {
                 await fetchAppointments();
                 setShowStatusModal(false); // Close the modal
@@ -120,7 +121,7 @@ const AppointmentHistory = () => {
         reportData.append('appointment', formData.id)
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/services/upload/report/', reportData, {
+            const response = await axios.post(`${url}/services/upload/report/`, reportData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -157,7 +158,7 @@ const AppointmentHistory = () => {
         reportData.append('message', message);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/services/upload/prescription/', reportData, {
+            const response = await axios.post(`${url}/services/upload/prescription/`, reportData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -195,7 +196,7 @@ const AppointmentHistory = () => {
             reportData.append('date', formattedDate)
         }
         try {
-            const res = await axios.put(`http://127.0.0.1:8000/services/appointment/history/${formData.id}/`, reportData)
+            const res = await axios.put(`${url}/services/appointment/history/${formData.id}/`, reportData)
 
             if (res.status === 200) {
                 setShowRescheduleModal(false); // Close the reschedule modal
@@ -220,7 +221,7 @@ const AppointmentHistory = () => {
         reportData.append("advice", formData.appointment_advice);
 
         try{
-            const res = await axios.put(`http://127.0.0.1:8000/services/appointment/history/${formData.id}/`, reportData);
+            const res = await axios.put(`${url}/services/appointment/history/${formData.id}/`, reportData);
             if(window.confirm("Upload Advice")){
                 setShaowAdviceModal(false);
             }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const PrescriptionUpload = () => {
+    const url = localStorage.getItem('url');
     const [file, setFile] = useState(null);
     const [patient, setPatient] = useState('');
     const [doctor, setDoctor] = useState('');
@@ -9,7 +10,7 @@ const PrescriptionUpload = () => {
 
     useEffect(() => {
         const fetchTests = async () => {
-            const res = await axios.get('http://127.0.0.1:8000/services/test/');
+            const res = await axios.get(`${url}/services/test/`);
             setTests(res.data);
         };
         fetchTests();
@@ -33,7 +34,7 @@ const PrescriptionUpload = () => {
         formData.append('prescription_file', file);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/services/upload/report/', formData, {
+            const response = await axios.post(`${url}/services/upload/report/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

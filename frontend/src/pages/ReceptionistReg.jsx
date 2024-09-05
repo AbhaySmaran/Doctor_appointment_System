@@ -4,6 +4,7 @@ import { IoReturnUpBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 const ReceptionistReg = () => {
+    const url = localStorage.getItem('url');
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -27,7 +28,7 @@ const ReceptionistReg = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://127.0.0.1:8000/api/register/user/', {
+            const res = await axios.post(`${url}/api/register/user/`, {
                 email: formData.email,
                 username: formData.username,
                 password: formData.password,

@@ -4,10 +4,11 @@ import { useState,useEffect } from 'react'
 import axios from 'axios'
 
 const DoctorDashboard = () => {
+  const url = localStorage.getItem('url');
   const [doctor,setDoctor] = useState([]);
   useEffect(()=>{
     const fetchUser = async()=>{
-      const res = await axios.get('http://127.0.0.1:8000/api/receptionist/profile/')
+      const res = await axios.get(`${url}/api/receptionist/profile/`)
       setDoctor(res.data)
       if(res.data){
         localStorage.setItem('doc_uid',res.data.doc_uid)

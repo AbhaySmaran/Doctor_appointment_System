@@ -10,8 +10,9 @@ const PatientDetails = () => {
     const navigate = useNavigate();
 
     useEffect(()=>{
+        const url = localStorage.getItem('url');
         const fetchPatient = async()=>{
-            const res =await axios.get(`http://127.0.0.1:8000/api/patients/${id}/`)
+            const res =await axios.get(`${url}/api/patients/${id}/`)
             setPatient(res.data)
         };
         fetchPatient();
@@ -21,7 +22,7 @@ const PatientDetails = () => {
     const uuid = patient.uuid
     useEffect(()=>{
         const fetchReports = async()=>{
-            const res = await axios.get(`http://127.0.0.1:8000/services/reports/${uuid}/`)
+            const res = await axios.get(`${url}/services/reports/${uuid}/`)
             setReports(res.data)
         };
         fetchReports();

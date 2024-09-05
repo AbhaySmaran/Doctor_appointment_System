@@ -40,6 +40,10 @@ function App() {
     };
   }, []);
 
+  const base_url = "http://127.0.0.1:8000";
+  localStorage.setItem("url",base_url);
+
+
   // const getRedirectPath = () => {
   //   if (accessToken) {
   //     if (role === 'doctor') {

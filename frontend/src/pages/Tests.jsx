@@ -14,7 +14,8 @@ const Tests = () => {
     const [error,setError] = useState(null);
 
     const fetchTests = async () => {
-        const res = await axios.get('http://127.0.0.1:8000/services/test/');
+        const url = localStorage.getItem('url');
+        const res = await axios.get(`${url}/services/test/`);
         setAllTests(res.data);
     };
 
@@ -25,7 +26,7 @@ const Tests = () => {
     const handleAddTest =async(e)=>{
         e.preventDefault();
         try{
-            const res = await axios.post('http://127.0.0.1:8000/services/test/',{
+            const res = await axios.post(`${url}/services/test/`,{
                 'test_name': testName,
                 'test_type': testType,
                 'test_code': testCode
