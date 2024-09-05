@@ -118,6 +118,18 @@ const Sidebar = () => {
                     <div className="sidebar-sticky">
                         <ul className="nav flex-column">
                             <li className="nav-item">
+                                <button className="nav-link" onClick={() => setShowProfileModal(true)}>
+                                    <CgProfile className='sidebar-icon' />
+                                    <span className="sidebar-text">Profile</span>
+                                </button>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/dashboard/doctor">
+                                    <MdDashboard className='sidebar-icon' />
+                                    <span className="sidebar-text">Dashboard</span>
+                                </NavLink>
+                            </li>
+                            <li className="nav-item">
                                 <NavLink className="nav-link" to="/dashboard/doctor/appointment">
                                     <FaCalendarAlt className="sidebar-icon" />
                                     <span className="sidebar-text">Appointments</span>

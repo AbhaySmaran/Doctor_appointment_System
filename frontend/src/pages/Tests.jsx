@@ -6,15 +6,15 @@ import { useNavigate } from 'react-router-dom'
 import { TbTestPipe } from "react-icons/tb";
 
 const Tests = () => {
+    const url = localStorage.getItem("url");
     const [testName, setTestName] = useState('');
     const [testType, setTestType] = useState('');
     const [testCode, setTestCode] = useState('');
     const [allTests, setAllTests] = useState([]);
     const [showAddTestModal, setShowAddTestModal] = useState(false);
-    const [error,setError] = useState(null);
+    const [error,setError] = useState('');
 
     const fetchTests = async () => {
-        const url = localStorage.getItem('url');
         const res = await axios.get(`${url}/services/test/`);
         setAllTests(res.data);
     };
@@ -37,8 +37,6 @@ const Tests = () => {
             setTestCode('');
             setTestType('');
         }catch(error){
-            console.log(error);
-            console.log(error.response.data);
             setError(error.response.data);
         }
     }
@@ -110,7 +108,7 @@ const Tests = () => {
                                                 value={testName}
                                                 onChange={(e) =>setTestName(e.target.value)}
                                             />
-                                            <div className='validation-feedback'>
+                                            <div className='invalid-feedback'>
                                                 {error.test_name && <p>{error.test_name}</p>}
                                             </div>
                                         </div>
@@ -126,7 +124,9 @@ const Tests = () => {
                                                 <option value='Test'>Test</option>
                                                 <option value='Diagnostic'>Diagnostic</option>
                                             </select>
-                                            {error.test_type && <p>{error.test_type}</p>}
+                                            <div className='invalid-feedback'>
+                                                {error.test_type && <p>{error.test_type}</p>}
+                                            </div>
                                         </div>
                                         <div className="form-group">
                                             <label>Test Code</label>
@@ -136,7 +136,7 @@ const Tests = () => {
                                                 value={testCode}
                                                 onChange={(e) =>setTestCode(e.target.value)}
                                             />
-                                            <div>
+                                            <div className='invalid-feedback'>
                                                 {error.test_code && <p>{error.test_code}</p>}
                                             </div>
                                         </div>

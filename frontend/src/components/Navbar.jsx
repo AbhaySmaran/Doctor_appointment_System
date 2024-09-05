@@ -10,7 +10,7 @@ const Navbar = () => {
     const url = localStorage.getItem('url');
     localStorage.clear();
     if (url) {
-      localStorage.setItem('url', url); // put the value back
+      localStorage.setItem('url', url); 
     }
     navigate('/', { replace: true });  
   };

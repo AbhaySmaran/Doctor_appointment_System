@@ -106,7 +106,7 @@ function Login() {
                                     required
                                     onChange={(e)=>setEmail(e.target.value)}
                                 />
-                                <div className="validation feedback">
+                                <div className="invalid-feedback">
                                     {serverError.email ? <p>{serverError.email}</p> : " "}
                                 </div>
                             </div>
@@ -120,7 +120,7 @@ function Login() {
                                     required
                                     onChange={(e)=>setPassword(e.target.value)}
                                 />
-                                <div className="validation feedback">
+                                <div className="invalid-feedback">
                                     {serverError.password ? <p>{serverError.password}</p> : " "}
                                     {serverError.error ? <p>{serverError.error[0]}</p> : ''}
                                 </div>

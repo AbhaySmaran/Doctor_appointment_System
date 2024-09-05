@@ -33,14 +33,16 @@ const BookAppointment = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append("patient",formData.patient_UHID)
+        formData.append("doctor", formData.doctor)
+        formData.append("booked_by", receptionistId)
+        if(formData.date){
+            formData.append("date",formData.date)
+        }
         try{
             if(window.confirm("Book Appointment?")){
-                const res = axios.post(`${url}/services/appointment/book/`, {
-                    patient: formData.patient_UHID,
-                    doctor: formData.doctor,
-                    date: formData.date,
-                    booked_by: receptionistId
-                })
+                const res = axios.post(`${url}/services/appointment/book/`,formData)
                 setFormData({
                     patient_UHID: "",
                     doctor: "",
@@ -48,7 +50,9 @@ const BookAppointment = () => {
                 })
             }
         }catch(error){
-            setError(error.response.data);
+            if(error.response){
+                setError(error.response.data);
+            }
         }
     }
 
@@ -72,7 +76,7 @@ const BookAppointment = () => {
                                 <h4 className='card-title'>Book Appointment</h4>
                             </div>
                             <div className='card-body'>
-                                <form onSubmit={handleSubmit} className='needs-validation'>
+                                <form className='needs-validation'>
                                     <div className='form-group'>
                                         <label>Patient UHID</label>
                                         <input
@@ -83,8 +87,8 @@ const BookAppointment = () => {
                                             placeholder='Enter Patient UHID'
                                             onChange={handleChange}
                                         />
-                                        <div className='validation-feedback'>
-                                            {error.patient}
+                                        <div className='invalid-feedback'>
+                                            {error.patient ? <p>{error.patient}</p> : ""}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -101,7 +105,7 @@ const BookAppointment = () => {
                                                 <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
                                             )))}
                                         </select>
-                                        <div className="valid">
+                                        <div className="invalid-feedback">
                                             {error.doctor && <p>{error.doctor}</p>}
                                         </div>
                                     </div>
@@ -109,14 +113,20 @@ const BookAppointment = () => {
                                         <label htmlFor='date'>Appointment Date</label>
                                         <input
                                             type='date'
+                                            className={`form-control ${error.date} ? "is-invalid" : ""`}
                                             name='date'
                                             id='date'
                                             value={formData.value}
                                             onChange={handleChange}
                                         />
+                                        <div className="invalid-feedback">
+                                            {error.date && <p>{error.date}</p>}
+                                        </div>
                                     </div>
-                                    <button type="submit" className="btn btn-primary">Book</button>
                                 </form>
+                                <div className='card-footer'>
+                                    <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Book</button>
+                                </div>
                             </div>
                         </div>
                     </div>
