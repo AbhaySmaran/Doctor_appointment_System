@@ -18,6 +18,7 @@ const ReceptionistList = () => {
         full_name: '',
         email: '',
         contact_no: '',
+        status: ''
     });
     const recordsPerPage = 2;
     const navigate = useNavigate();
@@ -119,14 +120,13 @@ const ReceptionistList = () => {
                             }}
                         />
                         <div className="table-responsive">
-                            <table className='table'>
+                            <table className='table table-striped table-light'>
                                 <thead className="thead" id='thead'>
                                     <tr>
                                         <th>Select</th>
-                                        <th>ID</th>
                                         <th>Name</th>
-                                        <th>Email</th>
                                         <th>Contact</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -140,10 +140,9 @@ const ReceptionistList = () => {
                                                     onChange={() => handleReceptionistSelect(receptionist)}
                                                 />
                                             </td>
-                                            <td>{receptionist.uuid}</td>
                                             <td>{receptionist.full_name}</td>
-                                            <td>{receptionist.user.email}</td>
                                             <td>{receptionist.contact_no}</td>
+                                            <td>{receptionist.status}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -168,9 +167,7 @@ const ReceptionistList = () => {
                             {selectedReceptionist ? (
                                 <div>
                                     <p><strong>ID:</strong> {selectedReceptionist.uuid}</p>
-                                    <p><strong>Name:</strong> {selectedReceptionist.full_name}</p>
                                     <p><strong>Email:</strong> {selectedReceptionist.user.email}</p>
-                                    <p><strong>Contact:</strong> {selectedReceptionist.contact_no}</p>
                                     <div className='btn-grp'>
                                         <button
                                             className="btn btn-primary btn-sm"
@@ -254,7 +251,7 @@ const ReceptionistList = () => {
                                 <div className='modal-body'>
                                     <p><strong>Name: </strong>{formData.full_name}</p>
                                     <p><strong>Email: </strong>{formData.email}</p>
-]                                    <p><strong>Status: </strong>{formData.status}</p>
+                                    <p><strong>Status: </strong>{formData.status}</p>
                                     <div>
                                         <div>
                                             <input
