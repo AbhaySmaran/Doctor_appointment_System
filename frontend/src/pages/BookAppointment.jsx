@@ -31,27 +31,34 @@ const BookAppointment = () => {
         });
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit =async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append("patient",formData.patient_UHID)
-        formData.append("doctor", formData.doctor)
-        formData.append("booked_by", receptionistId)
+        const appointmentData = new FormData();
+        if(formData.patient_UHID){
+            appointmentData.append("patient",formData.patient_UHID)
+        }
+        if(formData.doctor){
+            appointmentData.append("doctor", formData.doctor)
+        }
+        appointmentData.append("booked_by", receptionistId)
         if(formData.date){
-            formData.append("date",formData.date)
+            appointmentData.append("date",formData.date)
         }
         try{
             if(window.confirm("Book Appointment?")){
-                const res = axios.post(`${url}/services/appointment/book/`,formData)
+                const res =await axios.post(`${url}/services/appointment/book/`,appointmentData)
                 setFormData({
                     patient_UHID: "",
                     doctor: "",
                     date: "",
                 })
+                setError({});
             }
         }catch(error){
-            if(error.response){
+            if(error.response || error.response.data){
                 setError(error.response.data);
+            } else {
+                console.error("Error booking appointment:", err);
             }
         }
     }
@@ -113,20 +120,20 @@ const BookAppointment = () => {
                                         <label htmlFor='date'>Appointment Date</label>
                                         <input
                                             type='date'
-                                            className={`form-control ${error.date} ? "is-invalid" : ""`}
+                                            className={`form-control ${error.date ? "is-invalid" : ""}`}
                                             name='date'
                                             id='date'
                                             value={formData.value}
                                             onChange={handleChange}
                                         />
                                         <div className="invalid-feedback">
-                                            {error.date && <p>{error.date}</p>}
+                                            {error.date ? <p>{error.date}</p> : " "}
                                         </div>
                                     </div>
+                                    <div className='text-end'>
+                                        <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Book</button>
+                                    </div>
                                 </form>
-                                <div className='card-footer'>
-                                    <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Book</button>
-                                </div>
                             </div>
                         </div>
                     </div>

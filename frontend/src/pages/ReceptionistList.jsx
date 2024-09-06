@@ -12,6 +12,7 @@ const ReceptionistList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedReceptionist, setSelectedReceptionist] = useState(null);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [showStatusModal, setShowStatusModal] = useState(false)
     const [formData, setFormData] = useState({
         id: '',
         full_name: '',
@@ -48,22 +49,31 @@ const ReceptionistList = () => {
         setShowUpdateModal(true);
     };
 
-    const handleDelete = async (receptionistId) => {
+    const handleStatus = (receptionist) => {
+        handleReceptionistSelect(receptionist)
+        setShowStatusModal(true);
+    }
+
+    const handleStatusSubmit = async () => {
         try {
-            await axios.delete(`${url}/api/receptionists/${receptionistId}/`);
-            setReceptionists(receptionists.filter(receptionist => receptionist.id !== receptionistId));
-            setSelectedReceptionist(null); // Clear selection after deletion
+            if (window.confirm("Change Status")) {
+                const res = await axios.put(`${url}/api/receptionists/${selectedReceptionist.id}/`, formData)
+                fetchReceptionists();
+                setShowStatusModal(false);
+            }
         } catch (error) {
-            console.error('Error deleting receptionist:', error);
+            setError(error.response.data);
         }
-    };
+    }
 
     const handleSubmitUpdate = async () => {
         try {
-            await axios.put(`${url}/api/receptionists/${formData.id}/`, formData);
-            await fetchReceptionists(); // Fetch updated list after update
-            setShowUpdateModal(false);
-            fetchReceptionists();
+            if(window.confirm("Sure want to save changes?")){
+                await axios.put(`${url}/api/receptionists/${formData.id}/`, formData);
+                await fetchReceptionists(); // Fetch updated list after update
+                setShowUpdateModal(false);
+                fetchReceptionists();
+            }
         } catch (error) {
             console.error('Error updating receptionist:', error);
         }
@@ -97,7 +107,7 @@ const ReceptionistList = () => {
             <br />
             <div className="container-fluid">
                 <div className="row mt-4">
-                    <div className="col-md-8">
+                    <div className="col-md-9">
                         <input
                             type="text"
                             className="form-control mb-3"
@@ -152,7 +162,7 @@ const ReceptionistList = () => {
                         </nav>
                     </div>
 
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <div className="side-panel">
                             <h4>Receptionist Details</h4>
                             {selectedReceptionist ? (
@@ -170,9 +180,9 @@ const ReceptionistList = () => {
                                         </button>
                                         <button
                                             className="btn btn-primary btn-sm"
-                                            onClick={() => handleDelete(selectedReceptionist.id)}
+                                            onClick={() => handleStatus(selectedReceptionist)}
                                         >
-                                            <MdAirplanemodeInactive /> Inactive
+                                            <MdAirplanemodeInactive /> Status
                                         </button>
                                     </div>
                                 </div>
@@ -231,6 +241,53 @@ const ReceptionistList = () => {
                         </div>
                     </div>
                 </div>
+                {showStatusModal && (
+                    <div className='modal show' style={{ display: "block" }}>
+                        <div className='modal-dialog'>
+                            <div className='modal-content'>
+                                <div className='modal-header'>
+                                    <h5 className="modal-title">Change Status</h5>
+                                    <button type="button" className="close" onClick={() => setShowStatusModal(false)}>
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div className='modal-body'>
+                                    <p><strong>Name: </strong>{formData.full_name}</p>
+                                    <p><strong>Email: </strong>{formData.email}</p>
+]                                    <p><strong>Status: </strong>{formData.status}</p>
+                                    <div>
+                                        <div>
+                                            <input
+                                                type="radio"
+                                                id="statusActive"
+                                                name="status"
+                                                value="Active"
+                                                checked={formData.status === 'Active'}
+                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                            />
+                                            <label htmlFor="statusActive">Active</label>
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="radio"
+                                                id="statusInactive"
+                                                name="status"
+                                                value="Inactive"
+                                                checked={formData.status === 'Inactive'}
+                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                            />
+                                            <label htmlFor="statusInactive">Inactive</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='modal-footer'>
+                                    <button className='btn btn-primary' onClick={handleStatusSubmit}>Change Status</button>
+                                    <button className='btn btn-primary' onClick={() => setShowStatusModal(false)}>Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -12,6 +12,8 @@ const DoctorList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [showStatusModal, setShowStatusModal] = useState(false)
+    const [error,setError] = useState("");
     const [formData, setFormData] = useState({
         id: '',
         full_name: '',
@@ -19,6 +21,7 @@ const DoctorList = () => {
         email: '',
         fee: '',
         contact: '',
+        status: "",
     });
     const recordsPerPage = 2;
     const navigate = useNavigate();
@@ -44,6 +47,7 @@ const DoctorList = () => {
             email: doctor.user.email,
             fee: doctor.fee,
             contact: doctor.contact,
+            status: doctor.status,
         });
     };
 
@@ -52,35 +56,44 @@ const DoctorList = () => {
         setShowUpdateModal(true);
     };
 
-    const handleDelete = async (doctorId) => {
-        try {
-            await axios.delete(`${url}/api/doctors/${doctorId}/`);
-            setDoctors(doctors.filter(doctor => doctor.id !== doctorId));
-            setSelectedDoctor(null); // Clear selection after deletion
-        } catch (error) {
-            console.error('Error deleting doctor:', error);
-        }
-    };
 
     const handleSubmitUpdate = async () => {
         try {
-            const res = await axios.put(`${url}/api/doctors/${selectedDoctor.id}/`, formData);
-            if(window.confirm("Are you sure you want to save changes")){
+            if (window.confirm("Are you sure you want to save changes")) {
+                const res = await axios.put(`${url}/api/doctors/${selectedDoctor.id}/`, formData);
                 fetchDoctors();
                 setShowUpdateModal(false);
             }
-            
+
         } catch (error) {
+            setError(error.response.data);
             console.error('Error updating doctor:', error);
         }
     };
+    
+    const handleStatus = (doctor)=>{
+        handleDoctorSelect(doctor)
+        setShowStatusModal(true);
+    }
 
-    const filteredDoctors = doctors.filter((doctor) =>{
-        const doctorName = doctor.full_name ?.toLowerCase() || "";
+    const handleStatusSubmit = async()=>{
+        try{
+            if(window.confirm("Change Status")){
+                const res = await axios.put(`${url}/api/doctors/${selectedDoctor.id}/`, formData)
+                fetchDoctors();
+                setShowStatusModal(false);
+            }
+        }catch(error){
+            setError(error.response.data);
+        }
+    }
+
+    const filteredDoctors = doctors.filter((doctor) => {
+        const doctorName = doctor.full_name?.toLowerCase() || "";
         const doctorEmail = doctor.user?.email?.toLowerCase() || "";
         const doctosSpecialiation = doctor.specialization?.toLowerCase() || "";
-        
-        return(
+
+        return (
             doctorName.includes(searchTerm) ||
             doctorEmail.includes(searchTerm) ||
             doctosSpecialiation.includes(searchTerm)
@@ -110,7 +123,7 @@ const DoctorList = () => {
             <br />
             <div className="container-fluid">
                 <div className="row mt-4">
-                    <div className="col-md-8">
+                    <div className="col-md-9">
                         <input
                             type="text"
                             className="form-control mb-3"
@@ -128,8 +141,7 @@ const DoctorList = () => {
                                         <th>Select</th>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Specialization</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -145,8 +157,7 @@ const DoctorList = () => {
                                             </td>
                                             <td>{doctor.doc_uid}</td>
                                             <td>{doctor.full_name}</td>
-                                            <td>{doctor.user.email}</td>
-                                            <td>{doctor.specialization}</td>
+                                            <td>{doctor.status}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -165,12 +176,11 @@ const DoctorList = () => {
                         </nav>
                     </div>
 
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <div className="side-panel">
                             <h4>Doctor Details</h4>
                             {selectedDoctor ? (
                                 <div>
-                                    <p><strong>ID:</strong> {selectedDoctor.doc_uid}</p>
                                     <p><strong>Name:</strong> {selectedDoctor.full_name}</p>
                                     <p><strong>Email:</strong> {selectedDoctor.user.email}</p>
                                     <p><strong>Specialization:</strong> {selectedDoctor.specialization}</p>
@@ -184,9 +194,10 @@ const DoctorList = () => {
                                             <FaEdit /> Update
                                         </button>
                                         <button
+                                            onClick={() => handleStatus(selectedDoctor)}
                                             className="btn btn-primary btn-sm"
                                         >
-                                            <MdAirplanemodeInactive /> Inactive
+                                            <MdAirplanemodeInactive /> Status
                                         </button>
                                     </div>
                                 </div>
@@ -254,6 +265,55 @@ const DoctorList = () => {
                         </div>
                     </div>
                 </div>
+
+                {showStatusModal && (
+                    <div className='modal show' style={{ display: "block" }}>
+                        <div className='modal-dialog'>
+                            <div className='modal-content'>
+                                <div className='modal-header'>
+                                    <h5 className="modal-title">Change Status</h5>
+                                    <button type="button" className="close" onClick={() => setShowStatusModal(false)}>
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div className='modal-body'>
+                                    <p><strong>Name: </strong>{formData.full_name}</p>
+                                    <p><strong>Email: </strong>{formData.email}</p>
+                                    <p><strong>Specialization: </strong>{formData.specialization}</p>
+                                    <p><strong>Status: </strong>{formData.status}</p>
+                                    <div>
+                                        <div>
+                                            <input
+                                                type="radio"
+                                                id="statusActive"
+                                                name="status"
+                                                value="Active"
+                                                checked={formData.status === 'Active'}
+                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                            />
+                                            <label htmlFor="statusActive">Active</label>
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="radio"
+                                                id="statusInactive"
+                                                name="status"
+                                                value="Inactive"
+                                                checked={formData.status === 'Inactive'}
+                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                            />
+                                            <label htmlFor="statusInactive">Inactive</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='modal-footer'>
+                                    <button className='btn btn-primary' onClick={handleStatusSubmit}>Change Status</button>
+                                    <button className='btn btn-primary' onClick={()=>setShowStatusModal(false)}>Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -152,7 +152,8 @@ const PatientList = () => {
     const handleSubmitUpdate = async () => {
         try {
             if (window.confirm("Are you sure you want to save changes?")) {
-                await axios.put(`${url}/api/patients/${formData.id}/`, formData);
+                const res = await axios.put(`${url}/api/patients/${formData.id}/`, formData);
+                
                 await fetchPatients();
                 setShowUpdateModal(false);
             }
@@ -364,7 +365,7 @@ const PatientList = () => {
                                                     type="radio"
                                                     name="patient-select"
                                                     value={patient.id}
-                                                    onChange={() => handlePatientSelect(patient)}
+                                                    onChange={() =>{ handlePatientSelect(patient)}}
                                                 />
                                             </td>
                                             <td>{patient.uuid}</td>
