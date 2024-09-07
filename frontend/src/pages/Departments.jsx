@@ -105,7 +105,7 @@ const Departments = () => {
                         type='button'
                         onClick={() => setShowAddDeptModal(true)}
                     >
-                        <TbTestPipe /> Department Configuration
+                        <TbTestPipe /> Add Department
                     </button>
                 </div>
             </div>
@@ -222,7 +222,7 @@ const Departments = () => {
                             </div>
                             <div className='modal-footer'>
                                 <button className='btn btn-primary' type='submit' onClick={handleAddDepartment}>
-                                    Save Changes
+                                    Add
                                 </button>
                                 <button
                                     className='btn btn-primary'
