@@ -5,10 +5,26 @@ from django.contrib.auth.password_validation import validate_password
 from .models import *
 
 class UserLoginSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length = 255)
+    email = serializers.EmailField(max_length=255)
     class Meta:
         model = CustomUser
-        fields = ['email','password','role']
+        fields = ['email', 'password', 'role']
+
+    # def validate(self, data):
+    #     email = data.get('email')
+    #     password = data.get('password')
+
+    #     # Check if email and password are provided
+    #     if not email:
+    #         raise serializers.ValidationError({"email": "Email is required"})
+    #     if not password:
+    #         raise serializers.ValidationError({"password": "Password is required"})
+
+    #     # Check if the user exists
+    #     if not CustomUser.objects.filter(email=email).exists():
+    #         raise serializers.ValidationError({"email": "User does not exist"})
+
+    #     return data
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:

@@ -32,8 +32,8 @@ class Patient(models.Model):
         return self.full_name
     
 class Department(models.Model):
-    dept_name = models.CharField(max_length=255)
-    dept_code = models.CharField(max_length=255)
+    dept_name = models.CharField(max_length=255, unique = True)
+    dept_code = models.CharField(max_length=255, unique = True)
     dept_location = models.CharField(max_length=255, null=True, blank=True, default=None)
     dept_contact_no = models.CharField(max_length=255, null=True, blank=True, default=None)
 

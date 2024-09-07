@@ -90,7 +90,7 @@ const DoctorReg = () => {
             </div>
 
             <div className="container">
-                <h4 className="mb-4">Doctor Registration</h4>
+                <h5 className="mb-4">Doctor Registration</h5>
                 <form onSubmit={handleSubmit} className='needs-validation'>
                     <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">

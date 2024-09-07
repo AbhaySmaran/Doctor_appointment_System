@@ -28,10 +28,14 @@ class Appointment(models.Model):
 
 
 
-
 class Test(models.Model):
+    TEST_TYPE_CHOICES = [
+        ('Test', 'Test'),
+        ('Diagnostic', 'Diagnostic'),
+    ]
+
     test_name = models.CharField(max_length=200, unique=True)
-    test_type = models.CharField(max_length = 100)
+    test_type = models.CharField(max_length = 100, choices= TEST_TYPE_CHOICES)
     test_code = models.CharField(max_length=10, unique=True)
  
     def __str__(self):

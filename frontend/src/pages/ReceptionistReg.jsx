@@ -66,7 +66,7 @@ const ReceptionistReg = () => {
                 </div>
             </div>
             <div className="container">
-                <h4 className="mb-4">Receptionist Registration</h4>
+                <h5 className="mb-4">Receptionist Registration</h5>
                 <form onSubmit={handleSubmit} className='needs-validation'>
                     <div className="row mb-3">
                         <div className="col-md-2">

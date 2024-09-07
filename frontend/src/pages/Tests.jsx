@@ -76,13 +76,21 @@ const Tests = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {allTests.map((test) => (
-                                <tr key={test.id}>
-                                    <td>{test.test_name}</td>
-                                    <td>{test.test_type}</td>
-                                    <td>{test.test_code}</td>
-                                </tr>
-                            ))}
+                            {allTests.length > 0 ?
+                                (allTests.map((test) => (
+                                    <tr key={test.id}>
+                                        <td>{test.test_name}</td>
+                                        <td>{test.test_type}</td>
+                                        <td>{test.test_code}</td>
+                                    </tr>
+                                )))
+                                :
+                                (
+                                    <tr>
+                                        <td colSpan="7" className="text-center">No Configurations Found</td>
+                                    </tr>
+                                )
+                            }
                         </tbody>
                     </table>
                 </div>

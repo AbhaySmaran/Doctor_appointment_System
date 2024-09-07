@@ -34,7 +34,7 @@ function Login() {
         } catch (error) {
             if (error.response) {
                 setServerError(error.response.data);
-                // console.log(error.response.data.errors);
+                // console.error(error.response.data);
             }else{
                 console.log("An unexpected error occurred:", error);
             };
@@ -48,52 +48,9 @@ function Login() {
     return (
         <div>
             <Navbar />
-            {/* <Container>
-                <Row className="justify-content-md-center">
-                    <Col xs={8} md={8}>
-                        <h2 className="text-center">Login</h2>
-                        <Form onSubmit={handleLogin}>
-                            <Form.Group controlId="formEmail">
-                                <Form.Label>Email address</Form.Label>
-                                <Form.Control
-                                    type="email"
-                                    placeholder="*Enter email"
-                                    value={email}
-                                    required
-                                    isInvalid={serverError.email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {serverError.email ? <p>{serverError.email}</p>: ''}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            {serverError.email && <p>{serverError.email}</p>}
-                            <Form.Group controlId="formPassword">
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="*Password"
-                                    value={password}
-                                    required
-                                    isInvalid = {serverError.password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {serverError.password ? <p>{serverError.password}</p>: ''}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Button variant="primary" type="submit" className="w-100 mt-3" id='login-btn'>
-                                Login
-                            </Button>
-                        </Form>
-                        {serverError.error && <div className='alert alert-info' role='alert'> <p>{serverError.error[0]}</p></div>}
-                    </Col>
-                </Row>
-            </Container> */}
-
-            <Container>
-                <Row className="justify-content-md-center">
-                    <Col xs={8} md={8}>
+            <Container className="d-flex align-items-center justify-content-center">
+                <Row className="justify-content-md-center w-100">
+                    <Col xs={12} sm={10} md={8} lg={8}>
                         <h2 className="text-center">Login</h2>
                         <form className='needs-validation'>
                             <div className='form-group'>

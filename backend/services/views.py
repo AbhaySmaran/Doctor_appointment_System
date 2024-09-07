@@ -15,18 +15,7 @@ from django.utils.dateparse import parse_date
 
 from django.db.models import Count, Func, F
 from django.db.models.functions import TruncMonth,TruncDate,ExtractYear,ExtractMonth,Substr,Right
-# # views.py
-# from django.http import FileResponse, HttpResponseForbidden
-# from django.contrib.auth.decorators import login_required
-# import os
 
-# @login_required
-# def protected_static(request, filename):
-#     file_path = os.path.join('static', filename)
-#     if os.path.exists(file_path):
-#         return FileResponse(open(file_path, 'rb'))
-#     else:
-#         return HttpResponseForbidden("You are not allowed to access this file.")
 
 
 class AppointmentBookView(APIView):
@@ -61,30 +50,6 @@ class AppointmentHistoryView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 
     
-# class AppointmentListView(APIView):
-
-#     def get(self, request):
-#         date_param = request.query_params.get('date')
-#         month_param = request.query_params.get('month')
-#         year_param = request.query_params.get('year')
-
-#         # Base queryset
-#         appointments = Appointment.objects.all()
-
-#         # Filter by date
-#         if date_param:
-#             appointments = appointments.filter(date=parse_date(date_param))
-
-#         # Filter by month
-#         if month_param:
-#             appointments = appointments.filter(date__month=month_param)
-
-#         # Filter by year
-#         if year_param:
-#             appointments = appointments.filter(date__year=year_param)
-
-#         serializer = AppointmentSerializer(appointments, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AppointmentListView(APIView):
 
@@ -180,48 +145,6 @@ class PatientAppointsView(APIView):
 
 
 
-# class SendEmailView(APIView):
-#     def post(self, request):
-#         serializer = EmailSerializer(data=request.data)
-#         if serializer.is_valid():
-#             subject = serializer.validated_data['subject']
-#             message = serializer.validated_data['message']
-#             recipient = serializer.validated_data['recipient']
-#             cc = serializer.validated_data.get('cc', [])
-#             bcc = serializer.validated_data.get('bcc', [])
-
-#             try:
-#                 # Send email to primary recipient
-#                 email_to = EmailMessage(
-#                     subject=subject,
-#                     body=message,
-#                     to=[recipient],
-#                 )
-#                 email_to.send()
-
-#                 # Send separate email to CC recipients
-#                 if cc:
-#                     email_cc = EmailMessage(
-#                         subject=subject,
-#                         body=message,
-#                         to=cc,  # Send as "To" to simulate CC separately
-#                     )
-#                     email_cc.send()
-
-#                 # Send separate email to BCC recipients
-#                 if bcc:
-#                     email_bcc = EmailMessage(
-#                         subject=subject,
-#                         body=message,
-#                         to=bcc,  # Send as "To" to simulate BCC separately
-#                     )
-#                     email_bcc.send()
-
-#                 return Response({'status': 'Emails sent successfully'}, status=status.HTTP_200_OK)
-#             except Exception as e:
-#                 return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class FollowUpEmailView(APIView):
@@ -247,22 +170,8 @@ class FollowUpEmailView(APIView):
 
             return Response({"message": "Follow-up email sent successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class MonthlyAppointmentsView(APIView):
-#     def get(self, request):
-#         # Annotate each appointment with its month
-#         appointments = (Appointment.objects
-#                         .annotate(month=TruncMonth('date'))
-#                         .values('month')
-#                         .annotate(total_appointments=Count('id'))
-#                         .order_by('month'))
-
-#         # Format the response data as a list of dictionaries
-#         data = [{'month': item['month'].strftime('%Y-%m'), 'total_appointments': item['total_appointments']} 
-#                 for item in appointments]
-
-#         return Response(data)
     
+
 class DailyAppointmentsCountView(APIView):
     def get(self, request, year, month):
         try:
@@ -298,32 +207,6 @@ class DailyAppointmentsCountView(APIView):
         return Response(serializer.data)
 
 
-# class FileExtensionStatsView(APIView):
-#     def get(self, request, *args, **kwargs):
-#         # Extract the last 4 characters of the report_file field to get the extension
-#         queryset = Report.objects.annotate(
-#             extension=Right('report_file', 4)  # Get the last 4 characters for the file extension
-#         ).filter(
-#             extension__in=['.pdf', 'jpeg', '.jpg', '.png']  # Filter for allowed extensions
-#         ).values('extension').annotate(
-#             count=Count('id')
-#         )
-
-#         # Convert queryset to a list of dictionaries
-#         extension_counts = [
-#             {'extension': item['extension'], 'count': item['count']}
-#             for item in queryset
-#         ]
-
-#         # Ensure all extensions are represented, even with a count of 0
-#         for ext in ['.pdf', 'jpeg', '.jpg', '.png']:
-#             if not any(d['extension'] == ext for d in extension_counts):
-#                 extension_counts.append({'extension': ext, 'count': 0})
-
-#         # Use the serializer to serialize the data
-#         serializer = FileExtensionCountSerializer(extension_counts, many=True)
-
-#         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TestReportCountAPIView(APIView):
@@ -337,15 +220,16 @@ class TestReportCountAPIView(APIView):
         )
         
         # Serialize the queryset
-        serializer = TestReportSerializer(tests, many=True)
+        
         
         # Check if any tests are found for the given test_type
         if tests.exists():
+            serializer = TestReportSerializer(tests, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
+        empty_data = [{"test_code": "No Data", "report_count": 0}]
         # If no tests are found, return a 404 Not Found response
-        return Response({"detail": "No tests found for the specified test_type."}, status=status.HTTP_404_NOT_FOUND)
-    
+        return Response(empty_data, status=status.HTTP_200_OK)    
 
 
 class FollowUpAppointmentView(APIView):

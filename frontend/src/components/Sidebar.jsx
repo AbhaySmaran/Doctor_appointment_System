@@ -4,6 +4,7 @@ import {
     FaStethoscope, FaUserMd, FaUserNurse, FaUserInjured, FaCalendarAlt,
     FaFileAlt, FaHospital, FaProcedures, FaConciergeBell, FaPills, FaClipboard
 } from 'react-icons/fa';
+import { FcDepartment } from "react-icons/fc"
 import { CgProfile } from "react-icons/cg";
 import { MdDashboard, MdHistory, MdUploadFile, MdListAlt, MdMedicalServices } from "react-icons/md";
 import { GiTestTubes } from "react-icons/gi";
@@ -86,6 +87,12 @@ const Sidebar = () => {
                                 <NavLink className="nav-link" to="/dashboard/configuration">
                                     <GiTestTubes className="sidebar-icon" />
                                     <span className="sidebar-text">Configurations</span>
+                                </NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/dashboard/department">
+                                    <FcDepartment className="sidebar-icon" />
+                                    <span className="sidebar-text">Departments</span>
                                 </NavLink>
                             </li>
                             <li className="nav-item">

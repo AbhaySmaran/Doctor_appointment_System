@@ -77,7 +77,7 @@ const PatientReg = () => {
             </div>
     
             <div className="container">
-                <h4 className="mb-4">Patient Registration</h4>
+                <h5 className="mb-4">Patient Registration</h5>
                 <form onSubmit={handleSubmit}>
                     <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">

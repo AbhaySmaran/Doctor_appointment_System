@@ -23,8 +23,13 @@ class UserLoginView(APIView):
         if serializer.is_valid():
             email = serializer.data.get('email')
             password = serializer.data.get('password')
+
             if not email or not password:
                 return Response({"errors": {"error": ["Email and password required"]}}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if not CustomUser.objects.filter(email=email).exists():
+                return Response({"errors": {"error":["User does not exist"]}}, status=status.HTTP_404_NOT_FOUND)      
+
             user = authenticate(email=email, password=password)
             if user is not None :
                 tokens = get_tokens_for_user(user)

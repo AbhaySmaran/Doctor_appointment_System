@@ -23,6 +23,7 @@ import SupportIssues from './pages/SupportIssues';
 import PrescriptiontList from './pages/PrescriptionList';
 import PatientHistory from './pages/PatientHistory';
 import ChangePassword from './pages/ChangePassword';
+import Departments from './pages/Departments';
 
 function App() {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('access'));
@@ -78,6 +79,7 @@ function App() {
           <Route path='doctor/appointment' element={<DoctorAppointments />} />
           <Route path='doctor/reports' element={<ReportList />} />
           <Route path='configuration' element={<Tests />} />
+          <Route path='department' element={<Departments />} />
           <Route path='support' element={<SupportIssues />} />
           <Route path='change-password' element={<ChangePassword />} />
           {/* <Route path='patients/reports/:uuid' element */}

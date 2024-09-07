@@ -185,6 +185,7 @@ const PatientList = () => {
                 setShowAppointmentModal(false);
                 setDoctor('');
                 setAppointmentDate('');
+                setUploadError('');
             }
         }catch(error){
             setUploadError(error.response.data);
