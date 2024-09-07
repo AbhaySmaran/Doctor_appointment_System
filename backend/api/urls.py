@@ -7,6 +7,7 @@ urlpatterns=[
     path('patients/<int:id>/', PatientView.as_view()),
     path('patients/<str:uuid>/', PatientView.as_view()),
     path('departments/',DepartmentView.as_view()),
+    path('departments/<int:id>/',DepartmentView.as_view()),
     path('receptionists/',ReceptionistsView.as_view()),
     path('receptionists/<int:id>/',ReceptionistsView.as_view()),
     path('doctors/',DoctorsView.as_view()),
