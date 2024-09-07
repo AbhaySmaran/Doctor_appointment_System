@@ -118,7 +118,7 @@ const SupportIssues = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {issues.map((issue) => (
+                                {issues.length>0 ? (issues.map((issue) => (
                                     <tr key={issue.Ticket_id}>
                                         <td>
                                             <input
@@ -142,7 +142,14 @@ const SupportIssues = () => {
                                             }
                                         </td>
                                     </tr>
-                                ))}
+                                )))
+                                :
+                                (
+                                    <tr>
+                                        <td colSpan="8" className="text-center">No Issues Found</td>
+                                    </tr>
+                                )
+                            }
                             </tbody>
                         </table>
                         {selectedIssue && (

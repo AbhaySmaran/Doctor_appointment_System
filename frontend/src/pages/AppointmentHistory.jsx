@@ -324,7 +324,7 @@ const AppointmentHistory = () => {
                         <input
                             type='text'
                             className='form-control mb-3'
-                            placeholder='Search by Patient Name, Doctor Name, or Date'
+                            placeholder='Search by Patient Name or Doctor Name'
                             value={searchQuery}
                             onChange={handleSearch}
                         />

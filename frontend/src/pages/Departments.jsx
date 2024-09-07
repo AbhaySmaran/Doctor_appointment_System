@@ -16,7 +16,7 @@ const Departments = () => {
 
     const fetchDepartments = async () => {
         try {
-            const res = await axios.get(`${url}/services/department/`);
+            const res = await axios.get(`${url}/api/departments/`);
             setDepartments(res.data);
         } catch (err) {
             console.error(err);
@@ -30,10 +30,11 @@ const Departments = () => {
     const handleAddDepartment = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${url}/services/department/`, {
+            const res = await axios.post(`${url}/api/departments/`, {
                 dept_name: deptName,
                 dept_code: deptCode,
                 dept_location: deptLocation,
+                dept_contact_no: deptContact
             });
             setShowAddDeptModal(false);
             fetchDepartments();
@@ -85,6 +86,7 @@ const Departments = () => {
                                 <th>Department Name</th>
                                 <th>Department Code</th>
                                 <th>Department Location</th>
+                                <th>Department ContactNo.</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -94,11 +96,12 @@ const Departments = () => {
                                         <td>{department.dept_name}</td>
                                         <td>{department.dept_code}</td>
                                         <td>{department.dept_location}</td>
+                                        <td>{department.dept_contact_no}</td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan='3' className='text-center'>
+                                    <td colSpan='4' className='text-center'>
                                         No Departments Found
                                     </td>
                                 </tr>
@@ -157,6 +160,18 @@ const Departments = () => {
                                         />
                                         <div className='invalid-feedback'>
                                             {error.dept_location && <p>{error.dept_location}</p>}
+                                        </div>
+                                    </div>
+                                    <div className='form-group'>
+                                        <label>Department ContactNo.</label>
+                                        <input
+                                            type='text'
+                                            className={`form-control ${error.dept_contact_no ? 'is-invalid' : ''}`}
+                                            value={deptContact}
+                                            onChange={(e) => setDeptContact(e.target.value)}
+                                        />
+                                        <div className='invalid-feedback'>
+                                            {error.dept_contact_no && <p>{error.dept_contact_no}</p>}
                                         </div>
                                     </div>
                                     <div className='modal-footer'>

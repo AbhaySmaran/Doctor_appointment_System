@@ -247,7 +247,6 @@ const PatientReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter contact number"
                                 min="10"
-                                max="15"
                             />
                             <div className="invalid-feedback">
                                 {error.contact_no && <p>{error.contact_no}</p>}
