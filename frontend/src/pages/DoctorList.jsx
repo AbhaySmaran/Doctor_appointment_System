@@ -237,59 +237,73 @@ const DoctorList = () => {
                             </div>
                             <div className="modal-body">
                                 <form>
-                                    <div className="form-group">
-                                        <label>Name</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={formData.full_name}
-                                            onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                                        />
+                                    <div className='row aligns-item-center'>
+                                        <div className='form-group col-md-3'>
+                                            <label class>Name</label>
+                                        </div>
+                                        <div className='form-group col-md-9'>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={formData.full_name}
+                                                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="form-group">
-                                        <label>Email</label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        />
+                                    <div className='row aligns-item-center'>
+                                        <div className='form-group col-md-3'><label>Email</label></div>
+                                        <div className='form-group col-md-9'>
+                                            <input
+                                                type="email"
+                                                className="form-control"
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="form-group">
-                                        <label>Specialization</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={formData.specialization}
-                                            onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-                                        />
+                                    <div className='row aligns-item-center'>
+                                        <div className='form-group col-md-3'><label>Specialization</label></div>
+                                        <div className='form-group col-md-9'>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={formData.specialization}
+                                                onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="form-group">
-                                        <label>Fee</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={formData.fee}
-                                            onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
-                                        />
+                                    <div className='row aligns-item-center'>
+                                        <div className='form-group col-md-3'><label>Fee</label></div>
+                                        <div className='form-group col-md-9'>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={formData.fee}
+                                                onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="form-group">
-                                        <label>Degree</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={formData.degree}
-                                            onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
-                                        />
+                                    <div className='row aligns-item-center'>
+                                        <div className='form-group col-md-3'><label>Degree</label></div>
+                                        <div className='form-group col-md-9'>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={formData.degree}
+                                                onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="form-group">
-                                        <label>Contact</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={formData.contact}
-                                            onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                                        />
+                                    <div className='row aligns-item-center'>
+                                        <div className='form-group col-md-3'><label>Contact</label></div>
+                                        <div className='form-group col-md-9'>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={formData.contact}
+                                                onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
                                 </form>
                             </div>
