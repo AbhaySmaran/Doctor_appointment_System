@@ -120,7 +120,7 @@ const Departments = () => {
                                 <th>Department Code</th>
                                 <th>Department Location</th>
                                 <th>Department ContactNo.</th>
-                                <th>Action</th>
+                                <th className='text-center'>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -131,7 +131,7 @@ const Departments = () => {
                                         <td>{department.dept_code}</td>
                                         <td>{department.dept_location}</td>
                                         <td>{department.dept_contact_no}</td>
-                                        <td>
+                                        <td className='text-center'>
                                             <button
                                                 className='btn btn-primary'
                                                 onClick={() => handleEdit(department)}

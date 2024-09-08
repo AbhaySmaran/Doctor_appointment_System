@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { toFormData } from 'axios';
 import { FaEdit } from 'react-icons/fa';
 import { MdAirplanemodeInactive } from 'react-icons/md';
 import { IoReturnUpBackSharp } from "react-icons/io5";
@@ -22,6 +22,7 @@ const DoctorList = () => {
         fee: '',
         contact: '',
         status: "",
+        degree: ''
     });
     const recordsPerPage = 2;
     const navigate = useNavigate();
@@ -41,13 +42,14 @@ const DoctorList = () => {
     const handleDoctorSelect = (doctor) => {
         setSelectedDoctor(doctor);
         setFormData({
-            id: doctor.id,
+            id: doctor.user.id,
             full_name: doctor.full_name,
             specialization: doctor.specialization,
             email: doctor.user.email,
             fee: doctor.fee,
             contact: doctor.contact,
             status: doctor.status,
+            degree: doctor.degree
         });
     };
 
@@ -60,7 +62,18 @@ const DoctorList = () => {
     const handleSubmitUpdate = async () => {
         try {
             if (window.confirm("Are you sure you want to save changes")) {
-                const res = await axios.put(`${url}/api/doctors/${selectedDoctor.id}/`, formData);
+                const res = await axios.put(`${url}/api/update/user/${formData.id}/`, {
+                    "username": formData.username,
+                    "email": formData.email,
+                    "role": "doctor",
+                    "doctor": {
+                      "full_name": formData.full_name,
+                      "contact": formData.contact,
+                      "specialization": formData.specialization,
+                      "fee": formData.fee,
+                      "degree": formData.degree
+                    }
+                  });
                 fetchDoctors();
                 setShowUpdateModal(false);
                 setSelectedDoctor((prevDoctor) => ({
@@ -234,6 +247,15 @@ const DoctorList = () => {
                                         />
                                     </div>
                                     <div className="form-group">
+                                        <label>Email</label>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group">
                                         <label>Specialization</label>
                                         <input
                                             type="text"
@@ -249,6 +271,15 @@ const DoctorList = () => {
                                             className="form-control"
                                             value={formData.fee}
                                             onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Degree</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={formData.degree}
+                                            onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
                                         />
                                     </div>
                                     <div className="form-group">

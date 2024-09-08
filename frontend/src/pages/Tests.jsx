@@ -13,6 +13,7 @@ const Tests = () => {
     const [allTests, setAllTests] = useState([]);
     const [showAddTestModal, setShowAddTestModal] = useState(false);
     const [error,setError] = useState('');
+    const navigate = useNavigate();
 
     const fetchTests = async () => {
         const res = await axios.get(`${url}/services/test/`);

@@ -136,6 +136,57 @@ class UserRegistrationView(APIView):
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+    
+class UserUpdateView(APIView):
+    permission_classes = [AllowAny]
+
+    def put(self, request, id, format=None):
+        # Get user by ID
+        try:
+            user = CustomUser.objects.get(id=id)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        user_data = request.data
+        role = user_data.get('role')
+
+        # Update user data
+        user_serializer = UserSerializer(user, data=user_data, partial=True)
+        if user_serializer.is_valid(raise_exception=True):
+            user = user_serializer.save()
+
+            if role == 'doctor':
+                doctor_data = user_data.get('doctor', {})
+                try:
+                    doctor = Doctor.objects.get(user=user)
+                except Doctor.DoesNotExist:
+                    return Response({'error': 'Doctor profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+                doctor_serializer = DoctorSerializer(doctor, data=doctor_data, partial=True)
+                if doctor_serializer.is_valid(raise_exception=True):
+                    doctor_serializer.save()
+                else:
+                    return Response(doctor_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            elif role == 'receptionist':
+                receptionist_data = user_data.get('receptionist', {})
+                try:
+                    receptionist = Receptionist.objects.get(user=user)
+                except Receptionist.DoesNotExist:
+                    return Response({'error': 'Receptionist profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+                receptionist_serializer = ReceptionistSerializer(receptionist, data=receptionist_data, partial=True)
+                if receptionist_serializer.is_valid(raise_exception=True):
+                    receptionist_serializer.save()
+                else:
+                    return Response(receptionist_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(user_serializer.data, status=status.HTTP_200_OK)
+
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
 class ReceptionistsView(APIView):
     permission_classes = [AllowAny]
     def get(self, request, id=None ,format=None):

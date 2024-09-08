@@ -65,11 +65,13 @@ function ChangePassword() {
                     </button>
                 </div>
             </div>
+            <br />
+            <br />
             <div>
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-md-8">
-                            <h2 className="text-center mb-4">Change Password</h2>
+                            <h4 className="text-center mb-4">Change Password</h4>
                             {/* {message && <div className="alert alert-info">{message}</div>} */}
                             <form className='needs-validation'>
                                 <div className="row mb-3">

@@ -16,6 +16,7 @@ const ReceptionistList = () => {
     const [formData, setFormData] = useState({
         id: '',
         full_name: '',
+        username: '',
         email: '',
         contact_no: '',
         status: ''
@@ -38,8 +39,9 @@ const ReceptionistList = () => {
     const handleReceptionistSelect = (receptionist) => {
         setSelectedReceptionist(receptionist);
         setFormData({
-            id: receptionist.id,
+            id: receptionist.user.id,
             full_name: receptionist.full_name,
+            username: receptionist.user.username,
             email: receptionist.user.email,
             contact_no: receptionist.contact_no,
         });
@@ -58,7 +60,7 @@ const ReceptionistList = () => {
     const handleStatusSubmit = async () => {
         try {
             if (window.confirm("Change Status")) {
-                const res = await axios.put(`${url}/api/receptionists/${selectedReceptionist.id}/`, formData)
+                const res = await axios.put(`${url}/api/receptionist/${formData.id}/`, formData)
                 fetchReceptionists();
                 setShowStatusModal(false);
             
@@ -71,7 +73,15 @@ const ReceptionistList = () => {
     const handleSubmitUpdate = async () => {
         try {
             if(window.confirm("Sure want to save changes?")){
-                await axios.put(`${url}/api/receptionists/${formData.id}/`, formData);
+                await axios.put(`${url}/api/update/user/${formData.id}/`, {
+                    "username": formData.username,
+                    "email": formData.email,
+                    "role": "receptionist",
+                    "receptionist": {
+                      "full_name": formData.full_name,
+                      "contact_no": formData.contact_no
+                    }
+                  });
                 await fetchReceptionists(); // Fetch updated list after update
                 setShowUpdateModal(false);
                 fetchReceptionists();
@@ -173,6 +183,7 @@ const ReceptionistList = () => {
                                 <div>
                                     <p><strong>ID:</strong> {selectedReceptionist.uuid}</p>
                                     <p><strong>Email:</strong> {selectedReceptionist.user.email}</p>
+                                    <p><strong>UserName:</strong> {selectedReceptionist.user.username}</p>
                                     <div className='btn-grp'>
                                         <button
                                             className="btn btn-primary btn-sm"
