@@ -1,10 +1,11 @@
 import React,{useEffect} from 'react';
 import { NavLink } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const access_token = localStorage.getItem("access");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     const url = localStorage.getItem('url');
@@ -36,13 +37,13 @@ const Navbar = () => {
         <div className='col-2 d-flex justify-content-end'>
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item text-nowrap">
-              {access_token ? (
-                <NavLink to="/" className="nav-link" onClick={handleLogout}>
-                  Logout
-                </NavLink>
-              ) : (
+              {!access_token || location.pathname === '/' ? (
                 <NavLink to="/" className="nav-link">
                   Login
+                </NavLink>
+              ) : (
+                <NavLink to="/" className="nav-link" onClick={handleLogout}>
+                  Logout
                 </NavLink>
               )}
             </li>
