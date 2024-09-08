@@ -61,6 +61,7 @@ const ReceptionistList = () => {
                 const res = await axios.put(`${url}/api/receptionists/${selectedReceptionist.id}/`, formData)
                 fetchReceptionists();
                 setShowStatusModal(false);
+            
             }
         } catch (error) {
             setError(error.response.data);
@@ -74,6 +75,10 @@ const ReceptionistList = () => {
                 await fetchReceptionists(); // Fetch updated list after update
                 setShowUpdateModal(false);
                 fetchReceptionists();
+                setSelectedReceptionist((prevReceptionist) => ({
+                    ...prevReceptionist,
+                    ...formData
+                }));
             }
         } catch (error) {
             console.error('Error updating receptionist:', error);

@@ -54,18 +54,12 @@ const PatientList = () => {
         const res = await axios.get(`${url}/api/doctors/`)
         setDoctors(res.data)
     };
-    // useEffect(() => {
-    //     fetchDoctors();
-    // }, [])
+    
 
     const fetchTests = async () => {
         const res = await axios.get(`${url}/services/test/`);
         setAllTests(res.data);
     };
-
-    // useEffect(() => {
-    //     fetchTests();
-    // }, []);
 
     const fetchPatients = async () => {
         try {
@@ -156,14 +150,11 @@ const PatientList = () => {
                 
                 await fetchPatients();
                 setShowUpdateModal(false);
+                setSelectedPatient((prevPatient) => ({
+                    ...prevPatient,
+                    ...formData
+                }));
             }
-            // const res = await axios.put(`${url}/api/patients/${formData.id}/`, formData);
-            // if (window.confirm("Are you sure you want to save changes?")) {
-            //     setPatients(patients.map((patient) => 
-            //     patient.id === formData.id ? { ...patient, ...formData } : patient
-            // ));
-            // setShowUpdateModal(false);
-            // }
         } catch (error) {
             setUploadError(error.response.data)
             console.error('Error updating patient:', error);

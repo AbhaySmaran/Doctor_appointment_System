@@ -14,7 +14,6 @@ urlpatterns=[
     path('doctors/<int:id>/',DoctorsView.as_view()),
     path('user/login/',UserLoginView.as_view()),
     path('doctor/profile/',DoctorProfileView.as_view()),
-    # path('receptionist/login/',ReceptionistLoginView.as_view()),
     path('receptionist/profile/',ReceptionistProfileView.as_view()), 
     path('user/profile/',UserProfileView.as_view()),
     path('issue/support/',SupportView.as_view()),

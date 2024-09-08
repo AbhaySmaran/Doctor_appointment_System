@@ -63,6 +63,10 @@ const DoctorList = () => {
                 const res = await axios.put(`${url}/api/doctors/${selectedDoctor.id}/`, formData);
                 fetchDoctors();
                 setShowUpdateModal(false);
+                setSelectedDoctor((prevDoctor) => ({
+                    ...prevDoctor,
+                    ...formData
+                }));
             }
 
         } catch (error) {
