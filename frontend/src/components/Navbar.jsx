@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ const Navbar = () => {
     navigate('/', { replace: true });  
   };
 
+
   // const handleToggleSidebar = () => {
   //   const sidebar = document.getElementById('sidebar');
   //   sidebar.classList.toggle('collapsed');
@@ -23,24 +24,37 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark">
       <div className='container-fluid'>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        
+        <button className="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className='collapse navbar-collapse' id='navbarTogglerDemo01'>
+
+        <div className='collapse navbar-collapse col-10' id='navbarTogglerDemo01'>
           <span className="navbar-brand">Patient Information System - 1.0</span> 
+        </div>
+
+        <div className='col-2 d-flex justify-content-end'>
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item text-nowrap">
-              {access_token ? 
-                <NavLink to='/' className='nav-link' onClick={handleLogout}>Logout</NavLink>
-                :
-                <NavLink to='/' className='nav-link'>Login</NavLink>
-              }
+              {access_token ? (
+                <NavLink to="/" className="nav-link" onClick={handleLogout}>
+                  Logout
+                </NavLink>
+              ) : (
+                <NavLink to="/" className="nav-link">
+                  Login
+                </NavLink>
+              )}
             </li>
           </ul>
         </div>
+        
+        
       </div>
     </nav>
   );
 };
 
 export default Navbar;
+
+
