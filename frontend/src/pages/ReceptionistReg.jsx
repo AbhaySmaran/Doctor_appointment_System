@@ -50,7 +50,11 @@ const ReceptionistReg = () => {
                 setError({});
             }
         } catch (error) {
-            setError(error.response.data);
+            if (error.response && error.response.data) {
+                setError(error.response.data);
+            } else {
+                console.error("An unexpected error occurred", error);
+            }
         }
     };
 
@@ -153,7 +157,7 @@ const ReceptionistReg = () => {
                                 placeholder="Enter contact number"
                             />
                             <div className='invalid-feedback'>
-                                {error.contactNo && <p>{error.contactNo}</p>}
+                                {error.contact_no && <p>{error.contact_no}</p>}
                             </div>
                         </div>
                     </div>

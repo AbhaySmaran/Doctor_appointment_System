@@ -145,7 +145,7 @@ const PrescriptionList = () => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="7" className="text-center">No reports found</td>
+                                <td colSpan="7" className="text-center">No Prescriptions Found</td>
                             </tr>
                         )}
                     </tbody>

@@ -27,6 +27,9 @@ const DoctorDashboard = () => {
   const doc_name = localStorage.getItem('name')
   return (
     <div>
+      <div className='container mt-5'>
+        <div className='row' style ></div> 
+      </div>
       <h3>Wlcome back Dr. {doc_name}</h3>
     </div>
   )

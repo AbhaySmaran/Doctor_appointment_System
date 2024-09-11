@@ -36,31 +36,61 @@ class DepartmentsSerializer(serializers.ModelSerializer):
         model = Department
         fields = '__all__'
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ["id",'username', 'email', 'password', 'role']
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def create(self, validated_data):
-        role = validated_data.pop('role')
-        user = CustomUser.objects.create_user(**validated_data)
-        user.role = role
-        user.save()
-        return user
-    
 class DoctorSerializer(serializers.ModelSerializer):
-    # department= serializers.PrimaryKeyRelatedField(queryset=Department.objects.all())
     class Meta:
         model = Doctor
-        fields = ["user","id", "department", "doc_uid", "full_name","contact","specialization","fee","degree","joined_on"]
+        fields = ["user", "id", "department", "doc_uid", "full_name", "contact", "specialization", "fee", "degree", "joined_on"]
         read_only_fields = ['user']
+
+    def validate_full_name(self, value):
+        if not value:
+            raise serializers.ValidationError("Full name is required for doctors.")
+        return value
+
 
 class ReceptionistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Receptionist
-        fields = ["user","id","uuid","full_name","contact_no"]
+        fields = ["user", "id", "uuid", "full_name", "contact_no"]
         read_only_fields = ['user']
+
+    def validate_full_name(self, value):
+        if not value:
+            raise serializers.ValidationError("Full name is required for receptionists.")
+        return value
+
+
+class UserSerializer(serializers.ModelSerializer):
+    doctor = DoctorSerializer(required=False)  # Optional doctor serializer
+    receptionist = ReceptionistSerializer(required=False)  # Optional receptionist serializer
+
+    class Meta:
+        model = CustomUser
+        fields = ["id", 'username', 'email', 'password', 'role', 'doctor', 'receptionist']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        role = validated_data.pop('role')
+
+        # Handle nested serializer for doctor or receptionist
+        doctor_data = validated_data.pop('doctor', None)
+        receptionist_data = validated_data.pop('receptionist', None)
+
+        # Create the user
+        user = CustomUser.objects.create_user(**validated_data)
+        user.role = role
+        user.save()
+
+        # Handle role-specific creation
+        if role == 'doctor' and doctor_data:
+            Doctor.objects.create(user=user, **doctor_data)
+        elif role == 'receptionist' and receptionist_data:
+            Receptionist.objects.create(user=user, **receptionist_data)
+
+        return user
+
+    
+
 
 class DoctorViewSerializer(serializers.ModelSerializer):
     user = UserSerializer()

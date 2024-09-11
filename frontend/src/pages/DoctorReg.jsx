@@ -30,7 +30,7 @@ const DoctorReg = () => {
             }
         };
         fetchDepartments();
-    }, []);
+    }, [url]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -73,7 +73,12 @@ const DoctorReg = () => {
                 setError({});
             }
         } catch (error) {
-            setError(error.response.data);
+            // Error handling
+            if (error.response && error.response.data) {
+                setError(error.response.data);
+            } else {
+                console.error("An unexpected error occurred", error);
+            }
         }
     };
 
@@ -99,14 +104,14 @@ const DoctorReg = () => {
                         <div className="col-md-10">
                             <input
                                 type="text"
-                                className={`form-control ${error.full_name ? "is-invalid" : ""}`}
+                                className={`form-control ${error.doctor.full_name ? "is-invalid" : ""}`}
                                 id="fullName"
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
                                 placeholder="Enter full name"
                             />
-                            <div className='invalid-feedback'>{error.full_name && <p>{error.full_name}</p>}</div>
+                            <div className='invalid-feedback'>{error.doctor.full_name}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -123,7 +128,7 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter email"
                             />
-                            <div className='invalid-feedback'>{error.email && <p>{error.email}</p>}</div>
+                            <div className='invalid-feedback'>{error.email}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -140,7 +145,7 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter username"
                             />
-                            <div className='invalid-feedback'>{error.username && <p>{error.username}</p>}</div>
+                            <div className='invalid-feedback'>{error.username}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -157,9 +162,7 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter password"
                             />
-                            <div className='invalid-feedback'>
-                                {error.password && <p>{error.password}</p>}
-                            </div>
+                            <div className='invalid-feedback'>{error.password}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -181,9 +184,7 @@ const DoctorReg = () => {
                                     </option>
                                 ))}
                             </select>
-                            <div className='invalid-feedback'>
-                                {error.department && <p>{error.department}</p>}
-                            </div>
+                            <div className='invalid-feedback'>{error.department}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -200,9 +201,7 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter specialization"
                             />
-                            <div className='invalid-feedback'>
-                                {error.specialization && <p>{error.specialization}</p>}
-                            </div>
+                            <div className='invalid-feedback'>{error.specialization}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -219,9 +218,7 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter degree"
                             />
-                            <div className='invalid-feedback'>
-                                {error.degree && <p>{error.degree}</p>}
-                            </div>
+                            <div className='invalid-feedback'>{error.degree}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -238,9 +235,7 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter contact number"
                             />
-                            <div className='invalid-feedback'>
-                                {error.contactNo && <p>{error.contactNo}</p>}
-                            </div>
+                            <div className='invalid-feedback'>{error.contactNo}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -257,13 +252,13 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter consultation fee"
                             />
-                            <div className='invalid-feedback'>
-                                {error.fee && <p>{error.fee}</p>}
-                            </div>
+                            <div className='invalid-feedback'>{error.fee}</div>
                         </div>
                     </div>
-                    <div className='text-end'>
-                        <button type="submit" className="btn btn-primary">Register Doctor</button>
+                    <div className="row mb-3">
+                        <div className="col-md-12">
+                            <button type="submit" className="btn btn-primary">Register</button>
+                        </div>
                     </div>
                 </form>
             </div>
