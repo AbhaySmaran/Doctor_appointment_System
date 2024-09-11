@@ -125,7 +125,7 @@ const PatientHistory = () => {
                                         <th className='text-center'>Appointment Date</th>
                                         <th>Doctor</th>
                                         <th className='text-center'>Advice</th>
-                                        <th className='text-center'>Reports</th>
+                                        <th className='text-center'>Files</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -163,13 +163,48 @@ const PatientHistory = () => {
                         <div className='side-panel'>
                             {selectedAppointmentId ? (
                                 <div>
-                                    <h5>Reports {/* for Appointment ID: {selectedAppointmentId}*/}</h5>
+                                    <h5>Files {/* for Appointment ID: {selectedAppointmentId}*/}</h5>
                                     {/* <ul>
                                         {filteredReports.length > 0 ? filteredReports.map(report => (
                                             <li key={report.id}>{report.name}</li>
                                         )) : <p>No Reports Found</p>}
                                     </ul> */}
                                     <div>
+                                    <p><strong>Prescriptions:-</strong></p>
+                                    <table className='table table-striped'>
+                                            <thead className='thead' id='thead'>
+                                                <tr>
+                                                    <th>Report Name</th>
+                                                    <th>Download</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {filteredReports.length > 0 ?
+                                                    (filteredReports.map((report) => (
+                                                        <tr key={report.id}>
+                                                            <td>{report.name}</td>
+                                                            <td>
+                                                                <FaCloudDownloadAlt
+                                                                    style={{ cursor: 'pointer', marginRight: '10px' }}
+                                                                    onClick={() => handleDownload(report.report_file)}
+                                                                />
+                                                                <a href={`${base_url}${report.report_file}`} target="_blank" rel="noopener noreferrer">
+                                                                    View Report
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    )))
+                                                    :
+                                                    (
+                                                        <tr>
+                                                            <p>No Reports Found</p>
+                                                        </tr>
+                                                    )
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <br/>
+                                        <p><strong>Reports:-</strong></p>
                                         <table className='table table-striped'>
                                             <thead className='thead' id='thead'>
                                                 <tr>

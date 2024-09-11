@@ -142,7 +142,7 @@ const Sidebar = () => {
                                     <span className="sidebar-text">Appointments</span>
                                 </NavLink>
                             </li>
-                            <li className="nav-item">
+                            {/* <li className="nav-item">
                                 <NavLink className="nav-link" to="/dashboard/doctor/reports">
                                     <FaClipboard className="sidebar-icon" />
                                     <span className="sidebar-text">Reports</span>
@@ -153,7 +153,7 @@ const Sidebar = () => {
                                     <FaPills className="sidebar-icon" />
                                     <span className="sidebar-text">Prescriptions</span>
                                 </NavLink>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
                 }

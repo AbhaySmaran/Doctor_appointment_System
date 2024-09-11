@@ -104,6 +104,7 @@ class Prescription(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, to_field='uuid',on_delete=models.CASCADE)
     name= models.CharField(max_length=100, blank=True)
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
     prescription_file = models.FileField(upload_to=prescription_upload_to)
     uploaded_on = models.DateTimeField(auto_now_add=True)
     uploaded_by= models.CharField(max_length=100)

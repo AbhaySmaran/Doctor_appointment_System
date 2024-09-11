@@ -9,6 +9,7 @@ import { Tooltip } from 'bootstrap';
 import { FaCloudDownloadAlt } from "react-icons/fa";
 
 const DoctorVisitHistory = () => {
+    const doc_uid = localStorage.getItem('doc_uid');
     const base_url = localStorage.getItem('url');
     const { uuid } = useParams();
     const [patient, setPatient] = useState({});
@@ -23,6 +24,7 @@ const DoctorVisitHistory = () => {
         const res = await axios.get(`${base_url}/api/patients/${uuid}/`);
         setPatient(res.data);
     };
+
 
     // Fetch appointments
     const fetchAppointments = async () => {
@@ -91,12 +93,16 @@ const DoctorVisitHistory = () => {
         setAppointmentAdvice(advice)
     };
 
+    const filteredAppointments = appointments.filter(
+        (appointment) => appointment.doctor.doc_uid === doc_uid
+      );
+
     return (
         <div>
             <div className='container-fluid position-relative'>
                 <div className='position-absolute top-0 end-0'>
                     <button className='btn btn-primary' id='btn-back' type='button'
-                        onClick={() => navigate('/dashboard/patient/list')}
+                        onClick={() => navigate('/dashboard/doctor/appointment')}
                     >
                         <IoReturnUpBackSharp /> Back
                     </button>
@@ -130,8 +136,8 @@ const DoctorVisitHistory = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                        appointments.length > 0
-                                            ? appointments.map((appointment) => (
+                                        filteredAppointments.length > 0
+                                            ? filteredAppointments.map((appointment) => (
                                                 <tr key={appointment.id}>
                                                     <td className='text-center'>{appointment.date}</td>
                                                     <td>{appointment.doctor.full_name}</td>

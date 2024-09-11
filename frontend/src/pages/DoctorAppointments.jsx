@@ -11,12 +11,16 @@ const DoctorAppointments = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [day, setDay] = useState(new Date().getDate());
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [showStatusModal, setShowStatusModal] = useState(false);
   const access = localStorage.getItem("access")
   const uuid = localStorage.getItem('doc_uid');
   const [formData, setFormData] = useState({
+    appointment_id:'',
     patient_uuid: "",
     patient_address: "",
-    patient_name: ''
+    patient_name: '',
+    appointment_date: '',
+    appointment_status:''
   })
 
   const navigate = useNavigate();
@@ -24,9 +28,11 @@ const DoctorAppointments = () => {
   const handlePatientSelect = (appointment) => {
     setSelectedPatient(appointment);
     setFormData({
+      appointment_id: appointment.id,
       patient_uuid: appointment.patient.uuid,
       patient_address: appointment.patient.address,
-      patient_name: appointment.patient.full_name
+      patient_name: appointment.patient.full_name,
+      appointment_date: appointment.date,
     })
   }
 
@@ -45,21 +51,22 @@ const DoctorAppointments = () => {
     setShowStatusModal(true);
   }
 
-  const handleStatusChange = async () => {
+  const handleStatusSubmit = async () => {
+    const reportData = new FormData();
+    reportData.append("status", formData.appointment_status);
     try {
-      if (window.confirm("Are you sure you want to change status?")) {
-        await axios.put(`${url}/api/patients/${formData.id}/`, formData);
-        await fetchPatients();
-        setShowStatusModal(false);
-      }
+        const res = await axios.put(`${url}/services/appointment/history/${formData.appointment_id}/`, reportData);
+        if (window.confirm("Are you sure you want to change the status?")) {
+            await fetchAppointments();
+            setShowStatusModal(false); // Close the modal
+        }
     } catch (error) {
-      console.error('Error updating patient Status:', error);
-      setUploadError(error.response.data)
+        alert("Error updating status: " + error.message);
     }
-  };
+};
 
   const handleViewHistory = (patient) => {
-    navigate(`/dashboard/patient/history/${formData.patient_uuid}`)
+    navigate(`/dashboard/patient/doctorVisit/history/${formData.patient_uuid}`)
   }
 
   useEffect(() => {
@@ -141,6 +148,7 @@ const DoctorAppointments = () => {
                   <th>Select</th>
                   <th>Patient Name</th>
                   <th>Appointment Date</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -159,6 +167,7 @@ const DoctorAppointments = () => {
                           </td>
                           <td>{appointment.patient.full_name}</td>
                           <td>{appointment.date}</td>
+                          <td>{appointment.status}</td>
                         </tr>
                       ))
                     )
@@ -203,54 +212,42 @@ const DoctorAppointments = () => {
         </div>
       </div>
       {showStatusModal && (
-        <div className="modal show" style={{ display: 'block' }}>
-          <div className="modal-dialog">
-            <div className="modal-content">
+        <div className='modal show' style={{ display: 'block' }}>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
               <div className="modal-header">
-                <h5 className="modal-title">Status</h5>
+                <h5 className="modal-title">Change Status</h5>
                 <button type="button" className="close" onClick={() => setShowStatusModal(false)}>
                   &times;
                 </button>
               </div>
-              <div className='modal-body'>
-                <p><strong>UHID:</strong> {formData.uuid}</p>
-                <p><strong>Name:</strong> {formData.full_name}</p>
-                <p><strong>Age:</strong> {formData.age}</p>
-                <p><strong>Email:</strong> {formData.email}</p>
-                <p><strong>Status:</strong>{formData.status}</p>
-                {/* <p><strong>Change Status:-</strong></p> */}
+              <div className="modal-body">
                 <div>
-                  <div>
-                    <input
-                      type="radio"
-                      id="statusActive"
-                      name="status"
-                      value="Active"
-                      checked={formData.status === 'Active'}
-                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    />
-                    <label htmlFor="statusActive">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      id="statusInactive"
-                      name="status"
-                      value="Inactive"
-                      checked={formData.status === 'Inactive'}
-                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    />
-                    <label htmlFor="statusInactive">Inactive</label>
-                  </div>
+                  <p><strong>Patient's UHID:</strong> {formData.patient_uuid}</p>
+                  <p><strong>Patient Name:</strong> {formData.patient_name}</p>
+                  {/* <p><strong>Doctors's Name:</strong> {formData.doctor_name}</p> */}
+                  <p><strong>Appointment Date:</strong> {formData.appointment_date}</p>
+                  <p><strong>Status:</strong>{formData.appointment_status}</p>
                 </div>
+                <form>
+                  <div className="form-group">
+                    <label>Change Status</label>
+                    <select
+                      className="form-control"
+                      value={formData.appointment_status}
+                      onChange={(e) => setFormData({ ...formData, appointment_status: e.target.value })}
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Checked">Checked</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value='Not Available'>Not Available</option>
+                    </select>
+                  </div>
+                </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={() => handleStatusChange()}>
-                  Chnage Staus
-                </button>
-                <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>
-                  Close
-                </button>
+                <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>Cancel</button>
+                <button type="button" className="btn btn-primary" onClick={handleStatusSubmit}>Save changes</button>
               </div>
             </div>
           </div>

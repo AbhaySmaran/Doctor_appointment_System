@@ -154,6 +154,7 @@ const AppointmentHistory = () => {
         if (prescriptionFile){
             reportData.append('prescription_file', prescriptionFile);
         }
+        reportData.append('appointment', formData.id)
         reportData.append('uploaded_by', user);
         reportData.append('message', message);
 

@@ -61,8 +61,8 @@ class ReceptionistSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    doctor = DoctorSerializer(required=False)  # Optional doctor serializer
-    receptionist = ReceptionistSerializer(required=False)  # Optional receptionist serializer
+    doctor = DoctorSerializer(required=False)  
+    receptionist = ReceptionistSerializer(required=False) 
 
     class Meta:
         model = CustomUser
