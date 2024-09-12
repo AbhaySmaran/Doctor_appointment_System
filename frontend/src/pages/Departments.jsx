@@ -252,28 +252,34 @@ const Departments = () => {
                                 </button>
                             </div>
                             <div className='modal-body'>
-                                <form onSubmit={handleEditDepartment}>
+                                <form onSubmit={handleEditDepartment} className='needs-validation'>
                                     <div className='form-group'>
                                         <label>Department Name</label>
                                         <input
                                             type='text'
-                                            className='form-control'
+                                            className={`form-control ${error.dept_name ? "is-invalid" : ""}`}
                                             value={formData.dept_name}
                                             onChange={(e) =>
                                                 setFormData({ ...formData, dept_name: e.target.value })
                                             }
                                         />
+                                        <div className='invalid-feedback'>
+                                            {error.dept_name && <p>{error.dept_name}</p>}
+                                        </div>
                                     </div>
                                     <div className='form-group'>
                                         <label>Department Code</label>
                                         <input
                                             type='text'
-                                            className='form-control'
+                                            className={`form-control ${error.dept_code ? 'is-invalid' : ''}`}
                                             value={formData.dept_code}
                                             onChange={(e) =>
                                                 setFormData({ ...formData, dept_code: e.target.value })
                                             }
                                         />
+                                        <div className='invalid-feedback'>
+                                            {error.dept_code && <p>{error.dept_code}</p>}
+                                        </div>
                                     </div>
                                     <div className='form-group'>
                                         <label>Department Location</label>
