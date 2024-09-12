@@ -59,7 +59,7 @@ function ChangePassword() {
             <div className='container-fluid position-relative'>
                 <div className='position-absolute top-0 end-0'>
                     <button className='btn btn-primary' id='btn-back' type='button'
-                        onClick={() => navigate('/dashboard/receptionist')}
+                        onClick={() => navigate(-1)}
                     >
                         <IoReturnUpBackSharp /> Back
                     </button>

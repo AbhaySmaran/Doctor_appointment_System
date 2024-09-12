@@ -378,14 +378,14 @@ const AppointmentHistory = () => {
                                         <button className='btn btn-primary btn-sm' onClick={() => handleUploadPrescription(selectedAppointment)}>
                                             Upload Prescription
                                         </button>
+                                        <button className='btn btn-primary' onClick={()=> handleUpoadReport(selectedAppointment)}>
+                                            Upload Report
+                                        </button>
                                         <button className='btn btn-primary' onClick={() => handleStatusClick(selectedAppointment)}>
                                             Status
                                         </button>
                                         <button className='btn btn-primary' onClick={() => handleRescheduleClick(selectedAppointment)}>
                                             {/*<GrUpdate />*/}Reschedule
-                                        </button>
-                                        <button className='btn btn-primary' onClick={()=> handleUpoadReport(selectedAppointment)}>
-                                            Upload Report
                                         </button>
                                         <button className='btn  btn-primary' onClick={()=>handleAdviceClick(selectedAppointment)}>
                                             Advice 

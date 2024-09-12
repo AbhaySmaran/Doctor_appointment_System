@@ -15,7 +15,7 @@ const DoctorVisitHistory = () => {
     const [patient, setPatient] = useState({});
     const [appointments, setAppointments] = useState([]);
     const [reports, setReports] = useState([]);
-    const [prescriptions,setPrescriptions] = useState([]);
+    const [prescriptions,setPrescriptions] = useState([]); 
     const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
     const [appointmentAdvice,setAppointmentAdvice] = useState("");
     const access = localStorage.getItem('access');
@@ -74,6 +74,24 @@ const DoctorVisitHistory = () => {
         setReports(res.data);
     };
 
+    const fetchPrescriptions = async()=>{
+        try {
+            const response = await axios.get(`${base_url}/services/prescriptions/${uuid}/`, {
+                headers: {
+                    'Authorization': `Bearer ${access}`
+                }
+            });
+            setPrescriptions(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching reports:', error);
+        }
+    }
+
+    const filteredPrescriptions  = prescriptions.filter((prescription)=>{
+        return prescription.appointment === selectedAppointmentId;
+    })
+
     const filteredReports = reports.filter((report) => {
         return report.appointment.id === selectedAppointmentId;
     });
@@ -82,6 +100,7 @@ const DoctorVisitHistory = () => {
         fetchPatientDetails();
         fetchAppointments();
         fetchReports();
+        fetchPrescriptions();
 
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -177,6 +196,41 @@ const DoctorVisitHistory = () => {
                                         )) : <p>No Reports Found</p>}
                                     </ul> */}
                                     <div>
+                                    <p><strong>Prescriptions:-</strong></p>
+                                    <table className='table table-striped'>
+                                            <thead className='thead' id='thead'>
+                                                <tr>
+                                                    <th>Prescription</th>
+                                                    <th>Download</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {prescriptions.length > 0 ?
+                                                    (filteredPrescriptions.map((prescription) => (
+                                                        <tr key={prescription.id}>
+                                                            <td>{"Dr."+prescription.name.slice(0,6)+"..."}</td>
+                                                            <td>
+                                                                <FaCloudDownloadAlt
+                                                                    style={{ cursor: 'pointer', marginRight: '10px' }}
+                                                                    onClick={() => handleDownload(prescription.prescription_file)}
+                                                                />
+                                                                <a href={`${base_url}${prescription.prescription_file}`} target="_blank" rel="noopener noreferrer">
+                                                                    View prescription
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    )))
+                                                    :
+                                                    (
+                                                        <tr>
+                                                            <td colSpan="2" className='text-center'>No Prescriptions Found</td>
+                                                        </tr>
+                                                    )
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <br/>
+                                        <p><strong>Reports:-</strong></p>
                                         <table className='table table-striped'>
                                             <thead className='thead' id='thead'>
                                                 <tr>
@@ -203,7 +257,7 @@ const DoctorVisitHistory = () => {
                                                     :
                                                     (
                                                         <tr>
-                                                            <p>No Reports Found</p>
+                                                            <td colSpan="2" className='text-center'>No Reports Found</td>
                                                         </tr>
                                                     )
                                                 }

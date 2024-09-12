@@ -523,8 +523,10 @@ const PatientList = () => {
                                                     value={formData.email}
                                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                                 />
+                                                <div className="invalid-feedback">
+                                                    {uploadError.email && <p>{uploadError.email}</p>}
+                                                </div>
                                             </div>
-                                            <div className="invalid-feedback">{uploadError && <p>{uploadError.email}</p>}</div>
                                         </div>
                                         <br />
                                         <div className="row aligns-item-center">
