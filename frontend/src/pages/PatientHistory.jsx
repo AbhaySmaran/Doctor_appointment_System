@@ -14,6 +14,7 @@ const PatientHistory = () => {
     const [patient, setPatient] = useState({});
     const [appointments, setAppointments] = useState([]);
     const [reports, setReports] = useState([]);
+    const [prescriptions,setPrescriptions] = useState([]);
     const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
     const [appointmentAdvice,setAppointmentAdvice] = useState("");
     const access = localStorage.getItem('access');
@@ -71,14 +72,33 @@ const PatientHistory = () => {
         setReports(res.data);
     };
 
+    const fetchPrescriptions = async()=>{
+        try {
+            const response = await axios.get(`${base_url}/services/prescriptions/${uuid}/`, {
+                headers: {
+                    'Authorization': `Bearer ${access}`
+                }
+            });
+            setPrescriptions(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching reports:', error);
+        }
+    }
+
     const filteredReports = reports.filter((report) => {
         return report.appointment.id === selectedAppointmentId;
     });
+
+    const filteredPrescriptions = prescriptions.filter((prescription => {
+        return prescription.appointment === selectedAppointmentId;
+    }))
 
     useEffect(() => {
         fetchPatientDetails();
         fetchAppointments();
         fetchReports();
+        fetchPrescriptions();
 
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -163,33 +183,29 @@ const PatientHistory = () => {
                         <div className='side-panel'>
                             {selectedAppointmentId ? (
                                 <div>
-                                    <h5>Files {/* for Appointment ID: {selectedAppointmentId}*/}</h5>
-                                    {/* <ul>
-                                        {filteredReports.length > 0 ? filteredReports.map(report => (
-                                            <li key={report.id}>{report.name}</li>
-                                        )) : <p>No Reports Found</p>}
-                                    </ul> */}
+                                    <h5>Files</h5>
+                                    
                                     <div>
                                     <p><strong>Prescriptions:-</strong></p>
                                     <table className='table table-striped'>
                                             <thead className='thead' id='thead'>
                                                 <tr>
-                                                    <th>Report Name</th>
+                                                    <th>Prescription</th>
                                                     <th>Download</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {filteredReports.length > 0 ?
-                                                    (filteredReports.map((report) => (
-                                                        <tr key={report.id}>
-                                                            <td>{report.name}</td>
+                                                {prescriptions.length > 0 ?
+                                                    (filteredPrescriptions.map((prescription) => (
+                                                        <tr key={prescription.id}>
+                                                            <td>{"Dr."+prescription.name.slice(0,6)+"..."}</td>
                                                             <td>
                                                                 <FaCloudDownloadAlt
                                                                     style={{ cursor: 'pointer', marginRight: '10px' }}
-                                                                    onClick={() => handleDownload(report.report_file)}
+                                                                    onClick={() => handleDownload(prescription.prescription_file)}
                                                                 />
-                                                                <a href={`${base_url}${report.report_file}`} target="_blank" rel="noopener noreferrer">
-                                                                    View Report
+                                                                <a href={`${base_url}${prescription.prescription_file}`} target="_blank" rel="noopener noreferrer">
+                                                                    View prescription
                                                                 </a>
                                                             </td>
                                                         </tr>
@@ -197,7 +213,7 @@ const PatientHistory = () => {
                                                     :
                                                     (
                                                         <tr>
-                                                            <p>No Reports Found</p>
+                                                            <td colSpan="2" className='text-center'>No Prescriptions Found</td>
                                                         </tr>
                                                     )
                                                 }
@@ -231,7 +247,7 @@ const PatientHistory = () => {
                                                     :
                                                     (
                                                         <tr>
-                                                            <p>No Reports Found</p>
+                                                            <td colSpan="2" className='text-center'>No Reports Found</td>
                                                         </tr>
                                                     )
                                                 }

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const DoctorReg = () => {
     const url = localStorage.getItem('url');
     const navigate = useNavigate();
-    const [error, setError] = useState({});
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -74,8 +74,9 @@ const DoctorReg = () => {
             }
         } catch (error) {
             // Error handling
-            if (error.response && error.response.data) {
+            if (error.response.data && error.response.data.doctor) {
                 setError(error.response.data);
+                console.error(error)
             } else {
                 console.error("An unexpected error occurred", error);
             }
@@ -104,14 +105,14 @@ const DoctorReg = () => {
                         <div className="col-md-10">
                             <input
                                 type="text"
-                                className={`form-control ${error.doctor.full_name ? "is-invalid" : ""}`}
+                                className={`form-control ${error.doctor ?.full_name ? "is-invalid" : ""}`}
                                 id="fullName"
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
                                 placeholder="Enter full name"
                             />
-                            <div className='invalid-feedback'>{error.doctor.full_name}</div>
+                            <div className='invalid-feedback'>{error.doctor ?.full_name}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -171,7 +172,7 @@ const DoctorReg = () => {
                         </div>
                         <div className="col-md-10">
                             <select
-                                className={`form-control ${error.department ? 'is-invalid' : ''}`}
+                                className={`form-control ${error.doctor ?.department ? 'is-invalid' : ''}`}
                                 id="department"
                                 name="department"
                                 value={formData.department}
@@ -184,7 +185,7 @@ const DoctorReg = () => {
                                     </option>
                                 ))}
                             </select>
-                            <div className='invalid-feedback'>{error.department}</div>
+                            <div className='invalid-feedback'>{error.doctor ?.department}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -194,14 +195,14 @@ const DoctorReg = () => {
                         <div className="col-md-10">
                             <input
                                 type="text"
-                                className={`form-control ${error.specialization ? 'is-invalid' : ''}`}
+                                className={`form-control ${error.doctor ?.specialization ? 'is-invalid' : ''}`}
                                 id="specialization"
                                 name="specialization"
                                 value={formData.specialization}
                                 onChange={handleChange}
                                 placeholder="Enter specialization"
                             />
-                            <div className='invalid-feedback'>{error.specialization}</div>
+                            <div className='invalid-feedback'>{error.doctor ?.specialization}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -245,17 +246,17 @@ const DoctorReg = () => {
                         <div className="col-md-10">
                             <input
                                 type="number"
-                                className={`form-control ${error.fee ? 'is-invalid' : ''}`}
+                                className={`form-control ${error.doctor ?.fee ? 'is-invalid' : ''}`}
                                 id="fee"
                                 name="fee"
                                 value={formData.fee}
                                 onChange={handleChange}
                                 placeholder="Enter consultation fee"
                             />
-                            <div className='invalid-feedback'>{error.fee}</div>
+                            <div className='invalid-feedback'>{error.doctor ?.fee}</div>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="text-end">
                         <div className="col-md-12">
                             <button type="submit" className="btn btn-primary">Register</button>
                         </div>

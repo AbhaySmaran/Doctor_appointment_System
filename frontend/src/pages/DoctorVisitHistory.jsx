@@ -15,6 +15,7 @@ const DoctorVisitHistory = () => {
     const [patient, setPatient] = useState({});
     const [appointments, setAppointments] = useState([]);
     const [reports, setReports] = useState([]);
+    const [prescriptions,setPrescriptions] = useState([]);
     const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
     const [appointmentAdvice,setAppointmentAdvice] = useState("");
     const access = localStorage.getItem('access');

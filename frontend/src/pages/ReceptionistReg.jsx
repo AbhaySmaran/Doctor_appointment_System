@@ -79,14 +79,14 @@ const ReceptionistReg = () => {
                         <div className="col-md-10">
                             <input
                                 type="text"
-                                className={`form-control ${error.full_name ? "is-invalid" : ""}`}
+                                className={`form-control ${error.receptionist ?.full_name ? "is-invalid" : ""}`}
                                 id="fullName"
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
                                 placeholder="Enter full name"
                             />
-                            <div className='invalid-feedback'>{error.full_name && <p>{error.full_name}</p>}</div>
+                            <div className='invalid-feedback'>{error.receptionist ?.full_name && <p>{error.receptionist ?.full_name}</p>}</div>
                         </div>
                     </div>
                     <div className="row mb-3">
