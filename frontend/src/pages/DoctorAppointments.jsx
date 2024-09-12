@@ -260,7 +260,7 @@ const DoctorAppointments = () => {
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>Cancel</button>
-                  <button type="button" className="btn btn-primary" onClick={handleStatusSubmit}>Save changes</button>
+                  <button type="button" className="btn btn-primary" onClick={handleStatusSubmit}>Change Status</button>
                 </div>
               </div>
             </div>
