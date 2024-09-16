@@ -11,7 +11,7 @@ const PatientReg = () => {
         uuid: '',
         fullName: '',
         age: '',
-        email: '',
+        email: '', 
         gender: '',
         dob: '',
         address: '',
@@ -31,21 +31,50 @@ const PatientReg = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const data = new FormData();
+        if(formData.uuid){
+            data.append("uuid", formData.uuid)
+        }
+        if(formData.fullName){
+            data.append("full_name", formData.fullName)
+        }
+        if(formData.email){
+            data.append("email", formData.email)
+        }
+        if(formData.age){
+            data.append("age", formData.age)
+        }
+        if(formData.gender){
+            data.append("gender", formData.gender)
+        }
+        if(formData.dob){
+            data.append("dob", formData.dob)
+        }
+        if(formData.address){
+            data.append("address", formData.address)
+        }
+        if(formData.contactNo){
+            data.append("contact_no", formData.contactNo)
+        }
+        if(formData.nationality){
+            data.append("nationality", formData.nationality)
+        }
         try {
-            const res = await axios.post(`${url}/api/patients/`, {
-                "uuid": formData.uuid,
-                "full_name": formData.fullName,
-                "age": formData.age,
-                "email": formData.email,
-                "gender": formData.gender,
-                "dob": formData.dob,
-                "address": formData.address,
-                "nationality": formData.nationality,
-                "contact_no": formData.contactNo
-            });
+            const res = await axios.post(`${url}/api/patients/`, data
+            // {
+            //     uuid: formData.uuid,
+            //     full_name: formData.fullName,
+            //     age: formData.age,
+            //     email: formData.email,
+            //     gender: formData.gender,
+            //     dob: formData.dob,
+            //     address: formData.address,
+            //     nationality: formData.nationality,
+            //     contact_no: formData.contactNo
+            // }
+            );
 
-            if (res.status === 201) {
-                alert('Patient Registered');
+            if (window.confirm("Add patient")) {
                 setFormData({
                     uuid: '',
                     fullName: '',
@@ -61,6 +90,10 @@ const PatientReg = () => {
             }
         } catch (error) {
             setError(error.response.data);
+            if(error.msg){
+                alert(error.msg)
+            }
+            console.error(error)
         }
     };
 
@@ -80,6 +113,9 @@ const PatientReg = () => {
                 <h5 className="mb-4">Patient Registration</h5>
                 <form onSubmit={handleSubmit}>
                     <div className="row mb-3" id='form-row'>
+                        {/* <div className='invalid-feedback'>
+                            {error.msg ? <p>{error.msg}</p> : ""}
+                        </div> */}
                         <div className="col-md-2">
                             <label htmlFor="uuid" className="form-label">UHID</label>
                         </div>
@@ -105,7 +141,7 @@ const PatientReg = () => {
                         <div className="col-md-10">
                             <input
                                 type="text"
-                                className={`form-control ${error.full_name ? 'is-invalid' : ''}`}
+                                className={`form-control ${error.full_name || error.msg ? 'is-invalid' : ''}`}
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
@@ -113,6 +149,7 @@ const PatientReg = () => {
                             />
                             <div className="invalid-feedback">
                                 {error.full_name && <p>{error.full_name}</p>}
+                                {error.msg && <p>{error.msg}</p>}
                             </div>
                         </div>
                     </div>

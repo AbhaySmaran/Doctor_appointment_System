@@ -19,7 +19,7 @@ const SupportIssues = () => {
         Customer_Name: '',
         Customer_ID: '',
         Issue_Caption: 'Screen Issue',
-        Issue_Description: '',
+        Issue_Description: "",
         Priority: 'low',
         Status: 'Open',
         Issue_ScreenShot: null,
@@ -52,7 +52,9 @@ const SupportIssues = () => {
         reportData.append("Customer_Name", 'Dr. Ranjan Mahanty');
         reportData.append("Customer_ID", "C1");
         reportData.append("Issue_Caption", formData.Issue_Caption);
-        reportData.append("Issue_Description", formData.Issue_Description);
+        if(formData.Issue_Description){
+            reportData.append("Issue_Description", formData.Issue_Description);
+        }
         reportData.append("Priority", formData.Priority);
         reportData.append("Issue_Status", formData.Status);
         reportData.append("created_by", user);
@@ -73,10 +75,11 @@ const SupportIssues = () => {
 
     const handleStatusUpdate = async () => {
         try {
-            await axios.put(`${url}/api/issue/support/${selectedIssue.Ticket_id}/`, { Status: status });
-            alert('Issue status updated');
-            setShowStatusModal(false);
-            fetchIssues();
+            if(window.confirm("Update issue status")){
+                await axios.put(`${url}/api/issue/support/${selectedIssue.Ticket_id}/`, { Status: status });
+                setShowStatusModal(false);
+                fetchIssues();
+            }
         } catch (error) {
             alert('Failed to update status');
         }
@@ -201,7 +204,7 @@ const SupportIssues = () => {
                         <div className='modal-content'>
                             <div className="modal-header">
                                 <h5 className="modal-title">Support</h5>
-                                <button type="button" className="close" onClick={() => setShowSupportModal(false)}>
+                                <button type="button" className="close" onClick={() => {setShowSupportModal(false); setUploadError('');}}>
                                     &times;
                                 </button>
                             </div>
@@ -229,8 +232,8 @@ const SupportIssues = () => {
                                             onChange={handleChange}
                                             required
                                         />
-                                        <div className="validation-feedback">
-                                            {uploadError.Issue_Description ? <p>{uploadError.Issue_Description}</p> : " "}
+                                        <div className="invalid-feedback">
+                                            {uploadError.Issue_Description ? <p>{uploadError.Issue_Description}</p> : ""}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -259,8 +262,8 @@ const SupportIssues = () => {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => setShowSupportModal(false)}>Close</button>
                                 <button type="button" className="btn btn-primary" onClick={handleSupportSubmit}>Submit</button>
+                                <button type="button" className="btn btn-primary" onClick={() => {setShowSupportModal(false); setUploadError('');}}>Close</button>
                             </div>
                         </div>
                     </div>
@@ -294,8 +297,8 @@ const SupportIssues = () => {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>Close</button>
                                 <button type="button" className="btn btn-primary" onClick={handleStatusUpdate}>Update</button>
+                                <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>Close</button>
                             </div>
                         </div>
                     </div>

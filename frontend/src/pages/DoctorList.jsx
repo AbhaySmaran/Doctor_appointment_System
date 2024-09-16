@@ -15,16 +15,16 @@ const DoctorList = () => {
     const [showStatusModal, setShowStatusModal] = useState(false)
     const [error,setError] = useState("");
     const [formData, setFormData] = useState({
-        id: '',
-        full_name: '',
-        specialization: '',
-        email: '',
-        fee: '',
-        contact: '',
+        id: undefined,
+        full_name: undefined,
+        specialization: undefined,
+        email: undefined,
+        fee:"",
+        contact: "",
         status: "",
-        degree: ''
+        degree: ""
     });
-    const recordsPerPage = 2;
+    const recordsPerPage = 5;
     const navigate = useNavigate();
     const fetchDoctors = async () => {
         try {
@@ -61,21 +61,21 @@ const DoctorList = () => {
 
     const handleSubmitUpdate = async () => {
         try {
+            const res = await axios.put(`${url}/api/update/user/${formData.id}/`, {
+                "username": formData.username,
+                "email": formData.email,
+                "role": "doctor",
+                "doctor": {
+                  "full_name": formData.full_name,
+                  "contact": formData.contact,
+                  "specialization": formData.specialization,
+                  "fee": formData.fee,
+                  "degree": formData.degree
+                }
+              });
             if (window.confirm("Are you sure you want to save changes")) {
-                const res = await axios.put(`${url}/api/update/user/${formData.id}/`, {
-                    "username": formData.username,
-                    "email": formData.email,
-                    "role": "doctor",
-                    "doctor": {
-                      "full_name": formData.full_name,
-                      "contact": formData.contact,
-                      "specialization": formData.specialization,
-                      "fee": formData.fee,
-                      "degree": formData.degree
-                    }
-                  });
-                fetchDoctors();
                 setShowUpdateModal(false);
+                fetchDoctors();
                 setSelectedDoctor((prevDoctor) => ({
                     ...prevDoctor,
                     ...formData
@@ -94,9 +94,21 @@ const DoctorList = () => {
     }
 
     const handleStatusSubmit = async()=>{
-        try{
+        try{            
+            const res = await axios.put(`${url}/api/update/user/${formData.id}/`, {
+                "username": formData.username,
+                "email": formData.email,
+                "role": "doctor",
+                "doctor": {
+                  "full_name": formData.full_name,
+                  "contact": formData.contact,
+                  "specialization": formData.specialization,
+                  "fee": formData.fee,
+                  "degree": formData.degree,
+                  "status": formData.status
+                }
+              })
             if(window.confirm("Change Status")){
-                const res = await axios.put(`${url}/api/doctors/${selectedDoctor.id}/`, formData)
                 fetchDoctors();
                 setShowStatusModal(false);
             }
@@ -276,7 +288,7 @@ const DoctorList = () => {
                                         <div className='form-group col-md-3'><label>Fee</label></div>
                                         <div className='form-group col-md-9'>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 value={formData.fee}
                                                 onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
@@ -298,7 +310,7 @@ const DoctorList = () => {
                                         <div className='form-group col-md-3'><label>Contact</label></div>
                                         <div className='form-group col-md-9'>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 value={formData.contact}
                                                 onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
@@ -308,8 +320,8 @@ const DoctorList = () => {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>Close</button>
                                 <button type="button" className="btn btn-primary" onClick={handleSubmitUpdate}>Save changes</button>
+                                <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>Close</button>
                             </div>
                         </div>
                     </div>

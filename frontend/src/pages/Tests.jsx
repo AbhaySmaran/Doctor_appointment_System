@@ -26,17 +26,26 @@ const Tests = () => {
 
     const handleAddTest =async(e)=>{
         e.preventDefault();
+        const data = new FormData();
+        if(testName){
+            data.append('test_name', testName)
+        }
+        if(testType){
+            data.append('test_type', testType)
+        }
+        if(testCode){
+            data.append('test_code', testCode)
+        }
         try{
-            const res = await axios.post(`${url}/services/test/`,{
-                'test_name': testName,
-                'test_type': testType,
-                'test_code': testCode
-            });
-            setShowAddTestModal(false);
-            fetchTests();
-            setTestName('');
-            setTestCode('');
-            setTestType('');
+            const res = await axios.post(`${url}/services/test/`,data);
+            if(window.confirm("Add Test Configuration")){
+                setShowAddTestModal(false);
+                fetchTests();
+                setTestName('');
+                setTestCode('');
+                setTestType('');
+                setError('')
+            }
         }catch(error){
             setError(error.response.data);
         }
@@ -134,7 +143,7 @@ const Tests = () => {
                                                 <option value='Diagnostic'>Diagnostic</option>
                                             </select>
                                             <div className='invalid-feedback'>
-                                                {error.test_type && <p>{error.test_type}</p>}
+                                                <p>Choose a test type</p>
                                             </div>
                                         </div>
                                         <div className="form-group">
@@ -151,7 +160,7 @@ const Tests = () => {
                                         </div>
                                         <div className='modal-footer'>
                                             <button className='btn btn-primary' id='btn-back' onClick={handleAddTest}>Add Test</button>
-                                            <button className='btn btn-primary' id='btn-back' onClick={()=>setShowAddTestModal(false)}>Cancel</button>
+                                            <button className='btn btn-primary' id='btn-back' onClick={()=>{setShowAddTestModal(false); setError('');}}>Cancel</button>
                                         </div>
                                     </form>
                                 </div>

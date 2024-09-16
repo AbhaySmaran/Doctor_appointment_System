@@ -136,7 +136,7 @@ const PrescriptionList = () => {
                                             onClick={() => handleDownload(report.prescription_file)}
                                         />
                                         <a href={`${base_url}${report.prescription_file}`} target="_blank" rel="noopener noreferrer">
-                                            View Report
+                                            View Prescription
                                         </a>
                                     </td>
                                     <td>{new Date(report.uploaded_on).toLocaleString()}</td>

@@ -23,7 +23,8 @@ const Navbar = () => {
   // };
 
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-dark">
+    // <nav className="navbar navbar-expand-md navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-md" style={{ backgroundColor: '#00857c' }}>
       <div className='container-fluid'>
         
         <button className="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,11 +40,11 @@ const Navbar = () => {
             <li className="nav-item text-nowrap">
               {!access_token || location.pathname === '/' ? (
                 <NavLink to="/" className="nav-link">
-                  Login
+                  <b>Login</b>
                 </NavLink>
               ) : (
                 <NavLink to="/" className="nav-link" onClick={handleLogout}>
-                  Logout
+                  <b>Logout</b>
                 </NavLink>
               )}
             </li>

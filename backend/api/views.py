@@ -46,8 +46,11 @@ class PatientView(APIView):
     def post(self, request, format=None):
         email = request.data.get('email')
         contact_no = request.data.get('contact_no')
+        full_name = request.data.get('full_name')
         
-        if Patient.objects.filter(email=email).exists() or Patient.objects.filter(contact_no=contact_no).exists():
+        if (Patient.objects.filter(email=email).exists() and 
+            Patient.objects.filter(contact_no=contact_no).exists() and
+            Patient.objects.filter(full_name=full_name).exists()) :
             return Response({"msg": "Patient already registered"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = PatientSerializer(data = request.data)
@@ -107,37 +110,18 @@ class DepartmentView(APIView):
 
 class UserRegistrationView(APIView):
     permission_classes = [AllowAny]
+
     def post(self, request):
         user_data = request.data
-        role = user_data.get('role')
 
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid(raise_exception=True):
-            user = user_serializer.save()
-
-            if role == 'doctor':
-                doctor_data = user_data.get('doctor', {})
-                doctor_data['user'] = user.id
-                doctor_serializer = DoctorSerializer(data=doctor_data)
-                if doctor_serializer.is_valid(raise_exception=True):
-                    doctor_serializer.save(user=user)
-                else:
-                    return Response(doctor_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            elif role == 'receptionist':
-                receptionist_data = user_data.get('receptionist', {})
-                receptionist_data['user'] = user.id
-                receptionist_serializer = ReceptionistSerializer(data=receptionist_data)
-                if receptionist_serializer.is_valid(raise_exception=True):
-                    receptionist_serializer.save(user=user)
-                else:
-                    return Response(receptionist_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            user_serializer.save()
             return Response(user_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+   
 
-    
 class UserUpdateView(APIView):
     permission_classes = [AllowAny]
 
@@ -149,38 +133,38 @@ class UserUpdateView(APIView):
             return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         user_data = request.data
-        role = user_data.get('role')
+        role = user_data.get('role', user.role)  # If role is not provided, default to existing user role
 
         # Update user data
         user_serializer = UserSerializer(user, data=user_data, partial=True)
         if user_serializer.is_valid(raise_exception=True):
             user = user_serializer.save()
 
+            # Handle Doctor update if role is doctor
             if role == 'doctor':
                 doctor_data = user_data.get('doctor', {})
                 try:
                     doctor = Doctor.objects.get(user=user)
+                    doctor_serializer = DoctorSerializer(doctor, data=doctor_data, partial=True)
+                    if doctor_serializer.is_valid(raise_exception=True):
+                        doctor_serializer.save()
                 except Doctor.DoesNotExist:
                     return Response({'error': 'Doctor profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+                except KeyError:
+                    return Response({'error': 'Doctor data is missing.'}, status=status.HTTP_400_BAD_REQUEST)
 
-                doctor_serializer = DoctorSerializer(doctor, data=doctor_data, partial=True)
-                if doctor_serializer.is_valid(raise_exception=True):
-                    doctor_serializer.save()
-                else:
-                    return Response(doctor_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            # Handle Receptionist update if role is receptionist
             elif role == 'receptionist':
                 receptionist_data = user_data.get('receptionist', {})
                 try:
                     receptionist = Receptionist.objects.get(user=user)
+                    receptionist_serializer = ReceptionistSerializer(receptionist, data=receptionist_data, partial=True)
+                    if receptionist_serializer.is_valid(raise_exception=True):
+                        receptionist_serializer.save()
                 except Receptionist.DoesNotExist:
                     return Response({'error': 'Receptionist profile not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-                receptionist_serializer = ReceptionistSerializer(receptionist, data=receptionist_data, partial=True)
-                if receptionist_serializer.is_valid(raise_exception=True):
-                    receptionist_serializer.save()
-                else:
-                    return Response(receptionist_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                except KeyError:
+                    return Response({'error': 'Receptionist data is missing.'}, status=status.HTTP_400_BAD_REQUEST)
 
             return Response(user_serializer.data, status=status.HTTP_200_OK)
 
@@ -190,7 +174,7 @@ class UserUpdateView(APIView):
 class ReceptionistsView(APIView):
     permission_classes = [AllowAny]
     def get(self, request, id=None ,format=None):
-        Receptionists = Receptionist.objects.all()
+        Receptionists = Receptionist.objects.all().order_by('status')
         serializer = ReceptionistViewSerializer(Receptionists, many=True)
         if id is not None:
             receptionist = Receptionist.objects.get(pk=id)
@@ -199,6 +183,7 @@ class ReceptionistsView(APIView):
 
     def put(self, request,id=None, formar=None):
         if id is not None:
+            print(id)
             receptionist = Receptionist.objects.get(pk=id)
             serializer = ReceptionistViewSerializer(receptionist, data=request.data, partial=True)
             if serializer.is_valid():
@@ -214,7 +199,7 @@ class ReceptionistsView(APIView):
 class DoctorsView(APIView):
     permission_classes = [AllowAny]
     def get(self, request, id=None, format=None):
-        doctor = Doctor.objects.all()
+        doctor = Doctor.objects.all().order_by('status')
         serializer = DoctorViewSerializer(doctor, many = True)
         if id is not None:
             doctor = Doctor.objects.get(pk=id)
@@ -223,7 +208,9 @@ class DoctorsView(APIView):
     
     def put(self, request,id=None, format=None):
         if id is not None:
+            id = id
             doctor = Doctor.objects.get(pk=id)
+            
             serializer = DoctorViewSerializer(doctor, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -280,15 +267,28 @@ class SupportView(APIView):
         return Response(serializer.errors)
 
 
+# class PasswordChangeView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def put(self, request, *args, **kwargs):
+#         user = request.user
+#         serializer = PasswordChangeSerializer(user, data=request.data, context={'request': request},partial=True)
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save()
+#             return Response({"detail": "Password updated successfully"}, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class PasswordChangeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request, *args, **kwargs):
-        user = request.user
-        serializer = PasswordChangeSerializer(user, data=request.data, context={'request': request},partial=True)
+        serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            user = request.user
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
             return Response({"detail": "Password updated successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 

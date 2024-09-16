@@ -13,11 +13,15 @@ function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        const data = new FormData();
+        if(email){
+            data.append("email",email)
+        }
+        if(password){
+            data.append('password',password)
+        }
         try {
-            const response = await axios.post(`${url}/api/user/login/`, {
-                "email": email,
-                "password": password
-            });
+            const response = await axios.post(`${url}/api/user/login/`, data);
             if (response.data) {
                 localStorage.setItem("access", response.data.tokens.access)
                 localStorage.setItem("refresh", response.data.tokens.refresh)

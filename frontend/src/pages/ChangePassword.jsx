@@ -8,7 +8,7 @@ function ChangePassword() {
     const url = localStorage.getItem('url');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
     const access = localStorage.getItem('access');
@@ -27,24 +27,21 @@ function ChangePassword() {
         }
         // Confirmation dialog before proceeding
         try {
+            const response = await axios.put(`${url}/api/password-change/`, formData,
+                {
+                    headers: {
+                        "Authorization": `Bearer ${access}`
+                    }
+                });
             if (window.confirm('Are you sure you want to change your password?')) {
-                const response = await axios.put(`${url}/api/password-change/`, {
-                    "old_password": oldPassword,
-                    "new_password": newPassword,
-                    "confirm_password": confirmPassword,
-                },
-                    {
-                        headers: {
-                            "Authorization": `Bearer ${access}`
-                        }
-                    });
-                if (response.status === 200) {
-                    alert('Password updated successfully');
-                    localStorage.clear();
-                    navigate('/');
+                alert('Password updated successfully');
+                const url = localStorage.getItem('url');
+                localStorage.clear();
+                if (url) {
+                localStorage.setItem('url', url); 
                 }
+                navigate('/');
             }
-
         } catch (error) {
             if (error.response && error.response.data) {
                 setErrors(error.response.data);

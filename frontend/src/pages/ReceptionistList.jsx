@@ -15,13 +15,14 @@ const ReceptionistList = () => {
     const [showStatusModal, setShowStatusModal] = useState(false)
     const [formData, setFormData] = useState({
         id: '',
+        recp_id:'',
         full_name: '',
         username: '',
         email: '',
         contact_no: '',
         status: ''
     });
-    const recordsPerPage = 2;
+    const recordsPerPage = 5;
     const navigate = useNavigate();
     useEffect(() => {
         fetchReceptionists();
@@ -40,10 +41,12 @@ const ReceptionistList = () => {
         setSelectedReceptionist(receptionist);
         setFormData({
             id: receptionist.user.id,
+            recp_id: receptionist.id,
             full_name: receptionist.full_name,
             username: receptionist.user.username,
             email: receptionist.user.email,
             contact_no: receptionist.contact_no,
+            status: receptionist.status
         });
     };
 
@@ -59,12 +62,25 @@ const ReceptionistList = () => {
 
     const handleStatusSubmit = async () => {
         try {
+            const res = await axios.put(`${url}/api/update/user/${formData.id}/`, {
+                "username": formData.username,
+                "email": formData.email,
+                "role": "receptionist",
+                "receptionist": {
+                  "full_name": formData.full_name,
+                  "contact_no": formData.contact_no,
+                  "status": formData.status
+                }
+              })
             if (window.confirm("Change Status")) {
-                const res = await axios.put(`${url}/api/receptionist/${formData.id}/`, formData)
-                fetchReceptionists();
                 setShowStatusModal(false);
-            
+                fetchReceptionists();
+                setSelectedReceptionist((prevReceptionist) => ({
+                    ...prevReceptionist,
+                    ...formData
+                }));
             }
+            
         } catch (error) {
             setError(error.response.data);
         }
@@ -72,16 +88,16 @@ const ReceptionistList = () => {
 
     const handleSubmitUpdate = async () => {
         try {
+            await axios.put(`${url}/api/update/user/${formData.id}/`, {
+                "username": formData.username,
+                "email": formData.email,
+                "role": "receptionist",
+                "receptionist": {
+                  "full_name": formData.full_name,
+                  "contact_no": formData.contact_no
+                }
+              });
             if(window.confirm("Sure want to save changes?")){
-                await axios.put(`${url}/api/update/user/${formData.id}/`, {
-                    "username": formData.username,
-                    "email": formData.email,
-                    "role": "receptionist",
-                    "receptionist": {
-                      "full_name": formData.full_name,
-                      "contact_no": formData.contact_no
-                    }
-                  });
                 await fetchReceptionists(); // Fetch updated list after update
                 setShowUpdateModal(false);
                 fetchReceptionists();
@@ -254,8 +270,8 @@ const ReceptionistList = () => {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>Close</button>
                                 <button type="button" className="btn btn-primary" onClick={handleSubmitUpdate}>Save changes</button>
+                                <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>Close</button>
                             </div>
                         </div>
                     </div>

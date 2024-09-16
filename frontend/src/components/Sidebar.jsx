@@ -24,12 +24,6 @@ const Sidebar = () => {
                     <div className="sidebar-sticky">
                         <ul className="nav flex-column">
                             <li className="nav-item">
-                                <button className="nav-link" onClick={() => setShowProfileModal(true)}>
-                                    <CgProfile className='sidebar-icon' />
-                                    <span className="sidebar-text">Profile</span>
-                                </button>
-                            </li>
-                            <li className="nav-item">
                                 <NavLink className="nav-link" to="/dashboard/receptionist">
                                     <MdDashboard className='sidebar-icon' />
                                     <span className="sidebar-text">Dashboard</span>
@@ -101,6 +95,12 @@ const Sidebar = () => {
                                     <span className="sidebar-text">Support</span>
                                 </NavLink>
                             </li>
+                            <li className="nav-item">
+                                <button className="nav-link" onClick={() => setShowProfileModal(true)}>
+                                    <CgProfile className='sidebar-icon' />
+                                    <span className="sidebar-text">Profile</span>
+                                </button>
+                            </li>
                             {/* <li className="nav-item">
                             <button className="nav-link support-button" onClick={() => setShowSupportModal(true)}>
                                 <BiSupport className="sidebar-icon" />
@@ -125,12 +125,6 @@ const Sidebar = () => {
                     <div className="sidebar-sticky">
                         <ul className="nav flex-column">
                             <li className="nav-item">
-                                <button className="nav-link" onClick={() => setShowProfileModal(true)}>
-                                    <CgProfile className='sidebar-icon' />
-                                    <span className="sidebar-text">Profile</span>
-                                </button>
-                            </li>
-                            <li className="nav-item">
                                 <NavLink className="nav-link" to="/dashboard/doctor">
                                     <MdDashboard className='sidebar-icon' />
                                     <span className="sidebar-text">Dashboard</span>
@@ -141,6 +135,12 @@ const Sidebar = () => {
                                     <FaCalendarAlt className="sidebar-icon" />
                                     <span className="sidebar-text">Appointments</span>
                                 </NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <button className="nav-link" onClick={() => setShowProfileModal(true)}>
+                                    <CgProfile className='sidebar-icon' />
+                                    <span className="sidebar-text">Profile</span>
+                                </button>
                             </li>
                             {/* <li className="nav-item">
                                 <NavLink className="nav-link" to="/dashboard/doctor/reports">

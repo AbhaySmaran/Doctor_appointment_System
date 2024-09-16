@@ -8,9 +8,9 @@ const BookAppointment = () => {
     const url = localStorage.getItem('url');
     const [error,setError] = useState('')
     const [formData, setFormData] = useState({
-        patient_UHID: "",
-        doctor: "",
-        date: "",
+        patient_UHID: '',
+        doctor: '',
+        date: '',
     })
     const [doctors, setDoctors] = useState([])
     const navigate = useNavigate();
@@ -44,9 +44,9 @@ const BookAppointment = () => {
         if(formData.date){
             appointmentData.append("date",formData.date)
         }
-        try{
+        try{           
+            const res =await axios.post(`${url}/services/appointment/book/`,appointmentData)
             if(window.confirm("Book Appointment?")){
-                const res =await axios.post(`${url}/services/appointment/book/`,appointmentData)
                 setFormData({
                     patient_UHID: "",
                     doctor: "",

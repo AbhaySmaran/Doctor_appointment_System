@@ -41,7 +41,7 @@ const AppointmentHistory = () => {
         patient_age: '',
         appointment_status: '',
         appointment_date: '',
-        appointment_advice: '' ,
+        appointment_advice: "" ,
     });
 
     const user = localStorage.getItem("name");
@@ -90,8 +90,8 @@ const AppointmentHistory = () => {
         reportData.append("status", formData.appointment_status);
         // reportData.append("advice", formData.appointment_advice);
         try {
-            const res = await axios.put(`${url}/services/appointment/history/${formData.id}/`, reportData);
             if (window.confirm("Are you sure you want to change the status?")) {
+                const res = await axios.put(`${url}/services/appointment/history/${formData.id}/`, reportData);
                 await fetchAppointments();
                 setShowStatusModal(false); // Close the modal
                 // setSelectedAppointment(null); // Clear selected appointment
@@ -126,11 +126,8 @@ const AppointmentHistory = () => {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
-            if (response.status === 201) {
-                alert('Report uploaded')
-                setShowUploadReportModal(false);
-            }
+            alert('Report uploaded')
+            setShowUploadReportModal(false);
         } catch (error) {
             if (error.response) {
                 console.log(error.response.data)
@@ -165,12 +162,10 @@ const AppointmentHistory = () => {
                 },
             });
 
-            if (response.status === 201) {
-                alert('Prescription uploaded');
-                setShowPrescriptionUploadModal(false);
-                setUploadError('');
-                setMessage('');
-            }
+            alert('Prescription uploaded');
+            setShowPrescriptionUploadModal(false);
+            setUploadError('');
+            setMessage('');
         } catch (error) {
             if(error.response){
                 setUploadError(error.response.data);
@@ -197,14 +192,11 @@ const AppointmentHistory = () => {
             reportData.append('date', formattedDate)
         }
         try {
-            const res = await axios.put(`${url}/services/appointment/history/${formData.id}/`, reportData)
-
-            if (res.status === 200) {
+            if (window.confirm("Reschedule appointment")) {
+                const res = await axios.put(`${url}/services/appointment/history/${formData.id}/`, reportData)
                 setShowRescheduleModal(false); // Close the reschedule modal
                 setSelectedAppointment(null); // Clear selected appointment
-                alert('Appointment rescheduled')
                 fetchAppointments();
-                setFollowUpDate('')
             }
         } catch (error) {
             alert("Error updating appointment date: " + error.message);
@@ -433,8 +425,8 @@ const AppointmentHistory = () => {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => setShowPrescriptionUploadModal(false)}>Cancel</button>
                                 <button type="button" className="btn btn-primary" onClick={handleUploadPrescriptionSubmit}>Upload</button>
+                                <button type="button" className="btn btn-primary" onClick={() => setShowPrescriptionUploadModal(false)}>Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -483,8 +475,8 @@ const AppointmentHistory = () => {
                                 </form>
                             </div>
                             <div className="modal-footer">
+                                <button type="button" className="btn btn-primary" onClick={handleStatusSubmit}>Change Status</button>
                                 <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>Cancel</button>
-                                <button type="button" className="btn btn-primary" onClick={handleStatusSubmit}>Save changes</button>
                             </div>
                         </div>
                     </div>
@@ -502,7 +494,7 @@ const AppointmentHistory = () => {
                                 </button>
                             </div>
                             <div className='modal-body'>
-                                <h5>Reschedule Appointment On:-</h5>
+                                <h5>Reschedule On:-</h5>
                                 <DatePicker
                                     selected={followUpDate}
                                     onChange={(date) => setFollowUpDate(date)}
@@ -512,7 +504,7 @@ const AppointmentHistory = () => {
                                 />
                             </div>
                             <div className='modal-footer'>
-                                <button className='btn btn-primary' onClick={handleRescheduleSubmit}>Submit</button>
+                                <button className='btn btn-primary' onClick={handleRescheduleSubmit}>Reschedule</button>
                                 <button className='btn btn-primary' onClick={() => setShowRescheduleModal(false)}>Cancel</button>
                             </div>
                         </div>
@@ -601,11 +593,11 @@ const AppointmentHistory = () => {
                                     </form>
                                 </div>
                                 <div className="modal-footer">
+                                    <button type="button" className="btn btn-primary" onClick={handleUploadReportSubmit}>
+                                        Upload
+                                    </button>
                                     <button type="button" className="btn btn-primary" onClick={() => setShowUploadReportModal(false)}>
                                         Cancel
-                                    </button>
-                                    <button type="button" className="btn btn-primary" onClick={handleUploadReportSubmit}>
-                                        Upload Report
                                     </button>
                                 </div>
                             </div>

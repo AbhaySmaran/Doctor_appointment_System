@@ -6,11 +6,11 @@ import { useNavigate } from 'react-router-dom';
 const ReceptionistReg = () => {
     const url = localStorage.getItem('url');
     const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        username: '',
-        password: '',
-        contactNo: '',
+        fullName: "",
+        email: "",
+        username: "",
+        password: "",
+        contactNo: "",
     });
 
     const [error, setError] = useState({}); // State to hold validation errors
@@ -148,8 +148,8 @@ const ReceptionistReg = () => {
                         </div>
                         <div className="col-md-10">
                             <input
-                                type="text"
-                                className={`form-control ${error.contact_no ? 'is-invalid' : ''}`}
+                                type="number"
+                                className={`form-control ${error.receptionist ?.contact_no ? 'is-invalid' : ''}`}
                                 id="contactNo"
                                 name="contactNo"
                                 value={formData.contactNo}
@@ -157,7 +157,7 @@ const ReceptionistReg = () => {
                                 placeholder="Enter contact number"
                             />
                             <div className='invalid-feedback'>
-                                {error.contact_no && <p>{error.contact_no}</p>}
+                                {error.receptionist ?.contact_no  && <p>{error.receptionist.contact_no}</p>}
                             </div>
                         </div>
                     </div>

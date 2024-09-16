@@ -86,13 +86,6 @@ const PatientHistory = () => {
         }
     }
 
-    const filteredReports = reports.filter((report) => {
-        return report.appointment.id === selectedAppointmentId;
-    });
-
-    const filteredPrescriptions = prescriptions.filter((prescription => {
-        return prescription.appointment === selectedAppointmentId;
-    }))
 
     useEffect(() => {
         fetchPatientDetails();
@@ -105,6 +98,14 @@ const PatientHistory = () => {
             return new Tooltip(tooltipTriggerEl);
         });
     }, [uuid]);
+
+    const filteredReports = reports.filter((report) => {
+        return report.appointment.id === selectedAppointmentId;
+    });
+
+    const filteredPrescriptions = prescriptions.filter((prescription) => {
+        return prescription.appointment === selectedAppointmentId;
+    });
 
     const onReportClick = (appointmentId,advice) => {
         setSelectedAppointmentId(appointmentId);
@@ -195,7 +196,7 @@ const PatientHistory = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {prescriptions.length > 0 ?
+                                                {filteredPrescriptions.length > 0 ?
                                                     (filteredPrescriptions.map((prescription) => (
                                                         <tr key={prescription.id}>
                                                             <td>{"Dr."+prescription.name.slice(0,6)+"..."}</td>

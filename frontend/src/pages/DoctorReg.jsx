@@ -8,15 +8,15 @@ const DoctorReg = () => {
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        username: '',
-        password: '',
-        department: '',
-        specialization: '',
-        degree: '',
-        contactNo: '',
-        fee: '',
+        fullName: undefined,
+        email: undefined,
+        username: undefined,
+        password: undefined,
+        department: undefined,
+        specialization: undefined,
+        degree: undefined,
+        contactNo: undefined,
+        fee: undefined,
     });
     const [departments, setDepartments] = useState([]);
 
@@ -26,7 +26,7 @@ const DoctorReg = () => {
                 const res = await axios.get(`${url}/api/departments/`);
                 setDepartments(res.data);
             } catch (err) {
-                console.error("Error fetching departments", err);
+                console.error(err);
             }
         };
         fetchDepartments();
@@ -43,7 +43,8 @@ const DoctorReg = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${url}/api/register/user/`, {
+            const res = await axios.post(`${url}/api/register/user/`, 
+            {
                 email: formData.email,
                 username: formData.username,
                 password: formData.password,
@@ -56,8 +57,9 @@ const DoctorReg = () => {
                     fee: formData.fee,
                     degree: formData.degree
                 }
-            });
-            if (res.status === 201) {
+            }
+            );
+            
                 alert("Doctor registered successfully");
                 setFormData({
                     fullName: '',
@@ -71,10 +73,10 @@ const DoctorReg = () => {
                     fee: '',
                 });
                 setError({});
-            }
+            
         } catch (error) {
             // Error handling
-            if (error.response.data && error.response.data.doctor) {
+            if (error.response.data || error.response.data.doctor) {
                 setError(error.response.data);
                 console.error(error)
             } else {

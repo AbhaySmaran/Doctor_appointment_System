@@ -13,6 +13,7 @@
     min-width: 250px;
     background-color: #f8f9fa;
     transition: all 0.3s;
+    height: 100%;
 }
 
 /* Sidebar collapse styles for smaller screens */

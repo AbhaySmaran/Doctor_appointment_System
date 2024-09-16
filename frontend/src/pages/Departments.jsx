@@ -13,10 +13,10 @@ const Departments = () => {
     const [error, setError] = useState('');
     const [showEditModal, setShowEditModal] = useState(false);
     const [formData, setFormData] = useState({
-        dept_name: '',
-        dept_code: '',
-        dept_location: '',
-        dept_contact_no: ''
+        dept_name: "",
+        dept_code: "",
+        dept_location: "",
+        dept_contact_no: ""
     });
 
     const fetchDepartments = async () => {
@@ -34,33 +34,48 @@ const Departments = () => {
 
     const handleAddDepartment = async (e) => {
         e.preventDefault();
-        const deptData = new FormData();
-        deptData.append("dept_name", formData.dept_name);
-        deptData.append("dept_code", formData.dept_code);
-        deptData.append('dept_location', formData.dept_location);
-        deptData.append("dept_contact_no", formData.dept_contact_no);
+        const data = new FormData();
+        if(formData.dept_name){
+            data.append("dept_name", formData.dept_name)
+        }
+        if(formData.dept_code){
+            data.append("dept_code", formData.dept_code)
+        }
+        data.append("dept_location", formData.dept_location)
+        data.append("dept_contact_no", formData.dept_contact_no)
         try {
-            await axios.post(`${url}/api/departments/`, deptData);
-            setShowAddDeptModal(false);
-            fetchDepartments();
-            setFormData({
-                dept_name: '',
-                dept_code: '',
-                dept_location: '',
-                dept_contact_no: ''
-            });
+            await axios.post(`${url}/api/departments/`, data);
+            if(window.confirm("Add Department")){
+                setShowAddDeptModal(false);
+                fetchDepartments();
+                setFormData({
+                    dept_name: '',
+                    dept_code: '',
+                    dept_location: '',
+                    dept_contact_no: ''
+                });
+                setError('');
+            }
         } catch (err) {
             setError(err.response.data);
         }
     };
 
+
     const handleEditDepartment = async (e) => {
         e.preventDefault();
         try {
+            await axios.put(`${url}/api/departments/${formData.id}/`, formData);
             if(window.confirm("Save Changes?")){
-                await axios.put(`${url}/api/departments/${formData.id}/`, formData);
                 setShowEditModal(false);
                 await fetchDepartments();
+                setFormData({
+                    dept_name: '',
+                    dept_code: '',
+                    dept_location: '',
+                    dept_contact_no: ''
+                });
+                setError('');
             }
         } catch (err) {
             setError(err.response.data);
@@ -163,7 +178,7 @@ const Departments = () => {
                                 <button
                                     type='button'
                                     className='close'
-                                    onClick={() => setShowAddDeptModal(false)}
+                                    onClick={() => {setShowAddDeptModal(false); setError('');}}
                                 >
                                     <span>&times;</span>
                                 </button>
@@ -226,7 +241,7 @@ const Departments = () => {
                                 </button>
                                 <button
                                     className='btn btn-primary'
-                                    onClick={() => setShowEditModal(false)}
+                                    onClick={() => {setShowAddDeptModal(false); setError('');}}
                                 >
                                     Cancel
                                 </button>
@@ -246,7 +261,7 @@ const Departments = () => {
                                 <button
                                     type='button'
                                     className='close'
-                                    onClick={() => setShowEditModal(false)}
+                                    onClick={() => {setShowEditModal(false); setError('');}}
                                 >
                                     <span>&times;</span>
                                 </button>
@@ -309,7 +324,7 @@ const Departments = () => {
                                         </button>
                                         <button
                                             className='btn btn-primary'
-                                            onClick={() => setShowEditModal(false)}
+                                            onClick={() => {setShowEditModal(false); setError('');}}
                                         >
                                             Cancel
                                         </button>

@@ -30,6 +30,7 @@ class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = '__all__'
+        # extra_kwargs = 
 
 class DepartmentsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,7 +40,7 @@ class DepartmentsSerializer(serializers.ModelSerializer):
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = ["user", "id", "department", "doc_uid", "full_name", "contact", "specialization", "fee", "degree", "joined_on"]
+        fields = ["user", "id", "department", "doc_uid", "full_name", "contact", "specialization", "fee", "degree", "joined_on", "status"]
         read_only_fields = ['user']
 
     def validate_full_name(self, value):
@@ -51,7 +52,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 class ReceptionistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Receptionist
-        fields = ["user", "id", "uuid", "full_name", "contact_no"]
+        fields = ["user", "id", "uuid", "full_name", "contact_no","status"]
         read_only_fields = ['user']
 
     def validate_full_name(self, value):
@@ -61,35 +62,58 @@ class ReceptionistSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    doctor = DoctorSerializer(required=False)  
-    receptionist = ReceptionistSerializer(required=False) 
+    doctor = DoctorSerializer(required=False)  # For nested Doctor data
+    receptionist = ReceptionistSerializer(required=False)  # For nested Receptionist data
 
     class Meta:
         model = CustomUser
-        fields = ["id", 'username', 'email', 'password', 'role', 'doctor', 'receptionist']
+        fields = ["id","username", "email", "password", "role", "doctor", "receptionist"]
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         role = validated_data.pop('role')
 
-        # Handle nested serializer for doctor or receptionist
+        # Extract nested data for doctor or receptionist if present
         doctor_data = validated_data.pop('doctor', None)
         receptionist_data = validated_data.pop('receptionist', None)
 
-        # Create the user
+        # Create the user instance
         user = CustomUser.objects.create_user(**validated_data)
         user.role = role
         user.save()
 
-        # Handle role-specific creation
+        # Handle Doctor creation
         if role == 'doctor' and doctor_data:
             Doctor.objects.create(user=user, **doctor_data)
+
+        # Handle Receptionist creation
         elif role == 'receptionist' and receptionist_data:
             Receptionist.objects.create(user=user, **receptionist_data)
 
         return user
 
-    
+    def update(self, instance, validated_data):
+        doctor_data = validated_data.pop('doctor', None)
+        receptionist_data = validated_data.pop('receptionist', None)
+
+        # Update the user instance
+        instance.username = validated_data.get('username', instance.username)
+        instance.save()
+
+        # Update nested doctor data
+        if doctor_data:
+            doctor_serializer = DoctorSerializer(instance.doctor, data=doctor_data, partial=True)
+            if doctor_serializer.is_valid():
+                doctor_serializer.save()
+        
+        # Update nested receptionist data
+        if receptionist_data:
+            receptionist_serializer = ReceptionistSerializer(instance.receptionist, data=receptionist_data, partial=True)
+            if receptionist_serializer.is_valid():
+                receptionist_serializer.save()
+
+        return instance
+
 
 
 class DoctorViewSerializer(serializers.ModelSerializer):

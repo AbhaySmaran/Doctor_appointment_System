@@ -144,10 +144,28 @@ const PatientList = () => {
     }
 
     const handleSubmitUpdate = async () => {
-        try {
+        const data = new FormData();
+        if(formData.full_name){
+            data.append("full_name",formData.full_name )
+        }
+        if(formData.age){
+            data.append("age",formData.age )
+        }
+        if(formData.email){
+            data.append("email",formData.email )
+        }
+        if(formData.contact_no){
+            data.append("contact_no",formData.contact_no )
+        }
+        if(formData.address){
+            data.append("address",formData.address )
+        }
+        if(formData.status){
+            data.append("status",formData.status )
+        }
+        try {            
             if (window.confirm("Are you sure you want to save changes?")) {
                 const res = await axios.put(`${url}/api/patients/${formData.id}/`, formData);
-                
                 await fetchPatients();
                 setShowUpdateModal(false);
                 setSelectedPatient((prevPatient) => ({
@@ -171,13 +189,13 @@ const PatientList = () => {
         reportData.append('booked_by', user)
 
         try{       
-            if(window.confirm("Book Appointment")){
-                const res = await axios.post(`${url}/services/appointment/book/`, reportData);
-                setShowAppointmentModal(false);
-                setDoctor('');
-                setAppointmentDate('');
-                setUploadError('');
-            }
+            await axios.post(`${url}/services/appointment/book/`, reportData);
+            alert("Appointment Booked!")
+            setShowAppointmentModal(false);
+            setDoctor('');
+            setAppointmentDate('');
+            setUploadError('');
+            
         }catch(error){
             setUploadError(error.response.data);
             console.log(error.response.data);
@@ -482,7 +500,7 @@ const PatientList = () => {
                                                         onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                                                     />
                                                     <div className='invalid-feedback'>
-                                                        {uploadError.full_name && <p>{uploadError.full_name}</p>}
+                                                        {uploadError.full_name && <p>This field is required</p>}
                                                     </div>
                                                 </div>
                                             </div>
@@ -490,13 +508,13 @@ const PatientList = () => {
                                                 <div className="form-group">
                                                     <label>Age</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
                                                         className={`form-control ${uploadError.age ? 'is-invalid' : ''}`}
                                                         value={formData.age}
                                                         onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                                                     />
                                                     <div className='invalid-feedback'>
-                                                        {uploadError.age && <p>{uploadError.age}</p>}
+                                                        {uploadError.age && <p>This field is required</p>}
                                                     </div>
                                                 </div>
                                             </div>
@@ -524,7 +542,7 @@ const PatientList = () => {
                                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                                 />
                                                 <div className="invalid-feedback">
-                                                    {uploadError.email && <p>{uploadError.email}</p>}
+                                                    {uploadError.email && <p>This field is required</p>}
                                                 </div>
                                             </div>
                                         </div>
@@ -540,10 +558,11 @@ const PatientList = () => {
                                                     min='10'
                                                     max="15"
                                                 />
+                                                <div className='invalid-feedback'>
+                                                    {uploadError.contact_no && <p>This field is required</p>}
+                                                </div>
                                             </div>
-                                            <div className='invalid-feedback'>
-                                                {uploadError.contact_no && <p>{uploadError.contact_no}</p>}
-                                            </div>
+                                            
                                         </div>
                                         <br/>
                                         <div className="row aligns-item-center">
@@ -560,12 +579,12 @@ const PatientList = () => {
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>
-                                        Cancel
-                                    </button>
                                     <button type="button" className="btn btn-primary" onClick={handleSubmitUpdate}>
                                         Save Changes
                                     </button>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>
+                                        Cancel
+                                    </button>                                   
                                 </div>
                             </div>
                         </div>
@@ -626,11 +645,11 @@ const PatientList = () => {
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-primary" onClick={() => setShowReportUploadModal(false)}>
-                                        Cancel
-                                    </button>
                                     <button type="button" className="btn btn-primary" onClick={handleReportUpload}>
                                         Upload Report
+                                    </button>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowReportUploadModal(false)}>
+                                        Cancel
                                     </button>
                                 </div>
                             </div>
@@ -662,11 +681,11 @@ const PatientList = () => {
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-primary" onClick={() => setShowFollowUpModal(false)}>
-                                        Cancel
-                                    </button>
                                     <button type="button" className="btn btn-primary" onClick={handleFollowUpSubmit}>
                                         Send Follow Up
+                                    </button>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowFollowUpModal(false)}>
+                                        Cancel
                                     </button>
                                 </div>
                             </div>
@@ -721,8 +740,8 @@ const PatientList = () => {
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-primary" onClick={() => setShowAppointmentModal(false)}>Cancel</button>
                                     <button type="button" className="btn btn-primary" onClick={handleAppointmentSubmit}>Schedule</button>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowAppointmentModal(false)}>Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -773,7 +792,7 @@ const PatientList = () => {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-primary" onClick={() => handleStatusChange()}>
-                                        Chnage Staus
+                                        Change Status
                                     </button>
                                     <button type="button" className="btn btn-primary" onClick={() => setShowStatusModal(false)}>
                                         Close
