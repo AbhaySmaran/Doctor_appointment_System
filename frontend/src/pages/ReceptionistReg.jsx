@@ -86,7 +86,7 @@ const ReceptionistReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter full name"
                             />
-                            <div className='invalid-feedback'>{error.receptionist ?.full_name && <p>{error.receptionist ?.full_name}</p>}</div>
+                            <div className='invalid-feedback'>{error.receptionist ?.full_name == "This field may not be blank."? <p>This Field is required</p> : <p>{error.receptionist ?.full_name}</p>}</div>
                         </div>
                     </div>
                     <div className="row mb-3">
@@ -103,7 +103,7 @@ const ReceptionistReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter email"
                             />
-                            <div className='invalid-feedback'>{error.email && <p>{error.email}</p>}</div>
+                            <div className='invalid-feedback'>{error.email== "This field may not be blank." ? <p>This field is required</p>  : <p>{error.email}</p>}</div>
                         </div>
                     </div>
                     <div className="row mb-3">
@@ -120,7 +120,7 @@ const ReceptionistReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter username"
                             />
-                            <div className='invalid-feedback'>{error.username && <p>{error.username}</p>}</div>
+                            <div className='invalid-feedback'>{error.username == "This field may not be blank." ? <p>This field is required</p>  :<p>{error.username}</p>}</div>
                         </div>
                     </div>
                     <div className="row mb-3">
@@ -138,7 +138,7 @@ const ReceptionistReg = () => {
                                 placeholder="Enter password"
                             />
                             <div className='invalid-feedback'>
-                                {error.password && <p>{error.password}</p>}
+                                {error.password == "This field may not be blank." ? <p>This field is required</p>  : <p>{error.password}</p>}
                             </div>
                         </div>
                     </div>
@@ -157,7 +157,7 @@ const ReceptionistReg = () => {
                                 placeholder="Enter contact number"
                             />
                             <div className='invalid-feedback'>
-                                {error.receptionist ?.contact_no  && <p>{error.receptionist.contact_no}</p>}
+                                {error.receptionist ?.contact_no == "This field may not be blank." ? <p>This field is required</p>  : <p>{error.receptionist?.contact_no}</p>}
                             </div>
                         </div>
                     </div>

@@ -8,15 +8,15 @@ const DoctorReg = () => {
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const [formData, setFormData] = useState({
-        fullName: undefined,
-        email: undefined,
-        username: undefined,
-        password: undefined,
-        department: undefined,
-        specialization: undefined,
-        degree: undefined,
-        contactNo: undefined,
-        fee: undefined,
+        fullName: '',
+        email: '',
+        username: '',
+        password: '',
+        department: '',
+        specialization: '',
+        degree: '',
+        contactNo: '',
+        fee: '',
     });
     const [departments, setDepartments] = useState([]);
 
@@ -114,7 +114,9 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter full name"
                             />
-                            <div className='invalid-feedback'>{error.doctor ?.full_name}</div>
+                            <div className='invalid-feedback'>
+                                {error.doctor ?.full_name == "This field may not be blank." ? <p>This field is required</p> : error.doctor ?.full_name}
+                            </div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -131,7 +133,9 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter email"
                             />
-                            <div className='invalid-feedback'>{error.email}</div>
+                            <div className='invalid-feedback'>
+                                {error.email == "This field may not be blank." ? <p>This field is required </p> : error.email }
+                            </div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -148,7 +152,9 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter username"
                             />
-                            <div className='invalid-feedback'>{error.username}</div>
+                            <div className='invalid-feedback'>
+                                {error.username == "This field may not be blank." ? <p>This field is required</p> : error.username}
+                            </div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -165,7 +171,9 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter password"
                             />
-                            <div className='invalid-feedback'>{error.password}</div>
+                            <div className='invalid-feedback'>
+                                {error.password == "This field may not be blank." ? <p>This field is required</p> : error.password}
+                            </div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -187,7 +195,9 @@ const DoctorReg = () => {
                                     </option>
                                 ))}
                             </select>
-                            <div className='invalid-feedback'>{error.doctor ?.department}</div>
+                            <div className='invalid-feedback'>
+                                {error.doctor ?.department == "This field may not be null." ? <p>This field is required</p> : error.doctor ?.department}
+                            </div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
@@ -204,7 +214,7 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter specialization"
                             />
-                            <div className='invalid-feedback'>{error.doctor ?.specialization}</div>
+                            <div className='invalid-feedback'>{error.doctor ?.specialization == "This field may not be blank." ? <p>This field is required</p> : error.doctor ?.specialization}</div>
                         </div>
                     </div>
                     <div className="row mb-3" id='form-row'>
