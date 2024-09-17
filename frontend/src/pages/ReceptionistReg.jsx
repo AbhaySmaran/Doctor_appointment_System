@@ -38,8 +38,8 @@ const ReceptionistReg = () => {
                     contact_no: formData.contactNo
                 }
             });
-            if (res.status === 201) {
-                alert('Receptionist registered successfully');
+            
+            alert('Receptionist registered successfully');
                 setFormData({
                     fullName: '',
                     email: '',
@@ -48,7 +48,7 @@ const ReceptionistReg = () => {
                     contactNo: '',
                 });
                 setError({});
-            }
+            
         } catch (error) {
             if (error.response && error.response.data) {
                 setError(error.response.data);

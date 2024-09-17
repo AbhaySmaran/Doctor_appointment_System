@@ -265,7 +265,7 @@ const DoctorReg = () => {
                                 onChange={handleChange}
                                 placeholder="Enter consultation fee"
                             />
-                            <div className='invalid-feedback'>{error.doctor ?.fee}</div>
+                            <div className='invalid-feedback'>{error.doctor ?.fee == "A valid integer is required." ? <p>This field is required</p> : error.doctor ?.fee}</div>
                         </div>
                     </div>
                     <div className="text-end">
