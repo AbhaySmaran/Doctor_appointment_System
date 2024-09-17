@@ -43,6 +43,7 @@ const DoctorReg = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const feeValue = formData.fee === '' ? null : formData.fee;
             const res = await axios.post(`${url}/api/register/user/`, 
             {
                 email: formData.email,
@@ -54,7 +55,7 @@ const DoctorReg = () => {
                     department: formData.department,
                     contact: formData.contactNo,
                     specialization: formData.specialization,
-                    fee: formData.fee,
+                    fee: feeValue,
                     degree: formData.degree
                 }
             }
@@ -72,7 +73,7 @@ const DoctorReg = () => {
                     contactNo: '',
                     fee: '',
                 });
-                setError({});
+                setError('');
             
         } catch (error) {
             // Error handling

@@ -15,10 +15,10 @@ const DoctorList = () => {
     const [showStatusModal, setShowStatusModal] = useState(false)
     const [error,setError] = useState("");
     const [formData, setFormData] = useState({
-        id: undefined,
-        full_name: undefined,
-        specialization: undefined,
-        email: undefined,
+        id: '',
+        full_name: '',
+        specialization: '',
+        email: '',
         fee:"",
         contact: "",
         status: "",
