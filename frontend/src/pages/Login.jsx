@@ -61,7 +61,7 @@ function Login() {
                                 <label>Email Address</label>
                                 <input 
                                     type='email'
-                                    className={`form-control ${serverError.email ? "is-invalid" : " "}`}
+                                    className={`form-control ${serverError.email || serverError.error ? "is-invalid" : " "}`}
                                     value={email}
                                     placeholder='*Enter Email'
                                     required
@@ -69,13 +69,14 @@ function Login() {
                                 />
                                 <div className="invalid-feedback">
                                     {serverError.email ? <p>{serverError.email}</p> : " "}
+                                    {serverError.error ? <p>{serverError.error[0]}</p> : ''}
                                 </div>
                             </div>
                             <div className='form-group'>
                                 <label>Password</label>
                                 <input 
                                     type='password'
-                                    className={`form-control ${serverError.password || serverError.error ? "is-invalid" : " "}`}
+                                    className={`form-control ${serverError.password ? "is-invalid" : " "}`}
                                     value={password}
                                     placeholder='*Enter Password'
                                     required
@@ -83,7 +84,6 @@ function Login() {
                                 />
                                 <div className="invalid-feedback">
                                     {serverError.password ? <p>{serverError.password}</p> : " "}
-                                    {serverError.error ? <p>{serverError.error[0]}</p> : ''}
                                 </div>
                             </div>
                             <Button variant="primary" type="submit" className="w-100 mt-3" id='login-btn' onClick={handleLogin}>
