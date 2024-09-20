@@ -119,6 +119,7 @@ class Doctor(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.doc_uid:
+            
             dept_code = self.department.dept_code
             unique_id = f"D{dept_code}{self.id}"
             Doctor.objects.filter(id=self.id).update(doc_uid=unique_id)

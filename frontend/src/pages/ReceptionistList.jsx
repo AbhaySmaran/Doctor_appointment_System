@@ -11,6 +11,7 @@ const ReceptionistList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedReceptionist, setSelectedReceptionist] = useState(null);
+    const [error,setError] = useState('');
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showStatusModal, setShowStatusModal] = useState(false)
     const [formData, setFormData] = useState({
@@ -233,7 +234,7 @@ const ReceptionistList = () => {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <form>
+                                <form className='needs-validation'>
                                     <div className='row aligns-item-center'>
                                         <div className='form-group col-md-3'><label>Name</label></div>
                                         <div className='form-group col-md-9'>

@@ -55,6 +55,7 @@ const DoctorList = () => {
 
     const handleUpdate = (doctor) => {
         handleDoctorSelect(doctor);
+        setError('');
         setShowUpdateModal(true);
     };
 
@@ -69,10 +70,11 @@ const DoctorList = () => {
                   "full_name": formData.full_name,
                   "contact": formData.contact,
                   "specialization": formData.specialization,
-                  "fee": formData.fee,
+                  "fee": formData.fee !== '' ? formData.fee : null,
                   "degree": formData.degree
                 }
               });
+
             if (window.confirm("Are you sure you want to save changes")) {
                 setShowUpdateModal(false);
                 fetchDoctors();
@@ -248,7 +250,7 @@ const DoctorList = () => {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <form>
+                                <form className='needs-validation'>
                                     <div className='row aligns-item-center'>
                                         <div className='form-group col-md-3'>
                                             <label class>Name</label>
@@ -256,7 +258,7 @@ const DoctorList = () => {
                                         <div className='form-group col-md-9'>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${error.doctor ?.full_name ? "is-invalid" : ""}`}
                                                 value={formData.full_name}
                                                 onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                                             />
@@ -290,7 +292,7 @@ const DoctorList = () => {
                                             <input
                                                 type="number"
                                                 className="form-control"
-                                                value={formData.fee}
+                                                value={formData.fee !== null ? formData.fee : ''}
                                                 onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
                                             />
                                         </div>
