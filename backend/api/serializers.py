@@ -98,6 +98,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         # Update the user instance
         instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
         instance.save()
 
         # Update nested doctor data
@@ -118,9 +119,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DoctorViewSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    # department = serializers.CharField(source='department.dept_name')
+    department = DepartmentsSerializer()
     class Meta:
         model = Doctor
         fields = '__all__'
+
+
+    
 
 class ReceptionistViewSerializer(serializers.ModelSerializer):
     user = UserSerializer()

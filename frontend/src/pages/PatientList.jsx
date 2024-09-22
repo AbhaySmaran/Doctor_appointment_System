@@ -133,16 +133,6 @@ const PatientList = () => {
         navigate(`/dashboard/patient/history/${formData.uuid}`)
     }
 
-    const handleUploadReport = (patient) => {
-        handlePatientSelect(patient);
-        setShowReportUploadModal(true);
-    };
-
-    const handleUploadPrescription = (patient) => {
-        handlePatientSelect(patient);
-        setShowPrescriptionUploadModal(true);
-    }
-
     const handleSubmitUpdate = async () => {
         const data = new FormData();
         if(formData.full_name){
@@ -202,64 +192,74 @@ const PatientList = () => {
         }
     }
 
-    const handleReportUpload = async () => {
-        const reportData = new FormData();
-        reportData.append('patient', formData.uuid);
-        reportData.append('test', test);
-        reportData.append('report_file', reportFile);
-        reportData.append('uploaded_by', user);
-        reportData.append('message', message);
+    // const handleUploadReport = (patient) => {
+    //     handlePatientSelect(patient);
+    //     setShowReportUploadModal(true);
+    // };
 
-        try {
-            const response = await axios.post(`${url}/services/upload/report/`, reportData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+    // const handleUploadPrescription = (patient) => {
+    //     handlePatientSelect(patient);
+    //     setShowPrescriptionUploadModal(true);
+    // }
 
-            if (response.status === 201) {
-                alert('Report uploaded')
-                setShowReportUploadModal(false);
-            }
-        } catch (error) {
-            if (error.response) {
-                console.log(error.response.data)
-                setUploadError(error.response.data || 'Failed to upload report');
-            } else {
-                setUploadError('An error occurred while uploading the report');
-            }
-        }
-    };
+    // const handleReportUpload = async () => {
+    //     const reportData = new FormData();
+    //     reportData.append('patient', formData.uuid);
+    //     reportData.append('test', test);
+    //     reportData.append('report_file', reportFile);
+    //     reportData.append('uploaded_by', user);
+    //     reportData.append('message', message);
 
-    const handleUploadPrescriptionSubmit = async () => {
-        const reportData = new FormData();
-        reportData.append('patient', formData.uuid);
-        reportData.append('doctor', doctor);
-        reportData.append('prescription_file', reportFile);
-        reportData.append('uploaded_by', user);
+    //     try {
+    //         const response = await axios.post(`${url}/services/upload/report/`, reportData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data',
+    //             },
+    //         });
 
-        try {
-            const response = await axios.post(`${url}/services/upload/prescription/`, reportData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+    //         if (response.status === 201) {
+    //             alert('Report uploaded')
+    //             setShowReportUploadModal(false);
+    //         }
+    //     } catch (error) {
+    //         if (error.response) {
+    //             console.log(error.response.data)
+    //             setUploadError(error.response.data || 'Failed to upload report');
+    //         } else {
+    //             setUploadError('An error occurred while uploading the report');
+    //         }
+    //     }
+    // };
 
-            if (response.status === 201) {
-                alert('Prescription uploaded')
-                setShowPrescriptionUploadModal(false);
-                setUploadError(null)
-                setDoctor('');
-            }
-        } catch (error) {
-            if (error.response) {
-                console.log(error.response.data)
-                setUploadError(error.response.data || 'Failed to upload report');
-            } else {
-                setUploadError('An error occurred while uploading the report');
-            }
-        }
-    }
+    // const handleUploadPrescriptionSubmit = async () => {
+    //     const reportData = new FormData();
+    //     reportData.append('patient', formData.uuid);
+    //     reportData.append('doctor', doctor);
+    //     reportData.append('prescription_file', reportFile);
+    //     reportData.append('uploaded_by', user);
+
+    //     try {
+    //         const response = await axios.post(`${url}/services/upload/prescription/`, reportData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data',
+    //             },
+    //         });
+
+    //         if (response.status === 201) {
+    //             alert('Prescription uploaded')
+    //             setShowPrescriptionUploadModal(false);
+    //             setUploadError(null)
+    //             setDoctor('');
+    //         }
+    //     } catch (error) {
+    //         if (error.response) {
+    //             console.log(error.response.data)
+    //             setUploadError(error.response.data || 'Failed to upload report');
+    //         } else {
+    //             setUploadError('An error occurred while uploading the report');
+    //         }
+    //     }
+    // }
 
     const filteredPatients = patients.filter((patient) => {
         if (patient && patient.full_name) {
@@ -483,7 +483,7 @@ const PatientList = () => {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h5 className="modal-title">Update Patient</h5>
-                                    <button type="button" className="close" onClick={() => setShowUpdateModal(false)}>
+                                    <button type="button" className="close" onClick={() =>{ setShowUpdateModal(false); setUploadError('')}}>
                                         <span>&times;</span>
                                     </button>
                                 </div>
@@ -582,7 +582,7 @@ const PatientList = () => {
                                     <button type="button" className="btn btn-primary" onClick={handleSubmitUpdate}>
                                         Save Changes
                                     </button>
-                                    <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>
+                                    <button type="button" className="btn btn-primary" onClick={() =>{ setShowUpdateModal(false); setUploadError('')}}>
                                         Cancel
                                     </button>                                   
                                 </div>
@@ -592,7 +592,7 @@ const PatientList = () => {
                 )}
 
                 {/* Upload Report Modal */}
-                {showReportUploadModal && (
+                {/* {showReportUploadModal && (
                     <div className="modal show" style={{ display: 'block' }}>
                         <div className="modal-dialog">
                             <div className="modal-content">
@@ -655,7 +655,7 @@ const PatientList = () => {
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
                 {showFollowUpModal && (
                     <div className="modal show" style={{ display: 'block' }}>
                         <div className="modal-dialog">
@@ -802,7 +802,7 @@ const PatientList = () => {
                         </div>
                     </div>
                 )}
-                {showPrescriptionUploadModal && (
+                {/* {showPrescriptionUploadModal && (
                     <div className='modal show' style={{ display: 'block' }}>
                         <div className='modal-dialog'>
                             <div className='modal-content'>
@@ -847,7 +847,7 @@ const PatientList = () => {
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
 
             </div>
         </div >

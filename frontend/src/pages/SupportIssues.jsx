@@ -25,9 +25,13 @@ const SupportIssues = () => {
         Issue_ScreenShot: null,
     });
 
-    const fetchIssues = async () => {
-        const res = await axios.get(`${url}/api/issue/support/`);
-        setIssues(res.data);
+    const fetchIssues = async() => {
+        try{
+            const res = await axios.get(`${url}/api/issue/support/`);
+            setIssues(res.data);
+        }catch(error){
+            console.error(error);
+        }
     };
 
     useEffect(() => {
@@ -65,11 +69,21 @@ const SupportIssues = () => {
         try {
             const res = await axios.post(`${url}/api/issue/support/`, reportData);
             alert('Issue Submitted');
-            setShowSupportModal(false);
+            setFormData({
+                Customer_Name: '',
+                Customer_ID: '',
+                Issue_Caption: 'Screen Issue',
+                Issue_Description: '',
+                Priority: 'low',
+                Status: 'Open',
+                Issue_ScreenShot: null,
+            });
             fetchIssues();
-            setUploadError(null);
+            setUploadError('');
+            setShowSupportModal(false);
         } catch (error) {
             setUploadError(error.response.data);
+            console.log(error);
         }
     };
 
@@ -226,8 +240,9 @@ const SupportIssues = () => {
                                     <div className='form-group'>
                                         <label>Issue Description</label>
                                         <textarea
-                                            className={`form-control ${uploadError.Issue_Description ? 'is-invalid' : ""}`}
+                                            // {`form-control ${error.email ? "is-invalid" : ""}`}
                                             name="Issue_Description"
+                                            className={`form-control ${uploadError.Issue_Description ? 'is-invalid' : ""}`}s
                                             value={formData.Issue_Description}
                                             onChange={handleChange}
                                             required

@@ -9,6 +9,8 @@ from .serializers import *
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from django.db.models import Case, When, Value, IntegerField
+
 def get_tokens_for_user(user): 
     refresh = RefreshToken.for_user(user)
     return {
@@ -166,7 +168,7 @@ class UserUpdateView(APIView):
                 except KeyError:
                     return Response({'error': 'Receptionist data is missing.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            return Response(user_serializer.data, status=status.HTTP_200_OK)
+            return Response({"msg": "Updated"}, status=status.HTTP_200_OK)
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -254,7 +256,17 @@ class SupportView(APIView):
         return Response(serializer.errors)
 
     def get(self, request, format=None):
-        support = Support.objects.all()
+        custom_order = Case(
+            When(Status='open', then=Value(1)),
+            When(Status='in-progress', then=Value(2)),
+            When(Status='resolved', then=Value(3)),
+            When(Status='closed', then=Value(4)),
+            output_field=IntegerField(),
+        )
+        
+        # Modify the queryset to use the custom order
+        support = Support.objects.all().annotate(custom_order=custom_order).order_by('custom_order')
+        # support = Support.objects.all().order_by('Status')
         serializer = SupportSerializer(support, many=True)
         return Response(serializer.data)
 

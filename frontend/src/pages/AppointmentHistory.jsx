@@ -127,10 +127,14 @@ const AppointmentHistory = () => {
                 },
             });
             alert('Report uploaded')
+            setTest(null);
+            setReportFile(null);
+            setMessage('');
+            setUploadError('');
             setShowUploadReportModal(false);
         } catch (error) {
             if (error.response) {
-                console.log(error.response.data)
+                // console.log(error.response.data)
                 setUploadError(error.response.data || 'Failed to upload report');
             } else {
                 setUploadError('An error occurred while uploading the report');
@@ -163,9 +167,10 @@ const AppointmentHistory = () => {
             });
 
             alert('Prescription uploaded');
-            setShowPrescriptionUploadModal(false);
+            setPrescriptionFile(null);
             setUploadError('');
             setMessage('');
+            setShowPrescriptionUploadModal(false);
         } catch (error) {
             if(error.response){
                 setUploadError(error.response.data);
@@ -215,9 +220,9 @@ const AppointmentHistory = () => {
 
         try{
             const res = await axios.put(`${url}/services/appointment/history/${formData.id}/`, reportData);
-            if(window.confirm("Upload Advice")){
-                setShaowAdviceModal(false);
-            }
+            alert("Advice Uploaded")
+            setShaowAdviceModal(false);
+            
         }catch(error){
             setUploadError(error.response.data)
         }
@@ -546,7 +551,7 @@ const AppointmentHistory = () => {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h5 className="modal-title">Upload Report</h5>
-                                    <button type="button" className="close" onClick={() => setShowUploadReportModal(false)}>
+                                    <button type="button" className="close" onClick={() =>{ setShowUploadReportModal(false); setUploadError('')}}>
                                         <span>&times;</span>
                                     </button>
                                 </div>
@@ -596,7 +601,7 @@ const AppointmentHistory = () => {
                                     <button type="button" className="btn btn-primary" onClick={handleUploadReportSubmit}>
                                         Upload
                                     </button>
-                                    <button type="button" className="btn btn-primary" onClick={() => setShowUploadReportModal(false)}>
+                                    <button type="button" className="btn btn-primary" onClick={() =>{ setShowUploadReportModal(false); setUploadError('')}}>
                                         Cancel
                                     </button>
                                 </div>

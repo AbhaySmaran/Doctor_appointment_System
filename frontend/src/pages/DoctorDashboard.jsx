@@ -37,7 +37,7 @@ const DoctorDashboard = () => {
       {/* <div className='container mt-5'>
         <div className='row' style ></div> 
       </div> */}
-      <h5>Welcome back Dr. {doc_name}</h5>
+      <h5>Welcome back Doctor</h5>
       <div className='row mt-5' style={{ cursor: "pointer" }}>
         <div className="col-md-4 mb-4" onClick={() => navigate('/dashboard/doctor/appointment')}>
           <div className="card text-center">

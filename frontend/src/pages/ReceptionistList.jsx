@@ -109,6 +109,7 @@ const ReceptionistList = () => {
             }
         } catch (error) {
             console.error('Error updating receptionist:', error);
+            setError(error.response.data);
         }
     };
 
@@ -157,7 +158,7 @@ const ReceptionistList = () => {
                                     <tr>
                                         <th>Select</th>
                                         <th>Name</th>
-                                        <th>Contact</th>
+                                        <th>Email</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -173,7 +174,7 @@ const ReceptionistList = () => {
                                                 />
                                             </td>
                                             <td>{receptionist.full_name}</td>
-                                            <td>{receptionist.contact_no}</td>
+                                            <td>{receptionist.user.email}</td>
                                             <td>{receptionist.status}</td>
                                         </tr>
                                     ))}
@@ -199,7 +200,7 @@ const ReceptionistList = () => {
                             {selectedReceptionist ? (
                                 <div>
                                     <p><strong>ID:</strong> {selectedReceptionist.uuid}</p>
-                                    <p><strong>Email:</strong> {selectedReceptionist.user.email}</p>
+                                    <p><strong>Contact No:</strong> {selectedReceptionist.contact_no}</p>
                                     <p><strong>UserName:</strong> {selectedReceptionist.user.username}</p>
                                     <div className='btn-grp'>
                                         <button
@@ -229,7 +230,7 @@ const ReceptionistList = () => {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Update Receptionist</h5>
-                                <button type="button" className="close" onClick={() => setShowUpdateModal(false)}>
+                                <button type="button" className="close" onClick={() => { setShowUpdateModal(false); setError('')}}>
                                     <span>&times;</span>
                                 </button>
                             </div>
@@ -240,10 +241,13 @@ const ReceptionistList = () => {
                                         <div className='form-group col-md-9'>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${error.receptionist ?.full_name ? "is-invalid" : ""}`}
                                                 value={formData.full_name}
                                                 onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                                             />
+                                            <div className='invalid-feedback'>
+                                                {error.receptionist ?.full_name == "This field may not be blank."? <p>This Field is required</p> : <p>{error.receptionist ?.full_name}</p>}
+                                            </div>                          
                                         </div>
                                     </div>
                                     <div className='row aligns-item-center'>
@@ -251,28 +255,32 @@ const ReceptionistList = () => {
                                         <div className='form-group col-md-9'>
                                             <input
                                                 type="email"
-                                                className="form-control"
+                                                className={`form-control ${error.email ? "is-invalid" : ""}`}
                                                 value={formData.email}
                                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                             />
+                                            <div className='invalid-feedback'>{error.email== "This field may not be blank." ? <p>This field is required</p>  : <p>{error.email}</p>}</div>
                                         </div>
                                     </div>
                                     <div className='row aligns-item-center'>
                                         <div className='form-group col-md-3'><label>Contact</label></div>
                                         <div className='form-group col-md-9'>
                                             <input
-                                                type="text"
-                                                className="form-control"
+                                                type="number"
+                                                className={`form-control ${error.receptionist ?.contact_no ? 'is-invalid' : ''}`}
                                                 value={formData.contact_no}
                                                 onChange={(e) => setFormData({ ...formData, contact_no: e.target.value })}
                                             />
+                                            <div className='invalid-feedback'>
+                                                {error.receptionist ?.contact_no == "This field may not be blank." ? <p>This field is required</p>  : <p>{error.receptionist?.contact_no}</p>}
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-primary" onClick={handleSubmitUpdate}>Save changes</button>
-                                <button type="button" className="btn btn-primary" onClick={() => setShowUpdateModal(false)}>Close</button>
+                                <button type="button" className="btn btn-primary" onClick={() =>{ setShowUpdateModal(false); setError('')}}>Close</button>
                             </div>
                         </div>
                     </div>
