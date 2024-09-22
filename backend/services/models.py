@@ -18,7 +18,7 @@ class Appointment(models.Model):
     booked_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     booked_by = models.CharField(max_length=50, blank=True)
-    status = models.CharField(max_length=20, default='active')
+    status = models.CharField(max_length=20, default='Active')
 
     # def save(self, *args, **kwargs):
 

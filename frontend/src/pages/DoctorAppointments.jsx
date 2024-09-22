@@ -34,6 +34,7 @@ const DoctorAppointments = () => {
       patient_address: appointment.patient.address,
       patient_name: appointment.patient.full_name,
       appointment_date: appointment.date,
+      appointment_status: appointment.status,
     })
   }
 
