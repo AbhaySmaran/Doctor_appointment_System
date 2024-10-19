@@ -40,6 +40,7 @@ const PrescriptionList = () => {
 
         fetchReports();
         fetchPatient();
+
     }, [uuid]);
 
     const onBackClick = () => {

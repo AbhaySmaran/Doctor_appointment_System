@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { IoReturnUpBackSharp } from "react-icons/io5";
 import DatePicker from 'react-datepicker';
 import { GrUpdate } from "react-icons/gr";
-
+import { GrStatusUnknown } from "react-icons/gr";
+import { CiFileOn } from "react-icons/ci";
 import 'react-datepicker/dist/react-datepicker.css';
 
 const AppointmentHistory = () => {
@@ -382,7 +383,7 @@ const AppointmentHistory = () => {
                                             Status
                                         </button>
                                         <button className='btn btn-primary' onClick={() => handleRescheduleClick(selectedAppointment)}>
-                                            {/*<GrUpdate />*/}Reschedule
+                                            Reschedule
                                         </button>
                                         <button className='btn  btn-primary' onClick={()=>handleAdviceClick(selectedAppointment)}>
                                             Advice 

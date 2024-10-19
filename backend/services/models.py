@@ -78,8 +78,8 @@ class Report(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.name:
-            test_code = self.test.test_code
-            file_name = f"{test_code}"
+            test_name = self.test.test_name
+            file_name = f"{test_name}"
             self.name = file_name
         if not self.year:
             self.year = self.uploaded_on.year

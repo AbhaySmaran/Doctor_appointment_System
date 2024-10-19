@@ -192,6 +192,7 @@ const PatientHistory = () => {
                                             <thead className='thead' id='thead'>
                                                 <tr>
                                                     <th>Prescription</th>
+                                                    <th>Advice</th>
                                                     <th>Download</th>
                                                 </tr>
                                             </thead>
@@ -199,7 +200,16 @@ const PatientHistory = () => {
                                                 {filteredPrescriptions.length > 0 ?
                                                     (filteredPrescriptions.map((prescription) => (
                                                         <tr key={prescription.id}>
-                                                            <td>{"Dr."+prescription.name.slice(0,6)+"..."}</td>
+                                                            <td>{prescription.doctor.full_name.slice(0,6)+"..."}</td>
+                                                            <td className='text-center'>
+                                                                <a href="#"
+                                                                    data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top"
+                                                                    title={prescription.message}
+                                                                    style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                                    <GrTooltip size={24} />
+                                                                </a>
+                                                            </td>
                                                             <td>
                                                                 <FaCloudDownloadAlt
                                                                     style={{ cursor: 'pointer', marginRight: '10px' }}
@@ -225,7 +235,8 @@ const PatientHistory = () => {
                                         <table className='table table-striped'>
                                             <thead className='thead' id='thead'>
                                                 <tr>
-                                                    <th>Report Name</th>
+                                                    <th>Report</th>
+                                                    <th>Advice</th>
                                                     <th>Download</th>
                                                 </tr>
                                             </thead>
@@ -234,6 +245,15 @@ const PatientHistory = () => {
                                                     (filteredReports.map((report) => (
                                                         <tr key={report.id}>
                                                             <td>{report.name}</td>
+                                                            <td className='text-center'>
+                                                                <a href="#"
+                                                                    data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top"
+                                                                    title={report.message}
+                                                                    style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                                    <GrTooltip size={24} />
+                                                                </a>
+                                                            </td>
                                                             <td>
                                                                 <FaCloudDownloadAlt
                                                                     style={{ cursor: 'pointer', marginRight: '10px' }}
