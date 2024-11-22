@@ -25,6 +25,7 @@ import PatientHistory from './pages/PatientHistory';
 import ChangePassword from './pages/ChangePassword';
 import Departments from './pages/Departments';
 import DoctorVisitHistory from './pages/DoctorVisitHistory';
+import APITest from './apitest';
 
 function App() {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('access'));
@@ -84,8 +85,10 @@ function App() {
           <Route path='department' element={<Departments />} />
           <Route path='support' element={<SupportIssues />} />
           <Route path='change-password' element={<ChangePassword />} />
+          
           {/* <Route path='patients/reports/:uuid' element */}
         </Route>
+        <Route path='api/test' element={<APITest />} />
         <Route path="*" element={<h1>Page Not Found</h1>} />
       </Routes>
     </Router>

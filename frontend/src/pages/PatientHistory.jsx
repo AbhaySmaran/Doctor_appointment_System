@@ -99,12 +99,24 @@ const PatientHistory = () => {
         });
     }, [uuid]);
 
+    // const filteredReports = reports.filter((report) => {
+    //     return report.appointment.id === selectedAppointmentId;
+    // });
+
+    // const filteredPrescriptions = prescriptions.filter((prescription) => {
+    //     return prescription.appointment === selectedAppointmentId;
+    // });
+
     const filteredReports = reports.filter((report) => {
-        return report.appointment.id === selectedAppointmentId;
+        if(report.appointment){
+            return report.appointment.id=== selectedAppointmentId;
+        }
     });
 
     const filteredPrescriptions = prescriptions.filter((prescription) => {
-        return prescription.appointment === selectedAppointmentId;
+        if(prescription.appointment){
+            return prescription.appointment === selectedAppointmentId;
+        }
     });
 
     const onReportClick = (appointmentId,advice) => {
@@ -188,7 +200,7 @@ const PatientHistory = () => {
                                     
                                     <div>
                                     <p><strong>Prescriptions:-</strong></p>
-                                    <table className='table table-striped'>
+                                    <table className='table table-striped table-bordered'>
                                             <thead className='thead' id='thead'>
                                                 <tr>
                                                     <th>Prescription</th>
@@ -224,7 +236,7 @@ const PatientHistory = () => {
                                                     :
                                                     (
                                                         <tr>
-                                                            <td colSpan="2" className='text-center'>No Prescriptions Found</td>
+                                                            <td colSpan="3" className='text-center'>No Prescriptions Found</td>
                                                         </tr>
                                                     )
                                                 }
@@ -232,7 +244,7 @@ const PatientHistory = () => {
                                         </table>
                                         <br/>
                                         <p><strong>Reports:-</strong></p>
-                                        <table className='table table-striped'>
+                                        <table className='table table-striped table-bordered'>
                                             <thead className='thead' id='thead'>
                                                 <tr>
                                                     <th>Report</th>
@@ -268,7 +280,7 @@ const PatientHistory = () => {
                                                     :
                                                     (
                                                         <tr>
-                                                            <td colSpan="2" className='text-center'>No Reports Found</td>
+                                                            <td colSpan="3" className='text-center'>No Reports Found</td>
                                                         </tr>
                                                     )
                                                 }

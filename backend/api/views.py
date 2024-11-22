@@ -11,6 +11,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.db.models import Case, When, Value, IntegerField
 
+class Test(APIView):
+    def get(self, request):
+        return Response({"message": "API is working!"})
+
 def get_tokens_for_user(user): 
     refresh = RefreshToken.for_user(user)
     return {

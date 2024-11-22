@@ -192,74 +192,78 @@ const PatientList = () => {
         }
     }
 
-    // const handleUploadReport = (patient) => {
-    //     handlePatientSelect(patient);
-    //     setShowReportUploadModal(true);
-    // };
+    // comment later
 
-    // const handleUploadPrescription = (patient) => {
-    //     handlePatientSelect(patient);
-    //     setShowPrescriptionUploadModal(true);
-    // }
+    const handleUploadReport = (patient) => {
+        handlePatientSelect(patient);
+        setShowReportUploadModal(true);
+    };
 
-    // const handleReportUpload = async () => {
-    //     const reportData = new FormData();
-    //     reportData.append('patient', formData.uuid);
-    //     reportData.append('test', test);
-    //     reportData.append('report_file', reportFile);
-    //     reportData.append('uploaded_by', user);
-    //     reportData.append('message', message);
+    const handleUploadPrescription = (patient) => {
+        handlePatientSelect(patient);
+        setShowPrescriptionUploadModal(true);
+    }
 
-    //     try {
-    //         const response = await axios.post(`${url}/services/upload/report/`, reportData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data',
-    //             },
-    //         });
+    const handleReportUpload = async () => {
+        const reportData = new FormData();
+        reportData.append('patient', formData.uuid);
+        reportData.append('test', test);
+        reportData.append('report_file', reportFile);
+        reportData.append('uploaded_by', user);
+        reportData.append('message', message);
 
-    //         if (response.status === 201) {
-    //             alert('Report uploaded')
-    //             setShowReportUploadModal(false);
-    //         }
-    //     } catch (error) {
-    //         if (error.response) {
-    //             console.log(error.response.data)
-    //             setUploadError(error.response.data || 'Failed to upload report');
-    //         } else {
-    //             setUploadError('An error occurred while uploading the report');
-    //         }
-    //     }
-    // };
+        try {
+            const response = await axios.post(`${url}/services/upload/report/`, reportData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
-    // const handleUploadPrescriptionSubmit = async () => {
-    //     const reportData = new FormData();
-    //     reportData.append('patient', formData.uuid);
-    //     reportData.append('doctor', doctor);
-    //     reportData.append('prescription_file', reportFile);
-    //     reportData.append('uploaded_by', user);
+            if (response.status === 201) {
+                alert('Report uploaded')
+                setShowReportUploadModal(false);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data)
+                setUploadError(error.response.data || 'Failed to upload report');
+            } else {
+                setUploadError('An error occurred while uploading the report');
+            }
+        }
+    };
 
-    //     try {
-    //         const response = await axios.post(`${url}/services/upload/prescription/`, reportData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data',
-    //             },
-    //         });
+    const handleUploadPrescriptionSubmit = async () => {
+        const reportData = new FormData();
+        reportData.append('patient', formData.uuid);
+        reportData.append('doctor', doctor);
+        reportData.append('prescription_file', reportFile);
+        reportData.append('uploaded_by', user);
 
-    //         if (response.status === 201) {
-    //             alert('Prescription uploaded')
-    //             setShowPrescriptionUploadModal(false);
-    //             setUploadError(null)
-    //             setDoctor('');
-    //         }
-    //     } catch (error) {
-    //         if (error.response) {
-    //             console.log(error.response.data)
-    //             setUploadError(error.response.data || 'Failed to upload report');
-    //         } else {
-    //             setUploadError('An error occurred while uploading the report');
-    //         }
-    //     }
-    // }
+        try {
+            const response = await axios.post(`${url}/services/upload/prescription/`, reportData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 201) {
+                alert('Prescription uploaded')
+                setShowPrescriptionUploadModal(false);
+                setUploadError(null)
+                setDoctor('');
+            }
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data)
+                setUploadError(error.response.data || 'Failed to upload report');
+            } else {
+                setUploadError('An error occurred while uploading the report');
+            }
+        }
+    }
+
+    // comment later
 
     const filteredPatients = patients.filter((patient) => {
         if (patient && patient.full_name) {
@@ -425,24 +429,27 @@ const PatientList = () => {
                                         >
                                             <SlCalender /> Appointment
                                         </button>
+                                        
+                                        {/* remove later */}
+                                        <button
+                                            className="btn btn-primary btn-sm"
+                                            onClick={() => handleUploadReport(selectedPatient)}
+                                        >
+                                            <FaFileUpload /> Upload Report
+                                        </button> 
+                                        <button
+                                            className="btn btn-primary btn-sm"
+                                            onClick={() => handleUploadPrescription(selectedPatient)}
+                                        >
+                                            <FaFileUpload /> Add Prescription
+                                        </button>
+                                        {/* remove later */}
                                         <button
                                             className="btn btn-primary btn-sm"
                                             onClick={() => handleViewReport(selectedPatient)}
                                         >
                                             <CiFileOn /> View Reports
                                         </button>
-                                        {/* <button
-                                            className="btn btn-primary btn-sm"
-                                            onClick={() => handleUploadReport(selectedPatient)}
-                                        >
-                                            <FaFileUpload /> Upload Report
-                                        </button> */}
-                                        {/* <button
-                                            className="btn btn-primary btn-sm"
-                                            onClick={() => handleUploadPrescription(selectedPatient)}
-                                        >
-                                            <CiFileOn /> Upload Prescription
-                                        </button> */}
                                         <button
                                             className="btn btn-primary btn-sm"
                                             onClick={() => handleViewPrescription(selectedPatient)}
@@ -592,7 +599,7 @@ const PatientList = () => {
                 )}
 
                 {/* Upload Report Modal */}
-                {/* {showReportUploadModal && (
+                {showReportUploadModal && (
                     <div className="modal show" style={{ display: 'block' }}>
                         <div className="modal-dialog">
                             <div className="modal-content">
@@ -655,7 +662,8 @@ const PatientList = () => {
                             </div>
                         </div>
                     </div>
-                )} */}
+                )}
+                {/* can be removed later */}
                 {showFollowUpModal && (
                     <div className="modal show" style={{ display: 'block' }}>
                         <div className="modal-dialog">
@@ -802,7 +810,8 @@ const PatientList = () => {
                         </div>
                     </div>
                 )}
-                {/* {showPrescriptionUploadModal && (
+                {/* can beremovd later */}
+                {showPrescriptionUploadModal && (
                     <div className='modal show' style={{ display: 'block' }}>
                         <div className='modal-dialog'>
                             <div className='modal-content'>
@@ -847,7 +856,9 @@ const PatientList = () => {
                             </div>
                         </div>
                     </div>
-                )} */}
+                )}
+
+                {/* can be remove later */}
 
             </div>
         </div >
