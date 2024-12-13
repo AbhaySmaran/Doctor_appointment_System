@@ -26,6 +26,7 @@ import ChangePassword from './pages/ChangePassword';
 import Departments from './pages/Departments';
 import DoctorVisitHistory from './pages/DoctorVisitHistory';
 import APITest from './apitest';
+import Practice from './test/Practice';
 
 function App() {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('access'));
@@ -85,6 +86,7 @@ function App() {
           <Route path='department' element={<Departments />} />
           <Route path='support' element={<SupportIssues />} />
           <Route path='change-password' element={<ChangePassword />} />
+          <Route path="practice" element={<Practice />} />
           
           {/* <Route path='patients/reports/:uuid' element */}
         </Route>

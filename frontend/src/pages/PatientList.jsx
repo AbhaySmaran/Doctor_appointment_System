@@ -207,8 +207,8 @@ const PatientList = () => {
     const handleReportUpload = async () => {
         const reportData = new FormData();
         reportData.append('patient', formData.uuid);
-        reportData.append('test', test);
-        reportData.append('report_file', reportFile);
+        if(test) reportData.append('test', test);
+        if(reportFile) reportData.append('report_file', reportFile);
         reportData.append('uploaded_by', user);
         reportData.append('message', message);
 
@@ -222,6 +222,8 @@ const PatientList = () => {
             if (response.status === 201) {
                 alert('Report uploaded')
                 setShowReportUploadModal(false);
+                setReportFile(null);
+                setUploadError('');
             }
         } catch (error) {
             if (error.response) {
@@ -236,8 +238,8 @@ const PatientList = () => {
     const handleUploadPrescriptionSubmit = async () => {
         const reportData = new FormData();
         reportData.append('patient', formData.uuid);
-        reportData.append('doctor', doctor);
-        reportData.append('prescription_file', reportFile);
+        if(doctor) reportData.append('doctor', doctor);
+        if(reportFile) reportData.append('prescription_file', reportFile);
         reportData.append('uploaded_by', user);
 
         try {
@@ -250,7 +252,8 @@ const PatientList = () => {
             if (response.status === 201) {
                 alert('Prescription uploaded')
                 setShowPrescriptionUploadModal(false);
-                setUploadError(null)
+                setReportFile(null);
+                setUploadError('');
                 setDoctor('');
             }
         } catch (error) {
@@ -826,7 +829,7 @@ const PatientList = () => {
                                         <div className='form-group'>
                                             <label>Doctor's Name</label>
                                             <select
-                                                className='form-control'
+                                                className={`form-control ${uploadError.doctor ? 'is-invalid' : ""}`}
                                                 name='doctor'
                                                 id='doctor'
                                                 value={doctor}
@@ -837,17 +840,23 @@ const PatientList = () => {
                                                     <option key={doctor.id} value={doctor.id}>{doctor.full_name}</option>
                                                 )))}
                                             </select>
+                                            <div className='invalid-feedback'>
+                                                {uploadError.doctor ?  <p>{uploadError.doctor}</p>: ""}
+                                            </div>
                                         </div>
                                         <div className="form-group">
                                             <label>Prescription File</label>
                                             <input
                                                 type="file"
-                                                className="form-control-file"
+                                                className={`form-control ${uploadError.prescription_file ? 'is-invalid' : ""}`}
                                                 onChange={(e) => setReportFile(e.target.files[0])}
                                             />
+                                            <div className='invalid-feedback'>
+                                                {uploadError.prescription_file ? <p>{uploadError.prescription_file}</p> : "" }
+                                            </div>
                                         </div>
                                     </form>
-                                    {uploadError ? <div className="alert alert-danger mt-3">{uploadError.report_file}</div> : " "}
+                                    
                                 </div>
                                 <div className='modal-footer'>
                                     <button className='btn btn-primary' onClick={handleUploadPrescriptionSubmit}>Upload</button>
