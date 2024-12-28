@@ -5,9 +5,12 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.views import APIView
 from .models import *
+from services.models import *
 from .serializers import *
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from django.utils.timezone import now
 
 from django.db.models import Case, When, Value, IntegerField
 
@@ -46,6 +49,72 @@ class UserLoginView(APIView):
                 }, status=status.HTTP_200_OK)
             return Response({"errors": {"error": ["Invalid credentials"]}}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PatientAppointmentStatistics(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        try:
+            # Fetch all patients
+            patients = Patient.objects.all()
+            if not patients.exists():
+                return Response({'detail': 'No patients found.'}, status=status.HTTP_404_NOT_FOUND)
+
+            response_data = []
+
+            # Process each patient
+            for patient in patients:
+                # Fetch appointments that are already visited (`status='Checked'`)
+                visited_appointments = Appointment.objects.filter(
+                    patient=patient,
+                    status='Checked'
+                ).order_by('date')
+
+                # Fetch appointments that are not yet visited and in the future (`status='Not Checked'`)
+                future_appointments = Appointment.objects.filter(
+                    patient=patient,
+                    status='Active',
+                    date__gte=now().date()
+                ).order_by('date')
+
+                # Determine first and last consultation dates
+                if visited_appointments.exists():
+                    first_consultation_date = visited_appointments.first().date
+                    last_consultation_date = visited_appointments.last().date
+                else:
+                    first_consultation_date = last_consultation_date = None
+
+                # Determine next consultation date
+                if future_appointments.exists():
+                    next_consultation_date = future_appointments.first().date
+                else:
+                    next_consultation_date = None
+
+                # Append data to response
+                response_data.append({
+                    'id': patient.id,
+                    'uuid': patient.uuid,
+                    'full_name': patient.full_name,
+                    'age': patient.age,
+                    'email': patient.email,
+                    'gender': patient.gender,
+                    'dob': patient.dob,
+                    'address': patient.address,
+                    'nationality': patient.nationality,
+                    'contact_no': patient.contact_no,
+                    'joined_on': patient.joined_on,
+                    'updated_on': patient.updated_on,
+                    'status': patient.status,
+                    'appointments': {
+                        'first_consultation_date': first_consultation_date,
+                        'last_consultation_date': last_consultation_date,
+                        'next_consultation_date': next_consultation_date
+                    }
+                })
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 class PatientView(APIView):
     permission_classes = [AllowAny]
@@ -66,7 +135,7 @@ class PatientView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request,id=None,uuid=None, format=None):
-        Patients = Patient.objects.all().order_by('status', 'joined_on')
+        Patients = Patient.objects.all().order_by('status', 'full_name')
         serializer = PatientSerializer(Patients, many=True)
         if id is not None:
             patient = Patient.objects.get(pk=id)
@@ -94,9 +163,12 @@ class PatientView(APIView):
 
 class DepartmentView(APIView):
     permission_classes = [AllowAny]
-    def get(self, request, format = None):
+    def get(self,request, id=None,format = None):
         dept = Department.objects.all()
         serializer = DepartmentsSerializer(dept, many=True)
+        if id is not None:
+            dept = Department.objects.get(pk=id)
+            serializer = DepartmentsSerializer(dept)
         return Response(serializer.data)
 
     def post(self, request, format=None):

@@ -88,12 +88,24 @@ const DoctorVisitHistory = () => {
         }
     }
 
-    const filteredPrescriptions  = prescriptions.filter((prescription)=>{
-        return prescription.appointment === selectedAppointmentId;
-    })
+    // const filteredPrescriptions  = prescriptions.filter((prescription)=>{
+    //     return prescription.appointment === selectedAppointmentId;
+    // })
+
+    // const filteredReports = reports.filter((report) => {
+    //     return report.appointment.id === selectedAppointmentId;
+    // });
 
     const filteredReports = reports.filter((report) => {
-        return report.appointment.id === selectedAppointmentId;
+        if(report.appointment){
+            return report.appointment.id=== selectedAppointmentId;
+        }
+    });
+
+    const filteredPrescriptions = prescriptions.filter((prescription) => {
+        if(prescription.appointment){
+            return prescription.appointment === selectedAppointmentId;
+        }
     });
 
     useEffect(() => {

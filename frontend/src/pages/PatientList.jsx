@@ -46,7 +46,7 @@ const PatientList = () => {
     const [test, setTest] = useState('');
     const [allTests, setAllTests] = useState([]);
     const [uploadError, setUploadError] = useState('');
-    const recordsPerPage = 10;
+    const recordsPerPage = 5;
     const [doctor, setDoctor] = useState('');
     const [doctors, setDoctors] = useState([])
 
@@ -63,7 +63,7 @@ const PatientList = () => {
 
     const fetchPatients = async () => {
         try {
-            const res = await axios.get(`${url}/api/patients/`);
+            const res = await axios.get(`${url}/api/patients-data/`);
             setPatients(res.data);
         } catch (error) {
             console.error('Error fetching patients:', error);
@@ -364,13 +364,15 @@ const PatientList = () => {
                             }}
                         />
                         <div className="table-responsive">
-                            <table className="table table-striped table-light">
+                            <table className="table table-striped table-light table-bordered">
                                 <thead className="thead" id='thead'>
                                     <tr>
                                         <th>Select</th>
-                                        <th>UHID</th>
+                                        {/* <th>UHID</th> */}
                                         <th>Name</th>
-                                        <th>Gender</th>
+                                        <th>First Appointment</th>
+                                        <th>Last Appointment</th>
+                                        <th>Next Appointment</th>
                                         <th className='text-center'>Status</th>
                                     </tr>
                                 </thead>
@@ -385,9 +387,11 @@ const PatientList = () => {
                                                     onChange={() =>{ handlePatientSelect(patient)}}
                                                 />
                                             </td>
-                                            <td>{patient.uuid}</td>
+                                            {/* <td>{patient.uuid}</td> */}
                                             <td>{patient.full_name}</td>
-                                            <td>{patient.gender}</td>
+                                            <td>{patient.appointments.first_consultation_date}</td>
+                                            <td>{patient.appointments.last_consultation_date}</td>
+                                            <td>{patient.appointments.next_consultation_date}</td>
                                             <td className='text-center'>{
                                                 patient.status.toLowerCase() === 'active' ? <GrStatusGood /> : <GrStatusCritical />
                                             }
