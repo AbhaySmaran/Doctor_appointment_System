@@ -10,7 +10,7 @@ from datetime import datetime , timedelta
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.shortcuts import get_list_or_404
+from django.shortcuts import get_list_or_404,get_object_or_404
 from django.utils.dateparse import parse_date
 
 from django.db.models import Count, Func, F
@@ -106,7 +106,12 @@ class Patientreports(APIView):
         reports = Report.objects.filter(patient=patient)
         serializer = ReportViewSerializer(reports,many=True)
         return Response(serializer.data)
-
+    
+    def delete(self, request, id=None, format=None):
+        report = Report.objects.get(id=id)
+        report.delete()
+        return Response({"msg": "Report deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
 class PrescriptionUploadView(APIView):
     def post(self,request,format=None):
         serializer = PrescriptionUploadSerializer(data=request.data)
@@ -127,6 +132,11 @@ class PatientPrescriptionView(APIView):
         prescriptions = Prescription.objects.filter(patient=patient)
         serializer = PrescriptionSerializer(prescriptions,many=True)
         return Response(serializer.data)
+
+    def delete(self, request, id=None, format=None):
+        prescription = Prescription.objects.get(id=id)
+        prescription.delete()
+        return Response({"msg": "Prescription deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class DoctorAppointmentsView(APIView):

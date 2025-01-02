@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaCloudDownloadAlt } from "react-icons/fa";
 import { IoReturnUpBackSharp } from "react-icons/io5";
+import { MdOutlineDeleteForever } from "react-icons/md";
 
 const ReportList = () => {
     const base_url = localStorage.getItem('url');
@@ -19,21 +20,21 @@ const ReportList = () => {
         setPatient(res.data);
     };
 
-    useEffect(() => {
-        const fetchReports = async () => {
-            try {
-                const response = await axios.get(`${base_url}/services/reports/${uuid}/`, {
-                    headers: {
-                        'Authorization': `Bearer ${access}`
-                    }
-                });
-                setReports(response.data);
-                // console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching reports:', error);
-            }
-        };
+    const fetchReports = async () => {
+        try {
+            const response = await axios.get(`${base_url}/services/reports/${uuid}/`, {
+                headers: {
+                    'Authorization': `Bearer ${access}`
+                }
+            });
+            setReports(response.data);
+            // console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching reports:', error);
+        }
+    };
 
+    useEffect(() => {
         fetchReports();
         fetchPatientDetails();
     }, [uuid]);
@@ -41,6 +42,21 @@ const ReportList = () => {
     const onBackClick = () => {
         navigate(-1);
     };
+
+    const handleDelete = async (reportId) => {
+        try {
+            if(window.confirm('Are you sure you want to delete this report?')) {
+                await axios.delete(`${base_url}/services/report/${reportId}/`, {
+                    headers: {
+                        'Authorization': `Bearer ${access}`
+                    },
+                });
+            }
+            fetchReports();
+        }catch(error){
+            console.log(error);
+        }
+    }
 
     const handleDownload = async (fileUrl) => {
         try {
@@ -117,6 +133,7 @@ const ReportList = () => {
                                 <th>Download</th>
                                 <th>Uploaded On</th>
                                 <th>Uploaded By</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -135,6 +152,11 @@ const ReportList = () => {
                                         </td>
                                         <td>{new Date(report.uploaded_on).toLocaleString()}</td>
                                         <td>{report.uploaded_by}</td>
+                                        <td>
+                                            <button className='btn btn-primary' onClick={() => handleDelete(report.id)}>
+                                                <MdOutlineDeleteForever />
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (

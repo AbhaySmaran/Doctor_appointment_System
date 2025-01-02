@@ -40,7 +40,8 @@ const PatientList = () => {
         gender: '',
         address: '',
         contact_no: '',
-        status: ''
+        status: '',
+        reffered_by: ''
     });
     const [reportFile, setReportFile] = useState(null);
     const [test, setTest] = useState('');
@@ -87,7 +88,8 @@ const PatientList = () => {
             gender: patient.gender,
             address: patient.address,
             contact_no: patient.contact_no,
-            status: patient.status
+            status: patient.status,
+            reffered_by: patient.reffered_by
         });
     };
 
@@ -109,7 +111,7 @@ const PatientList = () => {
     const handleStatusChange = async () => {
         try {
             if (window.confirm("Are you sure you want to change status?")) {
-                await axios.put(`${url}/api/patients/${formData.id}/`, formData);
+                await axios.put(`${url}/api/patient/${formData.id}/`, formData);
                 await fetchPatients();
                 setShowStatusModal(false);
             }
@@ -153,9 +155,12 @@ const PatientList = () => {
         if(formData.status){
             data.append("status",formData.status )
         }
+        if(formData.reffered_by){
+            data.append("status",formData.reffered_by )
+        }
         try {            
             if (window.confirm("Are you sure you want to save changes?")) {
-                const res = await axios.put(`${url}/api/patients/${formData.id}/`, formData);
+                const res = await axios.put(`${url}/api/patient/${formData.id}/`, formData);
                 await fetchPatients();
                 setShowUpdateModal(false);
                 setSelectedPatient((prevPatient) => ({
@@ -268,9 +273,22 @@ const PatientList = () => {
 
     // comment later
 
+    // const filteredPatients = patients.filter((patient) => {
+    //     if (patient && patient.full_name) {
+    //         return patient.full_name.toLowerCase().includes(searchTerm.toLowerCase());
+    //     }
+    //     return false;
+    // });
+
     const filteredPatients = patients.filter((patient) => {
-        if (patient && patient.full_name) {
-            return patient.full_name.toLowerCase().includes(searchTerm.toLowerCase());
+        if (patient) {
+            const searchLower = searchTerm.toLowerCase();
+            
+            return (
+                (patient.full_name && patient.full_name.toLowerCase().includes(searchLower)) ||
+                (patient.contact_no && String(patient.contact_no).includes(searchTerm)) ||
+                (patient.uuid && String(patient.uuid).includes(searchTerm))
+            );
         }
         return false;
     });
@@ -389,9 +407,9 @@ const PatientList = () => {
                                             </td>
                                             {/* <td>{patient.uuid}</td> */}
                                             <td>{patient.full_name}</td>
-                                            <td>{patient.appointments.first_consultation_date}</td>
-                                            <td>{patient.appointments.last_consultation_date}</td>
-                                            <td>{patient.appointments.next_consultation_date}</td>
+                                            <td>{patient.appointments.first_consultation_date ? patient.appointments.first_consultation_date : "No Data"}</td>
+                                            <td>{patient.appointments.last_consultation_date ? patient.appointments.last_consultation_date : "No Data"}</td>
+                                            <td>{patient.appointments.next_consultation_date ? patient.appointments.next_consultation_date : "No Data"}</td>
                                             <td className='text-center'>{
                                                 patient.status.toLowerCase() === 'active' ? <GrStatusGood /> : <GrStatusCritical />
                                             }
@@ -419,10 +437,14 @@ const PatientList = () => {
                             <h4>Patient Details</h4>
                             {selectedPatient ? (
                                 <div>
+                                    <p><strong>Name:</strong> {selectedPatient.full_name}</p>
+                                    <p><strong>UHID:</strong> {selectedPatient.uuid}</p>
+                                    <p><strong>Gender:</strong> {selectedPatient.gender}</p>
                                     <p><strong>Age:</strong> {selectedPatient.age}</p>
                                     <p><strong>Email:</strong> {selectedPatient.email}</p>
                                     <p><strong>Address:</strong> {selectedPatient.address}</p>
                                     <p><strong>Contact:</strong> {selectedPatient.contact_no}</p>
+                                    <p><strong>Reffered By:</strong> {selectedPatient.reffered_by}</p>
                                     <div className="btn-grp">
                                         <button
                                             className="btn btn-primary btn-sm"
@@ -546,6 +568,18 @@ const PatientList = () => {
                                                 </div>
                                             </div>
                                         </div>
+                                        <div className="row aligns-item-center"> 
+                                            <div className='col-md-2'><label>Reffered By</label></div>
+                                            <div className='col-md-10'>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={formData.reffered_by}
+                                                    onChange={(e) => setFormData({ ...formData, reffered_by: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                        <br />
                                         <div className="row aligns-item-center">
                                             <div className='col-md-2'><label>Email</label></div>
                                             <div className='col-md-10'>

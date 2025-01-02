@@ -105,6 +105,7 @@ class PatientAppointmentStatistics(APIView):
                     'joined_on': patient.joined_on,
                     'updated_on': patient.updated_on,
                     'status': patient.status,
+                    'reffered_by': patient.reffered_by,
                     'appointments': {
                         'first_consultation_date': first_consultation_date,
                         'last_consultation_date': last_consultation_date,

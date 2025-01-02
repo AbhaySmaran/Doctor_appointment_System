@@ -6,7 +6,7 @@ urlpatterns=[
     path('register/user/', UserRegistrationView.as_view(), name='user-register'),
     path('update/user/<int:id>/',UserUpdateView.as_view()),
     path('patients/', PatientView.as_view()),
-    path('patients/<int:id>/', PatientView.as_view()),
+    path('patient/<int:id>/', PatientView.as_view()),
     path('patients/<str:uuid>/', PatientView.as_view()),
     path('departments/',DepartmentView.as_view()),
     path('departments/<int:id>/',DepartmentView.as_view()),

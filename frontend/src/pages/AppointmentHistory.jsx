@@ -229,6 +229,10 @@ const AppointmentHistory = () => {
         }
     }
 
+    const handleViewHistory = (patientUUID) => {
+        navigate(`/dashboard/patient/history/${patientUUID}`);
+    }
+
 
     const handleSearch = (event) => {
         setSearchQuery(event.target.value.toLowerCase());
@@ -373,14 +377,17 @@ const AppointmentHistory = () => {
                                     <p><strong>Patient's Age:</strong> {selectedAppointment.patient.age}</p>
                                     <p><strong>Patient's Address:</strong> {selectedAppointment.patient.address}</p>
                                     <div className='btn-grp'>
+                                        <button className='btn btn-primary' onClick={() => handleStatusClick(selectedAppointment)}>
+                                            Status
+                                        </button>
+                                        <button className='btn btn-primary' onClick={() => handleViewHistory(selectedAppointment.patient.uuid)}>
+                                            History
+                                        </button>
                                         <button className='btn btn-primary btn-sm' onClick={() => handleUploadPrescription(selectedAppointment)}>
                                             Upload Prescription
                                         </button>
                                         <button className='btn btn-primary' onClick={()=> handleUpoadReport(selectedAppointment)}>
                                             Upload Report
-                                        </button>
-                                        <button className='btn btn-primary' onClick={() => handleStatusClick(selectedAppointment)}>
-                                            Status
                                         </button>
                                         <button className='btn btn-primary' onClick={() => handleRescheduleClick(selectedAppointment)}>
                                             Reschedule

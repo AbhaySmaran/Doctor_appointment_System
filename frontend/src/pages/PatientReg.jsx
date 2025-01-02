@@ -17,6 +17,7 @@ const PatientReg = () => {
         address: '',
         nationality: '',
         contactNo: '',
+        refferedBy:''
     });
 
     const navigate = useNavigate();
@@ -59,6 +60,9 @@ const PatientReg = () => {
         if(formData.nationality){
             data.append("nationality", formData.nationality)
         }
+        if(formData.refferedBy){
+            data.append("reffered_by", formData.refferedBy)
+        }
         try {
             const res = await axios.post(`${url}/api/patients/`, data
             // {
@@ -85,6 +89,7 @@ const PatientReg = () => {
                     address: '',
                     nationality: '',
                     contactNo: '',
+                    refferedBy:''
                 });
                 setError({});
             }
@@ -288,6 +293,23 @@ const PatientReg = () => {
                             <div className="invalid-feedback">
                                 {error.contact_no && <p>{error.contact_no}</p>}
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="row mb-3" id='form-row'>
+                        <div className="col-md-2">
+                            <label htmlFor="contactNo" className="form-label">Reffered By</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="refferedBy"
+                                value={formData.refferedBy}
+                                onChange={handleChange}
+                                placeholder="Reffred by Doctor"
+                                
+                            />
                         </div>
                     </div>
 
