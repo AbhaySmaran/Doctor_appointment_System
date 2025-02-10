@@ -17,7 +17,9 @@ const PatientReg = () => {
         address: '',
         nationality: '',
         contactNo: '',
-        refferedBy:''
+        refferedBy:'',
+        diagnosis: '',
+        diagnosis_details: ''
     });
 
     const navigate = useNavigate();
@@ -298,7 +300,7 @@ const PatientReg = () => {
 
                     <div className="row mb-3" id='form-row'>
                         <div className="col-md-2">
-                            <label htmlFor="contactNo" className="form-label">Reffered By</label>
+                            <label className="form-label">Reffered By</label>
                         </div>
                         <div className="col-md-10">
                             <input
@@ -308,6 +310,38 @@ const PatientReg = () => {
                                 value={formData.refferedBy}
                                 onChange={handleChange}
                                 placeholder="Reffred by Doctor"
+                                
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row mb-3" id='form-row'>
+                        <div className="col-md-2">
+                            <label className="form-label">Diagnosis</label>
+                        </div>
+                        <div className="col-md-10">
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="diagnosis"
+                                value={formData.diagnosis}
+                                onChange={handleChange}
+                                
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row mb-3" id='form-row'>
+                        <div className="col-md-2">
+                            <label className="form-label">Diagnosis Details</label>
+                        </div>
+                        <div className="col-md-10">
+                            <textarea
+                                type="text"
+                                className="form-control"
+                                name="diagnosis_details"
+                                value={formData.diagnosis_details}
+                                onChange={handleChange}
                                 
                             />
                         </div>

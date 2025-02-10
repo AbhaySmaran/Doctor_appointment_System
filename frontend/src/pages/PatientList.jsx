@@ -30,6 +30,7 @@ const PatientList = () => {
     const [showReportUploadModal, setShowReportUploadModal] = useState(false);
     const [showAppointmentModal, setShowAppointmentModal] = useState(false);
     const [showPrescriptionUploadModal, setShowPrescriptionUploadModal] = useState(false);
+    const [showDiagnosisModal, setShowDiagnosisModal] = useState(false);
     const [appointmentDate, setAppointmentDate] = useState('')
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [formData, setFormData] = useState({
@@ -42,7 +43,9 @@ const PatientList = () => {
         address: '',
         contact_no: '',
         status: '',
-        reffered_by: ''
+        reffered_by: '',
+        diagnosis:'',
+        diagnosis_details: ''
     });
     const [reportFile, setReportFile] = useState(null);
     const [test, setTest] = useState('');
@@ -90,7 +93,9 @@ const PatientList = () => {
             address: patient.address || "",
             contact_no: patient.contact_no || "",
             status: patient.status || "",
-            reffered_by: patient.reffered_by || ""
+            reffered_by: patient.reffered_by || "",
+            diagnosis: patient.diagnosis || "",
+            diagnosis_details: patient.diagnosis_details || ""
         });
     };
 
@@ -121,6 +126,20 @@ const PatientList = () => {
             setUploadError(error.response.data)
         }
     };
+
+    const handleUpdateDiagnosis = async (pid) => {
+        try {
+            if (window.confirm("Are you sure you want to update diagnostics?")) {
+                await axios.put(`${url}/api/patient/${pid}/`, formData);
+                await fetchPatients();
+                setShowDiagnosisModal(false);
+            }
+        } catch (error) {
+            console.error('Error updating patient diagnostics:', error);
+            
+        }
+    };
+
 
     const handleArchive = async (pid) => {
         try {
@@ -462,6 +481,13 @@ const PatientList = () => {
                                     <p><strong>Address:</strong> {selectedPatient.address}</p>
                                     <p><strong>Contact:</strong> {selectedPatient.contact_no}</p>
                                     <p><strong>Reffered By:</strong> {selectedPatient.reffered_by}</p>
+                                    {/* <p><strong>Diagnosis:</strong> {selectedPatient.diagnosis}</p>
+                                    <p><strong>Diagnosis Details:</strong> {selectedPatient.diagnosis_details}</p> */}
+                                    <div className="diagnostics-section">
+                                        <h5 style={{ textDecoration: 'underline' }}>Diagnostics</h5>
+                                        <p><strong>Diagnosis:</strong> {selectedPatient.diagnosis}</p>
+                                        <p><strong>Diagnosis Details:</strong> {selectedPatient.diagnosis_details}</p>
+                                    </div>
                                     <div className="btn-grp">
                                         <button
                                             className="btn btn-primary btn-sm"
@@ -502,17 +528,17 @@ const PatientList = () => {
                                         >
                                             <CiFileOn /> View Prescription
                                         </button>
-                                        <button
+                                        {/* <button
                                             className="btn btn-primary btn-sm"
                                             onClick={() => setShowFollowUpModal(true)}
                                         >
                                             <MdEmail /> Follow Up Email
-                                        </button>
+                                        </button> */}
                                         <button
                                             className="btn btn-primary btn-sm"
-                                            onClick={() => handleStatus(selectedPatient)}
+                                            onClick={() => setShowDiagnosisModal(true)}
                                         >
-                                            <GrStatusUnknown /> Status
+                                            <MdEmail /> Diagnosis
                                         </button>
                                         <button
                                             className="btn btn-primary btn-sm"
@@ -520,6 +546,13 @@ const PatientList = () => {
                                         >
                                             <MdOutlineManageHistory /> History
                                         </button>
+                                        <button
+                                            className="btn btn-primary btn-sm"
+                                            onClick={() => handleStatus(selectedPatient)}
+                                        >
+                                            <GrStatusUnknown /> Status
+                                        </button>
+                                        
                                         <button
                                             className="btn btn-primary btn-sm"
                                             onClick={() => handleArchive(selectedPatient.id)}
@@ -940,6 +973,61 @@ const PatientList = () => {
                 )}
 
                 {/* can be remove later */}
+
+                {showDiagnosisModal && (
+                    <div className="modal show" style={{ display: 'block' }}>
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Update Diagnostics</h5>
+                                    <button type="button" className="close" onClick={() => setShowDiagnosisModal(false)}>
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <form>
+                                    <div className="row aligns-item-center">
+                                            <div className='col-md-2'><label >Diagnosis</label></div>
+                                            <div className='col-md-10'>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={formData.diagnosis}
+                                                    onChange={(e) => setFormData({ ...formData, diagnosis: e.target.value })}
+                                                   
+                                                />
+                                                {/* <div className='invalid-feedback'>
+                                                    {uploadError.contact_no && <p>This field is required</p>}
+                                                </div> */}
+                                            </div>
+                                            
+                                        </div>
+                                        <br/>
+                                        <div className="row aligns-item-center">
+                                            <div className='col-md-2'><label>Diagnosis Details</label></div>
+                                            <div className='col-md-10'>
+                                                <textarea
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={formData.diagnosis_details}
+                                                    onChange={(e) => setFormData({ ...formData, diagnosis_details: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-primary" onClick={()=>handleUpdateDiagnosis()}>
+                                        Update
+                                    </button>
+                                    <button type="button" className="btn btn-primary" onClick={() => setShowDiagnosisModal(false)}>
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
             </div>
         </div >
