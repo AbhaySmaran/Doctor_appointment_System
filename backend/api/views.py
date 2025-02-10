@@ -56,7 +56,7 @@ class PatientAppointmentStatistics(APIView):
     def get(self, request):
         try:
             # Fetch all patients
-            patients = Patient.objects.all()
+            patients = Patient.objects.exclude(status='Archive').order_by('status', 'full_name')
             if not patients.exists():
                 return Response({'detail': 'No patients found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -106,6 +106,8 @@ class PatientAppointmentStatistics(APIView):
                     'updated_on': patient.updated_on,
                     'status': patient.status,
                     'reffered_by': patient.reffered_by,
+                    'diagnosis': patient.diagnosis,
+                    'diagnosis_details': patient.diagnosis_details,
                     'appointments': {
                         'first_consultation_date': first_consultation_date,
                         'last_consultation_date': last_consultation_date,

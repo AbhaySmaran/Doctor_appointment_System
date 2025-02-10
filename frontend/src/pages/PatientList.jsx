@@ -16,6 +16,7 @@ import { saveAs } from 'file-saver';
 import { GrStatusCritical } from "react-icons/gr";
 import { GrStatusGood } from "react-icons/gr";
 import { MdOutlineManageHistory } from "react-icons/md";
+import { FaRegFileArchive } from "react-icons/fa";
 
 const PatientList = () => {
     const url = localStorage.getItem('url');
@@ -80,16 +81,16 @@ const PatientList = () => {
     const handlePatientSelect = (patient) => {
         setSelectedPatient(patient);
         setFormData({
-            id: patient.id,
-            uuid: patient.uuid,
-            full_name: patient.full_name,
-            age: patient.age,
-            email: patient.email,
-            gender: patient.gender,
-            address: patient.address,
-            contact_no: patient.contact_no,
-            status: patient.status,
-            reffered_by: patient.reffered_by
+            id: patient.id || "",
+            uuid: patient.uuid || "",
+            full_name: patient.full_name || "",
+            age: patient.age || "",
+            email: patient.email || "",
+            gender: patient.gender || "",
+            address: patient.address || "",
+            contact_no: patient.contact_no || "",
+            status: patient.status || "",
+            reffered_by: patient.reffered_by || ""
         });
     };
 
@@ -117,6 +118,21 @@ const PatientList = () => {
             }
         } catch (error) {
             console.error('Error updating patient Status:', error);
+            setUploadError(error.response.data)
+        }
+    };
+
+    const handleArchive = async (pid) => {
+        try {
+            if (window.confirm("Are you sure you want to archive this patient?")) {
+                await axios.put(`${url}/api/patient/${pid}/`, {
+                    
+                    status: 'Archive'
+                });
+                await fetchPatients();
+            }
+        } catch (error) {
+            console.error('Error archiving patient:', error);
             setUploadError(error.response.data)
         }
     };
@@ -286,6 +302,7 @@ const PatientList = () => {
             
             return (
                 (patient.full_name && patient.full_name.toLowerCase().includes(searchLower)) ||
+                (patient.address && patient.address.toLowerCase().includes(searchLower)) ||
                 (patient.contact_no && String(patient.contact_no).includes(searchTerm)) ||
                 (patient.uuid && String(patient.uuid).includes(searchTerm))
             );
@@ -502,6 +519,12 @@ const PatientList = () => {
                                             onClick={() => handleViewHistory(selectedPatient)}
                                         >
                                             <MdOutlineManageHistory /> History
+                                        </button>
+                                        <button
+                                            className="btn btn-primary btn-sm"
+                                            onClick={() => handleArchive(selectedPatient.id)}
+                                        >
+                                            <FaRegFileArchive /> Archive
                                         </button>
                                     </div>
                                 </div>
@@ -837,6 +860,17 @@ const PatientList = () => {
                                             />
                                             <label htmlFor="statusInactive">Inactive</label>
                                         </div>
+                                        {/* <div>
+                                            <input
+                                                type="radio"
+                                                id="statusInactive"
+                                                name="status"
+                                                value="Archive"
+                                                checked={formData.status === 'Archive'}
+                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                            />
+                                            <label htmlFor="statusInactive">Archive</label>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className="modal-footer">

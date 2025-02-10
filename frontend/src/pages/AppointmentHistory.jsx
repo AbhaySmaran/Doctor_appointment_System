@@ -43,6 +43,7 @@ const AppointmentHistory = () => {
         appointment_status: '',
         appointment_date: '',
         appointment_advice: "" ,
+        registered_on: ""
     });
 
     const user = localStorage.getItem("name");
@@ -60,6 +61,7 @@ const AppointmentHistory = () => {
             patient_age: appointment.patient.age,
             appointment_status: appointment.status,
             appointment_date: appointment.date,
+            registered_on: appointment.patient.joined_on
         });
     };
 
@@ -336,8 +338,9 @@ const AppointmentHistory = () => {
                                 <thead className='thead-dark'>
                                     <tr>
                                         <th>Select</th>
-                                        <th>Patient Name</th>
                                         <th>Doctor's Name</th>
+                                        <th>Patient Name</th>
+                                        <th>Patient UHID</th>
                                         <th>Appointment Date</th>
                                         <th>Status</th>
                                     </tr>
@@ -353,8 +356,9 @@ const AppointmentHistory = () => {
                                                     checked={selectedAppointment?.id === appointment.id}
                                                 />
                                             </td>
-                                            <td>{appointment.patient.full_name}</td>
                                             <td>{appointment.doctor.full_name}</td>
+                                            <td>{appointment.patient.full_name}</td>
+                                            <td>{appointment.patient.uuid}</td>
                                             <td>{appointment.date}</td>
                                             <td>{appointment.status}</td>
                                         </tr>
